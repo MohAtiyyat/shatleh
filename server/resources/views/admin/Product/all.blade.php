@@ -28,7 +28,7 @@
 
         .card-header {
             background-color: #fff;
-            border-bottom: 1px solid rgba(0,0,0,.05);
+            border-bottom: 1px solid rgba(0, 0, 0, .05);
             padding: 1.25rem 1.5rem;
         }
 
@@ -91,7 +91,7 @@
 
         .table td {
             vertical-align: middle;
-            border-top: 1px solid rgba(0,0,0,.05);
+            border-top: 1px solid rgba(0, 0, 0, .05);
             padding: 0.75rem 1rem;
             font-size: 0.875rem;
         }
@@ -110,7 +110,7 @@
         .img-thumbnail {
             object-fit: cover;
             border-radius: var(--border-radius);
-            box-shadow: 0 2px 5px rgba(0,0,0,.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .05);
         }
 
         .status-badge {
@@ -147,7 +147,7 @@
         }
 
         .dataTables_wrapper .dataTables_filter input {
-            border: 1px solid rgba(0,0,0,.1);
+            border: 1px solid rgba(0, 0, 0, .1);
             border-radius: var(--border-radius);
             padding: 0.375rem 0.75rem;
         }
@@ -196,14 +196,19 @@
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Product Management</h5>
-                <div class="header-actions">
-                    <div class="btn-group" id="export-tools">
-                        <!-- Export buttons will be inserted here by DataTables -->
-                    </div>
+
+            </div>
+            <div class="flex  header-actions w-full  ">
+                <div class="btn-group" id="export-tools">
+                    <!-- Export buttons will be inserted here by DataTables -->
+                </div>
+
+                <div class="ml-auto">
                     <a href="#" class="btn btn-primary">
                         <i class="fas fa-plus fa-sm mr-2"></i>Add Product
                     </a>
                 </div>
+
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -225,8 +230,8 @@
                             <tr>
                                 <td>1</td>
                                 <td>
-                                    <img src="https://via.placeholder.com/75" alt="Product Image"
-                                         class="img-thumbnail" style="width: 60px; height: 60px;">
+                                    <img src="https://via.placeholder.com/75" alt="Product Image" class="img-thumbnail"
+                                        style="width: 60px; height: 60px;">
                                 </td>
                                 <td>
                                     <div>Sample Product</div>
@@ -241,21 +246,28 @@
                                 <td>
                                     <span class="status-badge status-stock">In Stock</span>
                                 </td>
-                                <td class="description-cell">Short description in English. This product is designed to demonstrate the features of our system.</td>
+                                <td class="description-cell">Short description in English. This product is designed to
+                                    demonstrate the features of our system.</td>
                                 <td>
                                     <div>2025-04-05</div>
                                     <small class="text-muted">15:30</small>
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/1') }}"><i class="fas fa-eye"></i> View</a></li>
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/1/edit') }}"><i class="fas fa-edit"></i> Edit</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash"></i> Delete</a></li>
+                                            <li><a class="dropdown-item" href="{{ url('/admin/products/1') }}"><i
+                                                        class="fas fa-eye"></i> View</a></li>
+                                            <li><a class="dropdown-item" href="{{ url('/admin/products/1/edit') }}"><i
+                                                        class="fas fa-edit"></i> Edit</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item text-danger" href="#"><i
+                                                        class="fas fa-trash"></i> Delete</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -264,7 +276,7 @@
                                 <td>2</td>
                                 <td>
                                     <img src="https://via.placeholder.com/75/cccccc" alt="Product Image"
-                                         class="img-thumbnail" style="width: 60px; height: 60px;">
+                                        class="img-thumbnail" style="width: 60px; height: 60px;">
                                 </td>
                                 <td>
                                     <div>Premium Item</div>
@@ -279,21 +291,28 @@
                                 <td>
                                     <span class="status-badge status-inactive">Out of Stock</span>
                                 </td>
-                                <td class="description-cell">This is our premium offering with exclusive features for discerning customers.</td>
+                                <td class="description-cell">This is our premium offering with exclusive features for
+                                    discerning customers.</td>
                                 <td>
                                     <div>2025-04-02</div>
                                     <small class="text-muted">09:15</small>
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton2" data-toggle="dropdown" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/2') }}"><i class="fas fa-eye"></i> View</a></li>
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/2/edit') }}"><i class="fas fa-edit"></i> Edit</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash"></i> Delete</a></li>
+                                            <li><a class="dropdown-item" href="{{ url('/admin/products/2') }}"><i
+                                                        class="fas fa-eye"></i> View</a></li>
+                                            <li><a class="dropdown-item" href="{{ url('/admin/products/2/edit') }}"><i
+                                                        class="fas fa-edit"></i> Edit</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item text-danger" href="#"><i
+                                                        class="fas fa-trash"></i> Delete</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -321,69 +340,70 @@
     <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     <script>
-        $(function () {
-    $('#productTable').DataTable({
-        responsive: true,
-        lengthChange: true,
-        autoWidth: false,
-        pageLength: 10,
-        order: [[0, 'asc']],
-        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
-        buttons: [
-            {
-                extend: 'copy',
-                className: 'btn-sm btn-outline-secondary',
-                text: '<i class="fas fa-copy mr-1"></i>Copy'
-            },
-            {
-                extend: 'csv',
-                className: 'btn-sm btn-outline-secondary',
-                text: '<i class="fas fa-file-csv mr-1"></i>CSV'
-            },
-            {
-                extend: 'excel',
-                className: 'btn-sm btn-outline-secondary',
-                text: '<i class="fas fa-file-excel mr-1"></i>Excel'
-            },
-            {
-                extend: 'pdf',
-                className: 'btn-sm btn-outline-secondary',
-                text: '<i class="fas fa-file-pdf mr-1"></i>PDF'
-            },
-            {
-                extend: 'print',
-                className: 'btn-sm btn-outline-secondary',
-                text: '<i class="fas fa-print mr-1"></i>Print'
-            }
-        ],
-        language: {
-            search: "Search:",
-            lengthMenu: "_MENU_ records per page",
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            paginate: {
-                first: '<i class="fas fa-angle-double-left"></i>',
-                last: '<i class="fas fa-angle-double-right"></i>',
-                previous: '<i class="fas fa-angle-left"></i>',
-                next: '<i class="fas fa-angle-right"></i>'
-            }
-        },
-        initComplete: function () {
-            // Append buttons to the export-tools div
-            this.api().buttons().container().appendTo('#export-tools');
+        $(function() {
+            $('#productTable').DataTable({
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                pageLength: 10,
+                order: [
+                    [0, 'asc']
+                ],
+                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+                buttons: [{
+                        extend: 'copy',
+                        className: 'btn-sm btn-primary',
+                        text: '<i class="fas fa-copy mr-1"></i>Copy'
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn-sm btn-primary',
+                        text: '<i class="fas fa-file-csv mr-1"></i>CSV'
+                    },
+                    {
+                        extend: 'excel',
+                        className: 'btn-sm btn-primary',
+                        text: '<i class="fas fa-file-excel mr-1"></i>Excel'
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn-sm btn-primary',
+                        text: '<i class="fas fa-file-pdf mr-1"></i>PDF'
+                    },
+                    {
+                        extend: 'print',
+                        className: 'btn-sm btn-primary',
+                        text: '<i class="fas fa-print mr-1"></i>Print'
+                    }
+                ],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "_MENU_ records per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: '<i class="fas fa-angle-double-left"></i>',
+                        last: '<i class="fas fa-angle-double-right"></i>',
+                        previous: '<i class="fas fa-angle-left"></i>',
+                        next: '<i class="fas fa-angle-right"></i>'
+                    }
+                },
+                initComplete: function() {
+                    // Append buttons to the export-tools div
+                    this.api().buttons().container().appendTo('#export-tools');
 
-            // Fix the background color and styling for the export buttons
-            setTimeout(function() {
-                $('#export-tools .btn').removeClass('dt-button');
-                $('#export-tools .btn-group').addClass('mr-2');
+                    // Fix the background color and styling for the export buttons
+                    setTimeout(function() {
+                        $('#export-tools .btn').removeClass('dt-button');
+                        $('#export-tools .btn-group').addClass('mr-2');
 
-                // Add spacing between buttons
-                $('#export-tools .btn').addClass('mr-1');
+                        // Add spacing between buttons
+                        $('#export-tools .btn').addClass('mr-1');
 
-                // Ensure consistent styling
-                $('#export-tools').css('display', 'inline-flex');
-            }, 0);
-        }
-    });
-});
+                        // Ensure consistent styling
+                        $('#export-tools').css('display', 'inline-flex');
+                    }, 0);
+                }
+            });
+        });
     </script>
 @endsection
