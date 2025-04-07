@@ -18,3 +18,9 @@ Route::get('/product/show', function () {
 Route::get('/product/create', function () {
     return view('admin.product.createUpdate');
 });
+
+
+    Route::get('/login', function () {
+    return view('admin.login.login');
+});
+
