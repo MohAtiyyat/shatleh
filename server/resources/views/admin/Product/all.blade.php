@@ -179,7 +179,7 @@
     </style>
 @endsection
 
-@section('productsShow')
+@section('Products_Show')
     active
 @endsection
 
@@ -322,34 +322,68 @@
 
     <script>
         $(function () {
-            $('#productTable').DataTable({
-                responsive: true,
-                lengthChange: true,
-                autoWidth: false,
-                pageLength: 10,
-                order: [[0, 'asc']],
-                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
-                buttons: [
-                    { extend: 'copy', className: 'btn-sm btn-outline-secondary' },
-                    { extend: 'excel', className: 'btn-sm btn-outline-secondary' },
-                    { extend: 'pdf', className: 'btn-sm btn-outline-secondary' },
-                    { extend: 'print', className: 'btn-sm btn-outline-secondary' }
-                ],
-                language: {
-                    search: "Search:",
-                    lengthMenu: "_MENU_ records per page",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        first: '<i class="fas fa-angle-double-left"></i>',
-                        last: '<i class="fas fa-angle-double-right"></i>',
-                        previous: '<i class="fas fa-angle-left"></i>',
-                        next: '<i class="fas fa-angle-right"></i>'
-                    }
-                },
-                initComplete: function () {
-                    this.api().buttons().container().appendTo('#export-tools');
-                }
-            });
-        });
+    $('#productTable').DataTable({
+        responsive: true,
+        lengthChange: true,
+        autoWidth: false,
+        pageLength: 10,
+        order: [[0, 'asc']],
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+        buttons: [
+            {
+                extend: 'copy',
+                className: 'btn-sm btn-outline-secondary',
+                text: '<i class="fas fa-copy mr-1"></i>Copy'
+            },
+            {
+                extend: 'csv',
+                className: 'btn-sm btn-outline-secondary',
+                text: '<i class="fas fa-file-csv mr-1"></i>CSV'
+            },
+            {
+                extend: 'excel',
+                className: 'btn-sm btn-outline-secondary',
+                text: '<i class="fas fa-file-excel mr-1"></i>Excel'
+            },
+            {
+                extend: 'pdf',
+                className: 'btn-sm btn-outline-secondary',
+                text: '<i class="fas fa-file-pdf mr-1"></i>PDF'
+            },
+            {
+                extend: 'print',
+                className: 'btn-sm btn-outline-secondary',
+                text: '<i class="fas fa-print mr-1"></i>Print'
+            }
+        ],
+        language: {
+            search: "Search:",
+            lengthMenu: "_MENU_ records per page",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                first: '<i class="fas fa-angle-double-left"></i>',
+                last: '<i class="fas fa-angle-double-right"></i>',
+                previous: '<i class="fas fa-angle-left"></i>',
+                next: '<i class="fas fa-angle-right"></i>'
+            }
+        },
+        initComplete: function () {
+            // Append buttons to the export-tools div
+            this.api().buttons().container().appendTo('#export-tools');
+
+            // Fix the background color and styling for the export buttons
+            setTimeout(function() {
+                $('#export-tools .btn').removeClass('dt-button');
+                $('#export-tools .btn-group').addClass('mr-2');
+
+                // Add spacing between buttons
+                $('#export-tools .btn').addClass('mr-1');
+
+                // Ensure consistent styling
+                $('#export-tools').css('display', 'inline-flex');
+            }, 0);
+        }
+    });
+});
     </script>
 @endsection
