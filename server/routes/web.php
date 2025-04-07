@@ -14,3 +14,7 @@ Route::get('/product', function () {
 Route::get('/product/show', function () {
     return view('admin.product.show');
 });
+
+Route::get('/login', function () {
+    return view('admin.login.login');
+});
