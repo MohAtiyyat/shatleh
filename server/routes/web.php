@@ -20,7 +20,7 @@ Route::get('/product/create', function () {
 });
 
 
-    Route::get('/login', function () {
+Route::get('/login', function () {
     return view('admin.login.login');
 });
 
