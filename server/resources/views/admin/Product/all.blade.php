@@ -204,7 +204,7 @@
                 </div>
 
                 <div class="ml-auto">
-                    <a href="#" class="btn btn-primary">
+                    <a href="{{ route('product.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus fa-sm mr-2"></i>Add Product
                     </a>
                 </div>
@@ -259,9 +259,9 @@
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/1') }}"><i
+                                            <li><a class="dropdown-item" href="{{ url('/product/1') }}"><i
                                                         class="fas fa-eye"></i> View</a></li>
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/1/edit') }}"><i
+                                            <li><a class="dropdown-item" href="{{ url('/product/1/edit') }}"><i
                                                         class="fas fa-edit"></i> Edit</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
@@ -304,9 +304,9 @@
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/2') }}"><i
+                                            <li><a class="dropdown-item" href="{{ url('/product/1') }}"><i
                                                         class="fas fa-eye"></i> View</a></li>
-                                            <li><a class="dropdown-item" href="{{ url('/admin/products/2/edit') }}"><i
+                                            <li><a class="dropdown-item" href="{{ url('/product/1/edit') }}"><i
                                                         class="fas fa-edit"></i> Edit</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
