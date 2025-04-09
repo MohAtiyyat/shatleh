@@ -1,0 +1,134 @@
+.product-create-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.product-create-page body {
+    background: #f5f7fa;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.product-create-page .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.product-create-page .header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.product-create-page .header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.product-create-page .form-container {
+    padding: 30px;
+}
+
+.product-create-page .form-group {
+    margin-bottom: 20px;
+}
+
+.product-create-page label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.product-create-page input[type="text"],
+.product-create-page input[type="file"],
+.product-create-page select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.product-create-page input[type="text"]:focus,
+.product-create-page select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.product-create-page .input-group {
+    position: relative;
+}
+
+.product-create-page .custom-file {
+    position: relative;
+}
+
+.product-create-page .custom-file-input {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.product-create-page .custom-file-label {
+    display: block;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: #666;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.product-create-page .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.product-create-page .footer {
+    padding: 20px;
+    background: #f8f9fa;
+    text-align: right;
+}
+
+.product-create-page .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product-create-page .btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+.product-create-page .btn-primary:hover {
+    background: #2980b9;
+}
+
+@media (max-width: 600px) {
+    .product-create-page .form-row {
+        grid-template-columns: 1fr;
+    }
+    .product-create-page .container {
+        margin: 0 10px;
+    }
+}
