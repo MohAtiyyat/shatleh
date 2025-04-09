@@ -10,6 +10,10 @@ Route::get('/product', function () {
     return view('admin.product.all');
 })->name('product');
 
+Route::get('/customer', function () {
+    return view('admin.user.all');
+})->name('customer');
+
 Route::get('/product/create', function () {
     return view('admin.product.createUpdate');
 })->name('product.create');

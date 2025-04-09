@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link @yield('Customers_Show')">
+                    <a href="{{ route('customer') }}" class="nav-link @yield('Customers_Show')">
                         <ion-icon class="nav-icon" name="people-outline"></ion-icon>
                         <p>
                             Customers
