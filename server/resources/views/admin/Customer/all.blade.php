@@ -1,12 +1,12 @@
 @extends('admin.layout.master')
 
-@section('title', 'User Management')
+@section('title', 'Customer Management')
 @section('Customers_Show')
     active
 @endsection
 @section('content')
     <x-management-table
-        title="User Management"
+        title="Customer Management"
         :headers="['#', 'Name', 'Email', 'Last Login', 'Actions']"
         :items="[
             [
@@ -28,7 +28,7 @@
                 'actions' => true
             ]
         ]"
-        add-route="/users/create"
+        add-route="/customer/create"
         view-route-prefix="/users"
     />
 @endsection
