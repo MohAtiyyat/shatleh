@@ -11,8 +11,11 @@ Route::get('/product', function () {
 })->name('product');
 
 Route::get('/customer', function () {
-    return view('admin.user.all');
+    return view('admin.customer.all');
 })->name('customer');
+Route::get('/customer/create', function () {
+    return view('admin.customer.create');
+})->name('customer.create');
 
 Route::get('/product/create', function () {
     return view('admin.product.createUpdate');
