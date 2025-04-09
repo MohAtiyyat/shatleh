@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+:root {
+  --primary-bg: #e8f5e9; /* Header background */
+  --secondary-bg: #a5d6a7; /* Active language toggle */
+  --accent-color: #337A5B; /* Title and borders */
+  --text-primary: #337A5B; /* Default text */
+  --text-hover: #374151; /* Hover text */
+  --focus-ring: rgba(165, 214, 167, 0.5); /* Focus ring */
+  /* Adding footer-specific colors to match your current footer */
+  --footer-bg: #0f4229;
+  --footer-accent: #189b62;
+  --footer-hover: #3bd727;
+}
+
+@layer base {
+  html {
+    font-family: system-ui, sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+  }
+
+  html[lang="ar"] {
+    direction: rtl;
+  }
+}
+
+@layer components {
+  .nav-item {
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+  }
+
+  .nav-item:hover {
+    color: var(--text-hover);
+  }
+
+  .lang-toggle {
+    @apply rounded-full outline-none duration-100 focus:outline-none focus:ring-4 flex items-center justify-center;
+    background-color: var(--primary-bg);
+    color: var(--accent-color);
+    font-weight: bold;
+    width: 4rem;
+    height: 2rem;
+    font-size: 0.8rem;
+  }
+
+  .lang-toggle-active {
+    background-color: var(--secondary-bg);
+  }
+
+  .lang-toggle:focus {
+    ring-color: var(--focus-ring);
+  }
+
+  /* New footer-specific classes */
+  .footer-link {
+    @apply text-sm transition-colors duration-200;
+    color: white;
+  }
+
+  .footer-link:hover {
+    color: var(--footer-hover);
+  }
+
+  .footer-title {
+    @apply text-lg font-semibold mb-4 border-b pb-2;
+    border-color: var(--footer-accent);
+  }
+
+  .footer-icon {
+    @apply w-8 h-8 rounded-full flex items-center justify-center transition-colors;
+    background-color: var(--footer-accent);
+  }
+
+  .footer-icon:hover {
+    background-color: var(--footer-hover);
+  }
+
+  .animate-header {
+    animation: slideDown 0.5s ease-in-out;
+  }
+
+  .animate-lang {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @media (max-width: 767px) {
+    .lang-toggle {
+      width: 2.5rem;
+      height: 1.5rem;
+      font-size: 0.65rem;
+    }
+
+    .footer-title {
+      @apply text-base;
+    }
+
+    .footer-link {
+      @apply text-xs;
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
