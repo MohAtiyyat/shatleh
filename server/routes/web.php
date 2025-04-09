@@ -13,6 +13,7 @@ Route::get('/product', function () {
 Route::get('/customer', function () {
     return view('admin.customer.all');
 })->name('customer');
+
 Route::get('/customer/create', function () {
     return view('admin.customer.create');
 })->name('customer.create');
@@ -24,6 +25,11 @@ Route::get('/product/create', function () {
 Route::get('/login', function () {
     return view('admin.login.login');
 });
+
+Route::get('/order', function () {
+    return view('admin.Order.all');
+})->name('order');
+
 Route::get('/product/{id}', function () {
     return view('admin.product.show');
 })->name('product.show');
@@ -32,3 +38,5 @@ Route::get('/product/{id}', function () {
 Route::get('/product/{id}/edit', function () {
     return view('admin.product.createUpdate');
 })->name('product.edit');
+
+
