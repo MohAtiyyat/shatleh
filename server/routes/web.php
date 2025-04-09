@@ -22,9 +22,6 @@ Route::get('/product/create', function () {
     return view('admin.product.createUpdate');
 })->name('product.create');
 
-Route::get('/login', function () {
-    return view('admin.login.login');
-});
 
 Route::get('/order', function () {
     return view('admin.Order.all');
