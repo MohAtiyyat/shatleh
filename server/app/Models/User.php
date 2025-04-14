@@ -83,7 +83,7 @@ class User extends Authenticatable
      */
     public function paymentInfos()
     {
-        return $this->hasMany(Payment_info::class);
+        return $this->hasMany(PaymentInfo::class);
     }
 
     /**
@@ -93,7 +93,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
-    
+
     /**
      * Get the reviews submitted by the user.
      */
@@ -121,8 +121,8 @@ class User extends Authenticatable
     Public function expert_specialty(){
         return $this->belongsToMany(Specialty::class , 'expert_specialty' , 'user_id' , 'specialty_id')->as('expert_specialties')->withTimestamps();
     }
-    
-    
+
+
     public function shops()
     {
         return $this->hasMany(Shop::class, 'employee_id');
