@@ -4,17 +4,18 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import 'react-phone-input-2/lib/style.css'; // Import the CSS
+import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
+import axios from 'axios';
 
 export default function SignUp() {
     const t = useTranslations('signup');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currentLocale = pathname.split('/')[1] || 'en';
-    const redirectPath = searchParams.get('redirect') || '/profile';
-    const phoneRef = useRef<string | null>(null); // Using useRef for phone
+    const currentLocale = pathname.split('/')[1] || 'ar';
+    const redirectPath = searchParams.get('redirect') || '/';
+    const phoneRef = useRef<string | null>(null);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -30,14 +31,14 @@ export default function SignUp() {
     };
 
     const handlePhoneChange = (value: string) => {
-        console.log("Phone Input Changed:", value);
-        phoneRef.current = value; // Updating the ref instead of state
+        phoneRef.current = value;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setLoading(true);
+        console.log('Form data:', formData);
 
         if (formData.password !== formData.confirmPassword) {
             setError(t('passwordMismatch'));
@@ -46,47 +47,68 @@ export default function SignUp() {
         }
 
         try {
-            console.log("Form Data before parsing:", formData);
-            console.log("Phone before parsing:", `+${phoneRef.current}`);
-            console.log("Phone Ref Value:", phoneRef?.current, typeof phoneRef?.current);
-            const phoneNumber = parsePhoneNumberFromString(`+${phoneRef.current}`);
+         
 
-            if (!phoneNumber || !phoneNumber.number) {
-                throw new Error("Invalid phone number format: " + phoneRef.current);
+            const phoneNumber = parsePhoneNumberFromString(`+${phoneRef.current}`);
+            if (!phoneNumber || !phoneNumber.isValid()) {
+                throw new Error(t('invalidPhone'));
             }
 
-            console.log("Parsed Phone Number:", phoneNumber);
+            const full_phone_number = `+${phoneNumber.countryCallingCode}${phoneNumber.nationalNumber}`;
 
-            const countryCode = `+${phoneNumber.countryCallingCode}`;
-            const nationalNumber = phoneNumber.nationalNumber;
+            const formDataToSend = new FormData();
+            formDataToSend.append('first_name', formData.firstName);
+            formDataToSend.append('last_name', formData.lastName);
+            formDataToSend.append('email', formData.email);
+            formDataToSend.append('password', formData.password);
+            formDataToSend.append('phone_number', full_phone_number);
+            formDataToSend.append('language', currentLocale);
+            formDataToSend.append('ip_country_id', "12");
 
-            console.log('Country Code:', countryCode, 'National Number:', nationalNumber);
+            console.log('Form data to send:', formDataToSend);
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`, {
+            // const response = await axios.post(
+            //     `http://127.0.0.1:8000/register`,
+            //     formDataToSend,
+            //     {
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //         },
+            //     }
+            // );
+
+            const response = fetch(`http://127.0.0.1:8000/register`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
+                    first_name: formData.firstName,
+                    last_name: formData.lastName,
                     email: formData.email,
                     password: formData.password,
-                    phone: nationalNumber,
-                    countryCode,
+                    phone_number: full_phone_number,
+                    language: currentLocale,
+                    ip_country_id: "12"
                 }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
 
-            const data = await res.json();
+            // console
 
-            if (!res.ok) {
-                throw new Error(data.message || 'Signup failed');
-            }
+            console.log('Response:', response);
 
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.userId);
+            // localStorage.setItem('token', token);
+            // localStorage.setItem('userId', userId);
+
             router.push(`/${currentLocale}${redirectPath}`);
         } catch (error: unknown) {
-            const authError = error as Error;
-            setError(authError.message || t('error'));
+            console.error('Error:', error);
+            const err = error as { message: string; response?: { data?: { message?: string } } };
+            setError(
+                err.message.includes('Network Error')
+                    ? t('corsError')
+                    : err.response?.data?.message || t('signupFailed')
+            );
         } finally {
             setLoading(false);
         }
@@ -95,9 +117,7 @@ export default function SignUp() {
     return (
         <main className="flex-grow mx-auto px-4 py-10 flex justify-center max-w-7xl mb-40">
             <div className="w-full max-w-md rounded-3xl border-2 border-[#94f198] p-8 shadow-lg relative overflow-hidden">
-                {/* Blurred background layer */}
                 <div className="absolute inset-0 bg-[var(--primary-bg)] backdrop-blur-md z-0"></div>
-                {/* Content container */}
                 <div className="relative z-10 mx-auto mb-4">
                     <h1 className="text-2xl font-bold text-center mb-1 text-[var(--text-primary)]">{t('title')}</h1>
                     <div className="w-24 h-1 bg-[#94f198] mx-auto mb-4"></div>
@@ -126,7 +146,7 @@ export default function SignUp() {
                                     {t('lastName')}
                                 </label>
                                 <input
-                                    type="texMt"
+                                    type="text"
                                     id="lastName"
                                     placeholder={t('lastName')}
                                     value={formData.lastName}
@@ -230,11 +250,17 @@ export default function SignUp() {
                         <div className="text-center mt-6">
                             <p className="text-gray-600">
                                 {t('haveAccount')}{' '}
-                                <Link href="/login" className="font-bold text-[var(--text-primary)] hover:text-[var(--text-hover)]">
+                                <Link
+                                    href={
+                                        redirectPath
+                                            ? `/${currentLocale}/login?redirect=${encodeURIComponent(redirectPath)}`
+                                            : `/${currentLocale}/login`
+                                    }
+                                    className="font-bold text-[var(--text-primary)] hover:text-[var(--text-hover)]"
+                                >
                                     {t('login')}
                                 </Link>{' '}
-                                {t("loginLinkText")}.
-                                
+                                {t('loginLinkText')}
                             </p>
                         </div>
                     </form>
