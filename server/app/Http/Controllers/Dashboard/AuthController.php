@@ -13,10 +13,7 @@ class AuthController extends Controller
 {
     public function Login(LoginRequest $request)
     {
-        $attributes = request()->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $attributes = $request->validated();
 
         if (! Auth::attempt($attributes)) {
             throw ValidationException::withMessages([
