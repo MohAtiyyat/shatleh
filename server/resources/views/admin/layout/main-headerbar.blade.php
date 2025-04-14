@@ -1,20 +1,3 @@
-<!--<nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    
-    <ul class="navbar-nav ml-auto">
-
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
-      </li>
-    </ul>
-</nav>-->
-
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -25,8 +8,6 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-
-
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                 <i class="fas fa-expand-arrows-alt"></i>
@@ -36,6 +17,17 @@
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
                 <i class="fas fa-th-large"></i>
             </a>
+        </li>
+        <!-- Logout Button -->
+        <li class="nav-item">
+            <form action="dashboard/logout" method="POST">
+                @csrf
+                <button type="submit" class="nav-link text-danger" role="button">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+
+
+            </form>
         </li>
     </ul>
 </nav>
