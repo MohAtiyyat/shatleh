@@ -8,4 +8,12 @@ Route::prefix('dashboard')->group(function () {
         return view('admin.login.login');
     });
     Route::post('/login', [AuthController::class, 'Login'])->name('dashboard.login');
+
+    Route::get('/product', function () {
+        return view('admin.Product.all');
+    });
+
+    Route::get('/product/{id}', function () {
+        return view('admin.Product.show');
+    });
 });
