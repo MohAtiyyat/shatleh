@@ -57,6 +57,9 @@
     "noAccount": "New to Shatleh?",
     "signup": "Register",
     "signupLinkText": "Here",
+    "apiUrlMissing": "Server configuration error. Please contact support.",
+    "corsError": "Unable to connect to the server. Please try again later.",
+    "loginFailed": "Invalid email or password.",
     "error": "An error occurred during login"
   },
   "signup": {
@@ -73,6 +76,10 @@
     "login": "Login",
     "welcome": "Welcome to Shatleh",
     "passwordMismatch": "Passwords do not match",
+    "invalidPhone": "Invalid phone number.",
+    "apiUrlMissing": "Server configuration error. Please contact support.",
+    "corsError": "Unable to connect to the server. Please try again later.",
+    "signupFailed": "Registration failed. Please try again.",
     "error": "An error occurred during signup",
     "loginLinkText": "here"
   },

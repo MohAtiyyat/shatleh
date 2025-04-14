@@ -28,6 +28,12 @@ const Header = () => {
         router.push(newPath);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        router.push(`/${currentLocale}/login`);
+    };
+
+
     const navItems = [
         { label: t('header.products'), href: `/${currentLocale}/products` },
         { label: t('header.blog'), href: `/${currentLocale}/blog` },
@@ -100,7 +106,11 @@ const Header = () => {
                                         onClick={() => {
                                             toggleUserMenu();
                                             // Add logout logic here
+                                            handleLogout();
+
                                         }}
+
+
                                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                                     >
                                         {t('profile.signOut')}
@@ -149,6 +159,7 @@ const Header = () => {
                                     onClick={() => {
                                         toggleMenu();
                                         // Add logout logic here
+                                        handleLogout();
                                     }}
                                     className={`nav-item ${language === 'ar' ? "text-right" : "text-left"} `}
                                 >
