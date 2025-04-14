@@ -54,7 +54,7 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Registration successful', 'token' => $token], 200);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'reqgiser failed', 'throwable' => $th]);
+            return response()->json(['message' => 'reqgiser failed', 'throwable' => $th], 500);
         }
     }
 
