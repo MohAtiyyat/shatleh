@@ -21,6 +21,7 @@
         <!-- Logout Button -->
         <li class="nav-item">
             <form action="dashboard/logout" method="POST">
+                @csrf
                 <button type="submit" class="nav-link text-danger" role="button">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
