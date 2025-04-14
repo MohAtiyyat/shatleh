@@ -13,13 +13,13 @@ class Order extends Model
         'order_code',
         'address_id',
         'total_price',
-        'customer_id', 
+        'customer_id',
         'employee_id',
         'coupon_id',
         'payment_id',
         'status',
-        'cart_id', 
-        'status', 
+        'cart_id',
+        'status',
         'delivery_cost',
         'delivery_date'
         ];
@@ -39,7 +39,7 @@ class Order extends Model
     }
 
     public function coupon(){
-        return $this->belongsTo(Coupons::class);
+        return $this->belongsTo(Coupon::class);
     }
 
     public function payment(){

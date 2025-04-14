@@ -3,7 +3,7 @@
 use App\Http\Controllers\Dashboard\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('dashboard')->group(function () {
+Route::middleware('web')->prefix('dashboard')->group(function () {
     Route::get('/login', function () {
         return view('admin.login.login');
     });

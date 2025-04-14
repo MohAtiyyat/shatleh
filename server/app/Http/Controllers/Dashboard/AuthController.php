@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Auth\LoginRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 
 class AuthController extends Controller
@@ -12,12 +13,29 @@ class AuthController extends Controller
 {
     public function Login(LoginRequest $request)
     {
-        $data = $request->validated();
-        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
-            return view('admin.layout.master');
+        $attributes = request()->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (! Auth::attempt($attributes)) {
+            throw ValidationException::withMessages([
+                'email' => 'Sorry, those credentials do not match.',
+            ]);
         }
-        return view('admin.login.login');
+
+        request()->session()->regenerate();
+
+
+        return redirect('/dashboard/product');
     }
 
-    
+
+    public function Logout()
+    {
+        Auth::logout();
+        return redirect('/dashboard/login');
+    }
+
+
 }
