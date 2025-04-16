@@ -7,7 +7,7 @@
 @section('content')
     <x-management-form
         title="Create New Shop"
-        action=""
+        action="{{  route('dashboard.Shop.store') }}"
         method="POST"
         enctype="multipart/form-data"
         :fields="[
@@ -17,8 +17,7 @@
             ['name' => 'owner_phone_number', 'label' => 'Owner Phone Number', 'type' => 'text', 'placeholder' => 'Enter owner phone number', 'required' => true, 'aria-required' => 'true'],
             ['name' => 'owner_name', 'label' => 'Owner Name', 'type' => 'text', 'placeholder' => 'Enter owner name', 'required' => true, 'aria-required' => 'true'],
             ['name' => 'is_partner', 'label' => 'Partner Status', 'type' => 'select', 'options' => [1 => 'Partner', 0 => 'Not Partner'], 'required' => true, 'aria-required' => 'true'],
-            ['name' => 'image', 'label' => 'Image', 'type' => 'file', 'accept' => 'image/*', 'required' => true, 'aria-required' => 'true'],
-            ['name' => 'employee_name', 'label' => 'Employee Name', 'type' => 'text', 'value' => $employee_name ?? '', 'disabled' => true, 'aria-disabled' => 'true']
+            ['name' => 'image', 'label' => 'Image', 'type' => 'file', 'accept' => 'image/*', 'required' => false, 'aria-required' => 'true'],
         ]"
         :errors="$errors ?? []"
     />

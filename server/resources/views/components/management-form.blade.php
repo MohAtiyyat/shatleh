@@ -66,23 +66,6 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/customCss/form.css') }}">
-    <style>
-        .management-form-page { padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .header { margin-bottom: 20px; }
-        .header h1 { font-size: 24px; font-weight: 600; color: #5a5c69; }
-        .form-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; color: #5a5c69; }
-        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-        .form-group select { height: 38px; }
-        .custom-file { position: relative; overflow: hidden; }
-        .custom-file-input { width: 100%; height: 38px; opacity: 0; position: absolute; top: 0; left: 0; cursor: pointer; }
-        .custom-file-label { display: block; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #fff; color: #858796; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .footer { margin-top: 20px; text-align: right; }
-        .btn-primary { background-color: #4e73df; border: none; padding: 10px 20px; color: #fff; border-radius: 4px; cursor: pointer; }
-        .btn-primary:hover { background-color: #375ec8; }
-    </style>
 @endsection
 
 @section('scripts')
@@ -92,14 +75,6 @@
                 const fileName = e.target.files[0]?.name || 'Choose file';
                 e.target.nextElementSibling.textContent = fileName;
             });
-        });
-
-        document.getElementById('managementForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            console.log('Form Data:', data);
-            alert(`Item ${@json($item ? 'updated' : 'created')} successfully! Check console for form data.`);
         });
     </script>
 @endsection

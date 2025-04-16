@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\ShopController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')->prefix('dashboard')->group(function () {
@@ -18,13 +19,11 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
         return view('admin.Product.all');
     });
 
-    Route::get('/shop', function () {
-        return view('admin.Shop.all');
-    })->name('dashboard.Shop');
+    Route::get('/shop',[ShopController::class,'index'])->name('dashboard.Shop');
 
-    Route::get('/shop/create', function () {
-        return view('admin.Shop.createUpdate');
-    })->name('shop.create');
+    Route::get('/shop/create', [ShopController::class, 'create'])->name('shop.create');
+
+    Route::post('/shop', [ShopController::class, 'store'])->name('dashboard.Shop.store');
 
 
     Route::post('/address', function () {
@@ -35,9 +34,8 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
         return view('admin.Product.show');
     });
 
-    Route::get('/shop/{id}', function () {
-        return view('admin.Shop.show');
-    })->name('dashboard.Shop.show');
+    Route::get('/shop/{id}', [ShopController::class, 'show'])->name('dashboard.Shop.show');
+
 
     Route::get('/product/{id}/edit', function () {
         return view('admin.product.createUpdate');
