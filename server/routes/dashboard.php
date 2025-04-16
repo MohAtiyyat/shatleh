@@ -43,3 +43,4 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
         return view('admin.product.createUpdate');
     })->name('product.edit');
 });
+});
