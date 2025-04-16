@@ -12,7 +12,7 @@ class ShowProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return (Auth::check() && Auth::user()->hasRole('admin', 'super-admin'));
+        return $this->admin();
     }
 
     /**
