@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegiseterRequest;
+use App\Http\Requests\Dashboard\auth\LogoutRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,8 +59,10 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request){
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logout successful']);
+    public function logout(LogoutRequest $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('dashboard/login');
     }
 }
