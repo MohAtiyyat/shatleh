@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Http\Requests\Dashboard\auth;
+namespace App\Http\Requests\Dashboard\Product;
 
+use App\Traits\FormRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class LogoutRequest extends FormRequest
+class DeleteProductRequest extends FormRequest
 {
+    use FormRequestTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->admin();
     }
 
     /**
@@ -23,7 +25,7 @@ class LogoutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => $this->id('products'),
         ];
     }
 }
