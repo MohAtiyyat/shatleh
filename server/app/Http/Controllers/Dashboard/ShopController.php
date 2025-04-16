@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Shop\StoreShopRequest;
 use App\Models\Address;
 use App\Models\Shop;
 use Illuminate\Container\Attributes\Auth;
@@ -13,7 +14,8 @@ class ShopController extends Controller
 {
     public function index()
     {
-        $shops = Shop::with(['address', 'employee'])->get();
+
+        $shops = Shop::with(['address', 'employee'])-> paginate(10);
         return view('admin.Shop.all', compact('shops'));
     }
 
@@ -30,22 +32,13 @@ class ShopController extends Controller
         return view('admin.Shop.createUpdate', compact('addresses'));
     }
 
-    public function store(Request $request)
+    public function store(StoreShopRequest $request)
     {
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'address_id' => 'required|exists:addresses,id',
-            'details' => 'required|string|max:500',
-            'owner_phone_number' => 'required|string|max:20',
-            'owner_name' => 'required|string|max:255',
-            'is_partner' => 'required|boolean',
-            'image' => 'image|mimes:jpg,png,jpeg,webp|max:255',
-            'employee_id' => 'required|exists:employees,id',
-        ]);
+        $data = $request->validated();
 
-
-        Shop::create($validated);
+        dd($data);
+        $shop = Shop::create($data);
 
         return redirect()->route('dashboard.Shop');
     }

@@ -8,21 +8,11 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                <i class="fas fa-expand-arrows-alt"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                <i class="fas fa-th-large"></i>
-            </a>
-        </li>
         <!-- Logout Button -->
-        <li class="nav-item">
-            <form action="logout" method="POST">
+        <li class="nav-item d-none d-sm-inline-block ml-2 mr-2 ">
+            <form action="{{ route('dashboard.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="nav-link text-danger" role="button">
+                <button type="submit" class="nav-link border-0 bg-transparent " role="button">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
 

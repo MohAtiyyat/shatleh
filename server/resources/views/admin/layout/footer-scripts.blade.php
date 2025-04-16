@@ -30,10 +30,6 @@
           src="{{ URL::asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
       <!-- AdminLTE App -->
       <script src="{{ URL::asset('assets/js/adminlte.js') }}"></script>
-      <!-- AdminLTE for demo purposes -->
-      <script src="{{ URL::asset('assets/js/demo.js') }}"></script>
-      <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-      <script src="{{ URL::asset('assets/js/pages/dashboard.js') }}"></script>
       <!-- AdminLTE dashboard icons insallation -->
       <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
       <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

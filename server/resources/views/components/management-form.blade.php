@@ -34,23 +34,41 @@
                                 @endforeach
                             </select>
                         @elseif($field['type'] === 'file')
+                            @if($item && $item[$field['name']] && $field['name'] === 'image')
+                                <div class="mb-3">
+                                    <label>Current Image</label>
+                                    <div>
+                                        <img src="{{ $item[$field['name']] }}" alt="Current Image" style="max-width: 200px; height: auto; border-radius: 0.35rem;">
+                                    </div>
+                                </div>
+                            @endif
                             <div class="input-group">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
+                                           accept="{{ $field['accept'] ?? '' }}"
                                            {{ $field['required'] ?? false && !$item ? 'required' : '' }}>
                                     <label class="custom-file-label" for="{{ $field['name'] }}">
                                         {{ $item && $item[$field['name']] ? basename($item[$field['name']]) : ($field['placeholder'] ?? 'Choose file') }}
                                     </label>
                                 </div>
                             </div>
+                        @elseif($field['type'] === 'textarea')
+                            <textarea id="{{ $field['name'] }}" name="{{ $field['name'] }}"
+                                      placeholder="{{ $field['placeholder'] ?? '' }}"
+                                      {{ $field['required'] ?? false ? 'required' : '' }}
+                                      {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
+                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }}>{{ $item[$field['name']] ?? ($field['value'] ?? '') }}</textarea>
                         @else
                             <input type="{{ $field['type'] ?? 'text' }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                    placeholder="{{ $field['placeholder'] ?? '' }}"
                                    {{ $field['required'] ?? false ? 'required' : '' }}
                                    {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
                                    {{ $field['disabled'] ?? false ? 'disabled' : '' }}
-                                   value="{{ $item[$field['name']] ?? ($field['value'] ?? '') }}">
+                                   value="{{ $item[$field['name']] ?? ($field['value'] ?? '') }}"
+                                   {{ $field['step'] ?? '' ? 'step="' . $field['step'] . '"' : '' }}
+                                   {{ $field['min'] ?? '' ? 'min="' . $field['min'] . '"' : '' }}>
                         @endif
+
                     </div>
                 @endforeach
 
@@ -66,6 +84,7 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/customCss/form.css') }}">
+
 @endsection
 
 @section('scripts')

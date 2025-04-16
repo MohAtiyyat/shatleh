@@ -15,9 +15,8 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
         Route::post('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
         Route::get('/product', [ProductController::class, 'index'])->name('dashboard.product');
         Route::post('/product', [ProductController::class, 'store'])->name('dashboard.product');
-    Route::get('/product', function () {
-        return view('admin.Product.all');
-    });
+        Route::get('/product/create', [ProductController::class, 'create'])->name('dashboard.product.create');
+        Route::post('/product/create', [ProductController::class, 'store'])->name('dashboard.product.create');
 
     Route::get('/shop',[ShopController::class,'index'])->name('dashboard.Shop');
 
@@ -25,20 +24,12 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
 
     Route::post('/shop', [ShopController::class, 'store'])->name('dashboard.Shop.store');
 
-
-    Route::post('/address', function () {
-        return "done";
-    })->name('address.store');
-
-    Route::get('/product/{id}', function () {
-        return view('admin.Product.show');
-    });
+    Route::get('/shop/{id}/edit', [ShopController::class, 'edit'])->name('dashboard.Shop.edit');
 
     Route::get('/shop/{id}', [ShopController::class, 'show'])->name('dashboard.Shop.show');
 
+    Route::put('/shop/{id}', [ShopController::class, 'update'])->name('dashboard.Shop.update');
 
-    Route::get('/product/{id}/edit', function () {
-        return view('admin.product.createUpdate');
-    })->name('product.edit');
-});
+    Route::delete('/shop/{id}', [ShopController::class, 'destroy'])->name('dashboard.Shop.destroy');
+    });
 });

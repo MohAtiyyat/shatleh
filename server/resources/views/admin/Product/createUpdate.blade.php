@@ -18,8 +18,8 @@
             ['name' => 'image', 'label' => 'Image', 'type' => 'file', 'accept' => 'image/*', 'required' => !isset($item), 'aria-required' => !isset($item) ? 'true' : 'false'],
             ['name' => 'description_en', 'label' => 'Description (English)', 'type' => 'textarea', 'placeholder' => 'Enter English description', 'required' => true, 'aria-required' => 'true'],
             ['name' => 'description_ar', 'label' => 'Description (Arabic)', 'type' => 'textarea', 'placeholder' => 'Enter Arabic description', 'required' => true, 'dir' => 'rtl', 'aria-required' => 'true'],
-            ['name' => 'status', 'label' => 'Status', 'type' => 'select', 'options' => ['active' => 'Active', 'inactive' => 'Inactive', 'draft' => 'Draft'], 'required' => true, 'aria-required' => 'true'],
-            ['name' => 'availability', 'label' => 'Availability', 'type' => 'select', 'options' => ['in_stock' => 'In Stock', 'out_of_stock' => 'Out of Stock', 'pre_order' => 'Pre-order'], 'required' => true, 'aria-required' => 'true']
+            ['name' => 'status', 'label' => 'Status', 'type' => 'select', 'options' => ['1' => 'Active', '0' => 'Inactive', '2' => 'Draft'], 'required' => true, 'aria-required' => 'true'],
+            ['name' => 'availability', 'label' => 'Availability', 'type' => 'select', 'options' => ['1' => 'In Stock', '0' => 'Out of Stock', '2' => 'Pre-order'], 'required' => true, 'aria-required' => 'true']
         ]"
         :errors="$errors ?? []"
     />

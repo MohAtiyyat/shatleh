@@ -2,19 +2,19 @@
 
 namespace App\Http\Requests\Dashboard\Product;
 
+use App\Traits\FormRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\UserRuleTrait;
 
-class AllProductRequest extends FormRequest
+class DeleteProductRequest extends FormRequest
 {
-    use UserRuleTrait;
+    use FormRequestTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->admin();
     }
 
     /**
@@ -25,7 +25,7 @@ class AllProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => $this->id('products'),
         ];
     }
 }
