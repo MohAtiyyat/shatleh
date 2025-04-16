@@ -124,7 +124,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link @yield('Shops_Show')">
+                    <a href="{{ route('dashboard.Shop') }}" class="nav-link @yield('Shops_Show')">
                         <ion-icon class="nav-icon" name="storefront-outline"></ion-icon>
                         <p>Shops Management</p>
                     </a>

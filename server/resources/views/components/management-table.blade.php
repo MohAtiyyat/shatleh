@@ -62,8 +62,12 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                    @else
-                                        <td>{{ $value }}</td>
+                                        @else
+                                        @if ($key === 'address')
+                                            <td>{!! $value !!}</td>
+                                        @else
+                                            <td>{{ $value }}</td>
+                                        @endif
                                     @endif
                                 @endforeach
                             </tr>

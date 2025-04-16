@@ -2,8 +2,8 @@
     'title' => 'Create New Item',
     'action' => '#',
     'method' => 'POST',
-    'item' => null, // For edit mode, pass the item data to prefill the form
-    'fields' => [], // Array of fields to render (name, label, type, etc.)
+    'item' => null,
+    'fields' => [],
 ])
 
 <div class="management-form-page">
@@ -48,7 +48,8 @@
                                    placeholder="{{ $field['placeholder'] ?? '' }}"
                                    {{ $field['required'] ?? false ? 'required' : '' }}
                                    {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
-                                   value="{{ $item[$field['name']] ?? '' }}">
+                                   {{ $field['disabled'] ?? false ? 'disabled' : '' }}
+                                   value="{{ $item[$field['name']] ?? ($field['value'] ?? '') }}">
                         @endif
                     </div>
                 @endforeach
@@ -86,7 +87,6 @@
 
 @section('scripts')
     <script>
-        // Update file input labels
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', function(e) {
                 const fileName = e.target.files[0]?.name || 'Choose file';
@@ -94,7 +94,6 @@
             });
         });
 
-        // Form submission handler (dummy for front-end only)
         document.getElementById('managementForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
