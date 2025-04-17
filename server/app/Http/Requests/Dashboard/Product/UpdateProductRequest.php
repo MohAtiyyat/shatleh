@@ -4,7 +4,6 @@ namespace App\Http\Requests\Dashboard\Product;
 
 use App\Traits\FormRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class UpdateProductRequest extends FormRequest
 {

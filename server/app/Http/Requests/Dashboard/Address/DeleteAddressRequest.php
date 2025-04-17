@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Dashboard\Product;
+namespace App\Http\Requests\Dashboard\Address;
 
-use App\Traits\FormRequestTrait;
+use App\Traits\UserRuleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteProductRequest extends FormRequest
+class DeleteAddressRequest extends FormRequest
 {
-    use FormRequestTrait;
+    use UserRuleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,7 +24,7 @@ class DeleteProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => $this->id('products'),
+            'id' => 'required|integer|exists:addresses,id',
         ];
     }
 }

@@ -39,6 +39,10 @@ class ProductController extends Controller
         return redirect()->route('dashboard.product');
     }
 
+    public function edit(Product $product){
+        return view('admin.Product.createUpdate', compact('product'));
+    }
+
     public function update(UpdateProductRequest $request, Product $product){
         $data = $request->validated();
 
@@ -51,7 +55,7 @@ class ProductController extends Controller
         return view('admin.Product.show', compact('product'));
     }
 
-    public function destroy(DeleteProductRequest $product){
+    public function delete(DeleteProductRequest $product){
         $product->delete();
 
         return response()->json(['message' => 'Product deleted successfully'], 200);
