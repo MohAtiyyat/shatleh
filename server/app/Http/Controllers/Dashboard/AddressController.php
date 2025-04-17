@@ -34,7 +34,7 @@ class AddressController extends Controller
 
     public function update(UpdateAddressRequest $request)
     {
-        $data = $request->all();
+        $data = $request->validated();
 
         Address::update($data);
 
