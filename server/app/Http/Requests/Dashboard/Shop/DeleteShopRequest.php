@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Dashboard\Product;
+namespace App\Http\Requests\Dashboard\Shop;
 
 use App\Traits\FormRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class DeleteProductRequest extends FormRequest
+class DeleteShopRequest extends FormRequest
 {
     use FormRequestTrait;
     /**
@@ -25,7 +25,7 @@ class DeleteProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => $this->id('products'),
+            'id' => $this->id('shops'),
         ];
     }
 }

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Dashboard\Product;
+namespace App\Http\Requests\Dashboard\Address;
 
+use App\Traits\UserRuleTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class ShowProductRequest extends FormRequest
+class StoreAddressRequest extends FormRequest
 {
+    use UserRuleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,7 +24,10 @@ class ShowProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => $this->id('products'),
+            'title' => 'required|string',
+            'country_id' => 'required|string:exists:countries,id|default:1',
+            'city' => 'required|string',
+            'address_line' => 'required|string',
         ];
     }
 }
