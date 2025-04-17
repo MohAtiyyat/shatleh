@@ -84,17 +84,31 @@
                     {
                         data: 'status',
                         render: function(data) {
-                            var className = data === 'Active' ? 'status-active' : 'status-inactive';
-                            return '<span class="status-badge ' + className + '">' + (data ?? 'N/A') + '</span>';
+                            // Map numeric values to labels
+                            const statusMap = {
+                                '1': 'Active',
+                                '0': 'Inactive',
+                                '2': 'Draft'
+                            };
+                            const label = statusMap[data] ?? 'N/A'; // Fallback to 'N/A' if undefined
+                            const className = label === 'Active' ? 'status-active' : 'status-inactive';
+                            return '<span class="status-badge ' + className + '">' + label + '</span>';
                         }
                     },
                     {
                         data: 'availability',
                         render: function(data) {
-                            var className = data === 'In Stock' ? 'status-stock' : 'status-inactive';
-                            return '<span class="status-badge ' + className + '">' + (data ?? 'N/A') + '</span>';
-                        }
-                    },
+                            // Map numeric values to labels
+                            const availabilityMap = {
+                                '1': 'In Stock',
+                                '0': 'Out of Stock',
+                                '2': 'Pre-order'
+                            };
+                const label = availabilityMap[data] ?? 'N/A'; // Fallback to 'N/A' if undefined
+                const className = label === 'In Stock' ? 'status-stock' : 'status-inactive';
+                return '<span class="status-badge ' + className + '">' + label + '</span>';
+    }
+},
                     { data: 'description_en', render: function(data) { return data ?? 'No description available'; } },
                     { data: 'description_ar', render: function(data) { return data ?? 'No description available'; } },
                     {
