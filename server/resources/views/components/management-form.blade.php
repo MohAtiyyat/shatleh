@@ -2,8 +2,8 @@
     'title' => 'Create New Item',
     'action' => '#',
     'method' => 'POST',
-    'item' => null, // For edit mode, pass the item data to prefill the form
-    'fields' => [], // Array of fields to render (name, label, type, etc.)
+    'item' => null,
+    'fields' => [],
 ])
 
 <div class="management-form-page">
@@ -34,22 +34,41 @@
                                 @endforeach
                             </select>
                         @elseif($field['type'] === 'file')
+                            @if($item && $item[$field['name']] && $field['name'] === 'image')
+                                <div class="mb-3">
+                                    <label>Current Image</label>
+                                    <div>
+                                        <img src="{{ $item[$field['name']] }}" alt="Current Image" style="max-width: 200px; height: auto; border-radius: 0.35rem;">
+                                    </div>
+                                </div>
+                            @endif
                             <div class="input-group">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
+                                           accept="{{ $field['accept'] ?? '' }}"
                                            {{ $field['required'] ?? false && !$item ? 'required' : '' }}>
                                     <label class="custom-file-label" for="{{ $field['name'] }}">
                                         {{ $item && $item[$field['name']] ? basename($item[$field['name']]) : ($field['placeholder'] ?? 'Choose file') }}
                                     </label>
                                 </div>
                             </div>
+                        @elseif($field['type'] === 'textarea')
+                            <textarea id="{{ $field['name'] }}" name="{{ $field['name'] }}"
+                                      placeholder="{{ $field['placeholder'] ?? '' }}"
+                                      {{ $field['required'] ?? false ? 'required' : '' }}
+                                      {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
+                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }}>{{ $item[$field['name']] ?? ($field['value'] ?? '') }}</textarea>
                         @else
                             <input type="{{ $field['type'] ?? 'text' }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                    placeholder="{{ $field['placeholder'] ?? '' }}"
                                    {{ $field['required'] ?? false ? 'required' : '' }}
                                    {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
-                                   value="{{ $item[$field['name']] ?? '' }}">
+                                   {{ $field['disabled'] ?? false ? 'disabled' : '' }}
+                                   value="{{ $item[$field['name']] ?? ($field['value'] ?? '') }}"
+                                   {{ $field['step'] ?? '' ? 'step="' . $field['step'] . '"' : '' }}
+                                   {{ $field['min'] ?? '' ? 'min="' . $field['min'] . '"' : '' }}>
                         @endif
+
                     </div>
                 @endforeach
 
@@ -65,42 +84,16 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/customCss/form.css') }}">
-    <style>
-        .management-form-page { padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .header { margin-bottom: 20px; }
-        .header h1 { font-size: 24px; font-weight: 600; color: #5a5c69; }
-        .form-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; color: #5a5c69; }
-        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-        .form-group select { height: 38px; }
-        .custom-file { position: relative; overflow: hidden; }
-        .custom-file-input { width: 100%; height: 38px; opacity: 0; position: absolute; top: 0; left: 0; cursor: pointer; }
-        .custom-file-label { display: block; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #fff; color: #858796; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .footer { margin-top: 20px; text-align: right; }
-        .btn-primary { background-color: #4e73df; border: none; padding: 10px 20px; color: #fff; border-radius: 4px; cursor: pointer; }
-        .btn-primary:hover { background-color: #375ec8; }
-    </style>
+
 @endsection
 
 @section('scripts')
     <script>
-        // Update file input labels
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', function(e) {
                 const fileName = e.target.files[0]?.name || 'Choose file';
                 e.target.nextElementSibling.textContent = fileName;
             });
-        });
-
-        // Form submission handler (dummy for front-end only)
-        document.getElementById('managementForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            console.log('Form Data:', data);
-            alert(`Item ${@json($item ? 'updated' : 'created')} successfully! Check console for form data.`);
         });
     </script>
 @endsection

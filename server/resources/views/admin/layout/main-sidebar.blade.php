@@ -1,21 +1,12 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
+
     <a href="index3.html" class="brand-link">
-        <!-- will put the logo here when its ready -->
+
         <span class="brand-text font-weight-light"><b>Shatleh</b> System</span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar user panel -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                <img src="assets/img/user1-128x128.jpg" class="img-circle elevation-2" alt="User Image">
-            </div>
-            <div class="info">
-                <a href="#" class="d-block">Admin</a>
-            </div>
-        </div>
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
@@ -34,7 +25,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('product') }}" class="nav-link @yield('Products_Show')">
+                    <a href="{{ route('dashboard.product') }}" class="nav-link @yield('Products_Show')">
                         <ion-icon class="nav-icon" name="cube-outline"></ion-icon>
                         <p>Products Management</p>
                     </a>
@@ -124,7 +115,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link @yield('Shops_Show')">
+                    <a href="{{ route('dashboard.Shop') }}" class="nav-link @yield('Shops_Show')">
                         <ion-icon class="nav-icon" name="storefront-outline"></ion-icon>
                         <p>Shops Management</p>
                     </a>
