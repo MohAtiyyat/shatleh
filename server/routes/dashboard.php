@@ -7,14 +7,14 @@ use App\Http\Controllers\Dashboard\ShopController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')->prefix('dashboard')->group(function () {
-    
+
     Route::get('/login', function () {return view('admin.login.login');});
     Route::post('/login', [AuthController::class, 'Login'])->name('dashboard.login');
 
     Route::middleware('auth:web')->group(function () {
 
         Route::post('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
-        
+
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('dashboard.product');
             Route::get('/create', [ProductController::class, 'create'])->name('dashboard.product.create');

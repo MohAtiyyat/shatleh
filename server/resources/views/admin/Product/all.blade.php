@@ -10,7 +10,8 @@
             '#', 'Image', 'Name (EN)', 'Name (AR)', 'Price', 'Status', 'Availability', 'Description (EN)', 'Description (AR)', 'Updated', 'Actions'
         ]"
         :items="$products"
-        add-route="{{ route('dashboard.product.create') }}"
-        view-route-prefix="/dashboard/product"
+        :add-route="'dashboard.product.create'"
+        :delete-route="'dashboard.product.destroy'"
+        :view-route-prefix="'/dashboard/product'"
     />
 @endsection

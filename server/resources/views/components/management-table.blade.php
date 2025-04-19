@@ -1,4 +1,4 @@
-@props(['title' => 'Management Table', 'headers' => [], 'items' => [], 'addRoute' => '#', 'viewRoutePrefix' => '#'])
+@props(['title' => 'Management Table', 'headers' => [], 'items' => [], 'addRoute' => '#', 'deleteRoute' => '#', 'viewRoutePrefix' => '#'])
 
 <div class="container-fluid">
     <div class="card shadow-sm">
@@ -10,7 +10,7 @@
                 <!-- Export buttons will be inserted here by DataTables -->
             </div>
             <div class="ml-auto">
-                <a href="{{ $addRoute }}" class="btn btn-primary">
+                <a href="{{ route($addRoute)}}" class="btn btn-primary">
                     <i class="fas fa-plus fa-sm mr-2"></i>Add New
                 </a>
             </div>
@@ -37,7 +37,6 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/customCss/table.css') }}">
-
 @endsection
 
 @section('scripts')
@@ -69,7 +68,7 @@
                     {
                         data: 'image',
                         render: function(data) {
-                            return '<img src="' + (data || 'https://via.placeholder.com/75') +
+                            return '<img src="' + (/*data ||*/ 'https://placehold.co/75') +
                                    '" alt="Product Image" class="img-thumbnail" style="width: 60px; height: 60px;">';
                         }
                     },
@@ -84,13 +83,12 @@
                     {
                         data: 'status',
                         render: function(data) {
-                            // Map numeric values to labels
                             const statusMap = {
                                 '1': 'Active',
                                 '0': 'Inactive',
                                 '2': 'Draft'
                             };
-                            const label = statusMap[data] ?? 'N/A'; // Fallback to 'N/A' if undefined
+                            const label = statusMap[data] ?? 'N/A';
                             const className = label === 'Active' ? 'status-active' : 'status-inactive';
                             return '<span class="status-badge ' + className + '">' + label + '</span>';
                         }
@@ -98,19 +96,30 @@
                     {
                         data: 'availability',
                         render: function(data) {
-                            // Map numeric values to labels
                             const availabilityMap = {
                                 '1': 'In Stock',
                                 '0': 'Out of Stock',
                                 '2': 'Pre-order'
                             };
-                const label = availabilityMap[data] ?? 'N/A'; // Fallback to 'N/A' if undefined
-                const className = label === 'In Stock' ? 'status-stock' : 'status-inactive';
-                return '<span class="status-badge ' + className + '">' + label + '</span>';
-    }
-},
-                    { data: 'description_en', render: function(data) { return data ?? 'No description available'; } },
-                    { data: 'description_ar', render: function(data) { return data ?? 'No description available'; } },
+                            const label = availabilityMap[data] ?? 'N/A';
+                            const className = label === 'In Stock' ? 'status-stock' : 'status-inactive';
+                            return '<span class="status-badge ' + className + '">' + label + '</span>';
+                        }
+                    },
+                    {
+                        data: 'description_en',
+                        render: function(data) {
+                            if (!data) return 'No description available';
+                            return data.length > 50 ? data.substring(0, 50) + '...' : data;
+                        }
+                    },
+                    {
+                        data: 'description_ar',
+                        render: function(data) {
+                            if (!data) return 'No description available';
+                            return data.length > 50 ? data.substring(0, 50) + '...' : data;
+                        }
+                    },
                     {
                         data: 'updated_at',
                         render: function(data) {
@@ -120,6 +129,8 @@
                     {
                         data: 'id',
                         render: function(data) {
+
+                            const deleteUrl = '{{ route("$deleteRoute", ":id") }}'.replace(':id', data);
                             return `
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -129,7 +140,13 @@
                                         <li><a class="dropdown-item" href="{{ $viewRoutePrefix }}/${data}"><i class="fas fa-eye"></i> View</a></li>
                                         <li><a class="dropdown-item" href="{{ $viewRoutePrefix }}/${data}/edit"><i class="fas fa-edit"></i> Edit</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash"></i> Delete</a></li>
+                                        <li>
+                                            <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash"></i> Delete</button>
+                                            </form>
+                                        </li>
                                     </ul>
                                 </div>
                             `;

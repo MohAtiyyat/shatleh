@@ -21,7 +21,7 @@
 .table td { vertical-align: middle; border-top: 1px solid rgba(0, 0, 0, .05); padding: 0.75rem 1rem; font-size: 0.875rem; }
 .table tbody tr:hover { background-color: rgba(78, 115, 223, 0.03); }
 .img-thumbnail { object-fit: cover; border-radius: var(--border-radius); box-shadow: 0 2px 5px rgba(0, 0, 0, .05); }
-.status-badge { padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+.status-badge { padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.65rem; font-weight: 600;}
 .status-active { background-color: rgba(28, 200, 138, 0.1); color: #1cc88a; }
 .status-inactive { background-color: rgba(231, 74, 59, 0.1); color: #e74a3b; }
 .status-stock { background-color: rgba(54, 185, 204, 0.1); color: #36b9cc; }

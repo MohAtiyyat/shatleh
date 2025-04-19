@@ -39,27 +39,31 @@ class ProductController extends Controller
         return redirect()->route('dashboard.product');
     }
 
-    public function edit(Product $product){
-        return view('admin.Product.createUpdate', compact('product'));
+    public function edit( $id){
+        $item = Product::findOrFail($id);
+
+        return view('admin.Product.createUpdate', compact('item'));
     }
 
-    public function update(UpdateProductRequest $request, Product $product){
+    public function update(UpdateProductRequest $request, Product $id){
         $data = $request->validated();
 
-        $product->update($data);
+        $id->update($data);
 
-        return response()->json(['message' => 'Product updated successfully'], 200);
+        return redirect()->route('dashboard.product');
     }
 
-    public function show(ShowProductRequest $product){
+    public function show($product){
+        $product = Product::findOrFail($product);
         return view('admin.Product.show', compact('product'));
     }
 
-    public function delete(DeleteProductRequest $product){
+   public function delete(DeleteProductRequest $request, $id)
+    {
+        // The ID is validated by DeleteProductRequest
+        $product = Product::findOrFail($id);
         $product->delete();
 
-        return response()->json(['message' => 'Product deleted successfully'], 200);
+        return redirect()->route('dashboard.product')->with('success', 'Product deleted successfully.');
     }
-
-
 }

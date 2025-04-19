@@ -13,7 +13,7 @@
         </div>
 
         <div class="form-container">
-            <form id="managementForm" enctype="multipart/form-data" method="{{ $method }}" action="{{ $action }}">
+            <form id="managementForm" enctype="multipart/form-data" method="POST" action="{{ $action }}">
                 @if($method === 'POST' && !$item)
                     @csrf
                 @elseif($method === 'PUT' && $item)
@@ -24,7 +24,7 @@
                 <!-- Render Fields -->
                 @foreach($fields as $field)
                     <div class="form-group">
-                        <label for="{{ $field['name'] }}">{{ $field['label'] }} {{ $field['required'] ?? false ? '*' : '' }}</label>
+                        <label for="{{ $field['name'] }}">{{ $field['label'] }} {{ $field['required'] ?? false ? '' : '' }}</label>
                         @if($field['type'] === 'select')
                             <select id="{{ $field['name'] }}" name="{{ $field['name'] }}" {{ $field['required'] ?? false ? 'required' : '' }}>
                                 @foreach($field['options'] ?? [] as $value => $label)
@@ -57,7 +57,7 @@
                                       placeholder="{{ $field['placeholder'] ?? '' }}"
                                       {{ $field['required'] ?? false ? 'required' : '' }}
                                       {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
-                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }}>{{ $item[$field['name']] ?? ($field['value'] ?? '') }}</textarea>
+                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }} cols="155" rows="3">{{ $item[$field['name']] ?? ($field['value'] ?? '') }}</textarea>
                         @else
                             <input type="{{ $field['type'] ?? 'text' }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                    placeholder="{{ $field['placeholder'] ?? '' }}"
