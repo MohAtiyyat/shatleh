@@ -1,4 +1,9 @@
-@props(['title' => 'Management Table', 'headers' => [], 'items' => [], 'addRoute' => '#', 'deleteRoute' => '#', 'viewRoutePrefix' => '#'])
+@props([
+    'title' => 'Management Table',
+    'headers' => [],
+    'items' => [],
+    'Route' => '#',
+])
 
 <div class="container-fluid">
     <div class="card shadow-sm">
@@ -10,7 +15,7 @@
                 <!-- Export buttons will be inserted here by DataTables -->
             </div>
             <div class="ml-auto">
-                <a href="{{ route($addRoute)}}" class="btn btn-primary">
+                <a href="{{ route($Route) . '.create' }}" class="btn btn-primary">
                     <i class="fas fa-plus fa-sm mr-2"></i>Add New
                 </a>
             </div>
@@ -25,7 +30,76 @@
                             @endforeach
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        @foreach ($items as $item)
+                            <tr>
+                                <td>{{ $item['id'] ?? 'N/A' }}</td>
+                                <td>
+                                    <img src="{{ $item['image'] ? asset('storage/image/' . $item['image']) : 'https://placehold.co/75' }}"
+                                         alt="Product Image"
+                                         class="img-thumbnail"
+                                         style="width: 60px; height: 60px;">
+                                </td>
+                                <td>{{ $item['name_en'] ?? 'N/A' }}</td>
+                                <td>{{ $item['name_ar'] ?? 'N/A' }}</td>
+                                <td>
+                                    {{ is_numeric($item['price']) ? '$' . number_format($item['price'], 2) : 'N/A' }}
+                                </td>
+                                <td>
+                                    @php
+                                        $statusMap = [
+                                            '1' => 'Active',
+                                            '0' => 'Inactive',
+                                            '2' => 'Draft'
+                                        ];
+                                        $status = $statusMap[$item['status'] ?? ''] ?? 'N/A';
+                                        $statusClass = $status === 'Active' ? 'status-active' : 'status-inactive';
+                                    @endphp
+                                    <span class="status-badge {{ $statusClass }}">{{ $status }}</span>
+                                </td>
+                                <td>
+                                    @php
+                                        $availabilityMap = [
+                                            '1' => 'In Stock',
+                                            '0' => 'Out of Stock',
+                                            '2' => 'Pre-order'
+                                        ];
+                                        $availability = $availabilityMap[$item['availability'] ?? ''] ?? 'N/A';
+                                        $availabilityClass = $availability === 'In Stock' ? 'status-stock' : 'status-inactive';
+                                    @endphp
+                                    <span class="status-badge {{ $availabilityClass }}">{{ $availability }}</span>
+                                </td>
+                                <td style="width: 140px; overflow: auto;">
+                                    {{ $item['description_en'] ? Str::limit($item['description_en'], 50) : 'No description available' }}
+                                </td>
+                                <td style="width: 140px; overflow: auto;">
+                                    {{ $item['description_ar'] ? Str::limit($item['description_ar'], 50) : 'No description available' }}
+                                </td>
+                                <td>
+                                    {{ $item['updated_at'] ? \Carbon\Carbon::parse($item['updated_at'])->toDateString() : 'N/A' }}
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{route( $Route . '.show' , $item['id']) }}"><i class="fas fa-eye"></i> View</a></li>
+                                            <li><a class="dropdown-item" href="{{ route($Route . '.edit', $item['id']) }}"><i class="fas fa-edit"></i> Edit</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form action="{{ route($Route . '.destroy', $item['id']) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash"></i> Delete</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -62,97 +136,6 @@
                 pageLength: 10,
                 order: [[0, 'asc']],
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
-                data: @json($items),
-                columns: [
-                    { data: 'id', render: function(data) { return data ?? 'N/A'; } },
-                    {
-                        data: 'image',
-                        render: function(data) {
-                            return '<img src="' + (/*data ||*/ 'https://placehold.co/75') +
-                                   '" alt="Product Image" class="img-thumbnail" style="width: 60px; height: 60px;">';
-                        }
-                    },
-                    { data: 'name_en', render: function(data) { return data ?? 'N/A'; } },
-                    { data: 'name_ar', render: function(data) { return data ?? 'N/A'; } },
-                    {
-                        data: 'price',
-                        render: function(data) {
-                            return isNaN(data) || data === null ? 'N/A' : '$' + parseFloat(data).toFixed(2);
-                        }
-                    },
-                    {
-                        data: 'status',
-                        render: function(data) {
-                            const statusMap = {
-                                '1': 'Active',
-                                '0': 'Inactive',
-                                '2': 'Draft'
-                            };
-                            const label = statusMap[data] ?? 'N/A';
-                            const className = label === 'Active' ? 'status-active' : 'status-inactive';
-                            return '<span class="status-badge ' + className + '">' + label + '</span>';
-                        }
-                    },
-                    {
-                        data: 'availability',
-                        render: function(data) {
-                            const availabilityMap = {
-                                '1': 'In Stock',
-                                '0': 'Out of Stock',
-                                '2': 'Pre-order'
-                            };
-                            const label = availabilityMap[data] ?? 'N/A';
-                            const className = label === 'In Stock' ? 'status-stock' : 'status-inactive';
-                            return '<span class="status-badge ' + className + '">' + label + '</span>';
-                        }
-                    },
-                    {
-                        data: 'description_en',
-                        render: function(data) {
-                            if (!data) return 'No description available';
-                            return data.length > 50 ? data.substring(0, 50) + '...' : data;
-                        }
-                    },
-                    {
-                        data: 'description_ar',
-                        render: function(data) {
-                            if (!data) return 'No description available';
-                            return data.length > 50 ? data.substring(0, 50) + '...' : data;
-                        }
-                    },
-                    {
-                        data: 'updated_at',
-                        render: function(data) {
-                            return data ? new Date(data).toISOString().split('T')[0] : 'N/A';
-                        }
-                    },
-                    {
-                        data: 'id',
-                        render: function(data) {
-
-                            const deleteUrl = '{{ route("$deleteRoute", ":id") }}'.replace(':id', data);
-                            return `
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ $viewRoutePrefix }}/${data}"><i class="fas fa-eye"></i> View</a></li>
-                                        <li><a class="dropdown-item" href="{{ $viewRoutePrefix }}/${data}/edit"><i class="fas fa-edit"></i> Edit</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash"></i> Delete</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            `;
-                        }
-                    }
-                ],
                 buttons: [
                     { extend: 'copy', className: 'btn-sm btn-primary', text: '<i class="fas fa-copy mr-1"></i>Copy' },
                     { extend: 'csv', className: 'btn-sm btn-primary', text: '<i class="fas fa-file-csv mr-1"></i>CSV' },
