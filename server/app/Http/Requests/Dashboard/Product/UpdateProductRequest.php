@@ -13,7 +13,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->admin();
+        return true;
     }
 
     /**
@@ -24,16 +24,15 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => $this->id('products'),
-            'name_ar' => $this->name('products', 'ar'),
-            'name_en' => $this->name('products', 'en'),
-            'description_ar' => $this->description(),
-            'description_en' => $this->description(),
-            'price' => 'required|integer',
-            'image' => 'required|url',
-            'status' => 'required|integer',
-            'availability' => 'required|integer',
-            'category_id' => 'integer|exists:categories,id',            
+                'name_ar' => 'required|string',
+                'name_en' => 'required|string',
+                'description_ar' => 'required|string',
+                'description_en' => 'required|string',
+                'price' => 'required|integer',
+                'image' => 'required',
+                'status' => 'required|integer',
+                'availability' => 'required|integer',
+                'category_id' => 'integer|exists:categories,id',
         ];
     }
 }

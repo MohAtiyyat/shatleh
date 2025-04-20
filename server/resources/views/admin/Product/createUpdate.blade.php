@@ -7,7 +7,7 @@
 @section('content')
     <x-management-form
         :title="isset($item) ? 'Edit Product' : 'Create New Product'"
-        :action="isset($item) /*? route('admin.products.update', $item->id) : route('admin.products.store')*/"
+        :action="isset($item) ? route('dashboard.product.update', $item->id) : route('dashboard.product.create')"
         :method="isset($item) ? 'PUT' : 'POST'"
         enctype="multipart/form-data"
         :item="$item ?? null"

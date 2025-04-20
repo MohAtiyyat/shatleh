@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../assets/css/adminlte.min.css">
   <style>
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #065f46 0%, #34d399 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -32,23 +32,34 @@
     .card {
       border-radius: 1rem;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background-color: #ffffff;
+      overflow: hidden;
+
     }
     .form-control:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
     }
     .btn-primary {
-      background-color: #4f46e5;
-      border-color: #4f46e5;
+      background-color: #059669;
+      border-color: #047857;
       transition: background-color 0.3s ease, transform 0.2s ease;
     }
     .btn-primary:hover {
-      background-color: #4338ca;
-      border-color: #4338ca;
+      background-color: #047857;
+      border-color: #065f46;
       transform: translateY(-2px);
     }
     .input-group-text {
-      background-color: #f8f9fa;
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .card-header {
+      background-color: #f0fdf4;
+      border-bottom: 1px solid #d1fae5;
+    }
+    .h1, .h3 {
+      color: #065f46;
     }
   </style>
 </head>
