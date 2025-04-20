@@ -15,7 +15,7 @@
                 <!-- Export buttons will be inserted here by DataTables -->
             </div>
             <div class="ml-auto">
-                <a href="{{ route($Route) . '.create' }}" class="btn btn-primary">
+                <a href="{{ route($Route . '.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus fa-sm mr-2"></i>Add New
                 </a>
             </div>
