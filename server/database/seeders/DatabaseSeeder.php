@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        // Create a single address
         Address::create([
             'title' => 'Secondry Address',
             'country_id' => 1,

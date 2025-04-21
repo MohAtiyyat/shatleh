@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Dashboard\AddressController;
 use App\Http\Controllers\Dashboard\AuthController;
+use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ShopController;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::middleware('web')->prefix('dashboard')->group(function () {
 
@@ -43,6 +45,16 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
             Route::get('/{id}', [AddressController::class, 'show'])->name('dashboard.address.show');
             Route::put('/{id}', [AddressController::class, 'update'])->name('dashboard.address.update');
             Route::delete('/{id}', [AddressController::class, 'delete'])->name('dashboard.address.destroy');
+        });
+
+        Route::prefix('category')->group(function () {
+            Route::get('/', [CategoryController::class, 'index'])->name('dashboard.category');
+            Route::get('/create',[CategoryController::class, 'create'])->name('dashboard.category.create');
+            Route::post('/create',[CategoryController::class, 'store'])->name('dashboard.category.store');
+            Route::get('/{id}/edit',[CategoryController::class, 'edit'])->name('dashboard.category.edit');
+            Route::get('/{id}',[CategoryController::class, 'show'])->name('dashboard.category.show');
+            Route::put('/{id}',[CategoryController::class, 'update'])->name('dashboard.category.update');
+            Route::delete('/{id}',[CategoryController::class, 'delete'])->name('dashboard.category.delete');
         });
 
 
