@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Product\StoreProductShopRequest;
+use App\Http\Requests\Dashboard\Product\UpdateProductShopRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -34,21 +36,9 @@ class ProductShopController extends Controller
         return view('admin.ProductShop.createUpdate', compact('products', 'shops', 'users'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductShopRequest $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'shop_id' => 'required|exists:shops,id',
-            'employee_id' => 'required|exists:users,id',
-            'cost' => 'required|numeric|min:0',
-        ], [
-            'product_id.required' => 'Please select a product.',
-            'shop_id.required' => 'Please select a shop.',
-            'employee_id.required' => 'Please select an employee.',
-            'cost.required' => 'Please enter the cost.',
-            'cost.numeric' => 'Cost must be a number.',
-            'cost.min' => 'Cost cannot be negative.',
-        ]);
+        $request->validated();
 
         DB::table('product_shops')->insert([
             'product_id' => $request->product_id,
@@ -104,21 +94,9 @@ class ProductShopController extends Controller
         return view('admin.ProductShop.createUpdate', compact('item', 'products', 'shops', 'users'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProductShopRequest $request, $id)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'shop_id' => 'required|exists:shops,id',
-            'employee_id' => 'required|exists:users,id',
-            'cost' => 'required|numeric|min:0',
-        ], [
-            'product_id.required' => 'Please select a product.',
-            'shop_id.required' => 'Please select a shop.',
-            'employee_id.required' => 'Please select an employee.',
-            'cost.required' => 'Please enter the cost.',
-            'cost.numeric' => 'Cost must be a number.',
-            'cost.min' => 'Cost cannot be negative.',
-        ]);
+        $request->validated();
 
         $record = DB::table('product_shops')
             ->where('id', $id)
