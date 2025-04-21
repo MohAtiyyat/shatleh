@@ -13,13 +13,10 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
 
     Route::get('/login', function () {return view('admin.login.login');});
     Route::post('/login', [AuthController::class, 'Login'])->name('dashboard.login');
+    Route::get('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
+    Route::post('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
 
     Route::middleware(['auth:web', 'role:Admin|super-admin'])->group(function () {
-
-        Route::get('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
-        Route::post('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
-    
-
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('dashboard.product');
             Route::get('/create', [ProductController::class, 'create'])->name('dashboard.product.create');
@@ -61,6 +58,15 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
 
         });
 
+        Route::prefix('product-shop')->group(function () {
+            Route::get('/', [ProductShopController::class, 'index'])->name('dashboard.productShop');
+            Route::get('/create', [ProductShopController::class, 'create'])->name('dashboard.productShop.create');
+            Route::post('/create', [ProductShopController::class, 'store'])->name('dashboard.productShop.store');
+            Route::get('/{id}/edit', [ProductShopController::class, 'edit'])->name('dashboard.productShop.edit');
+            Route::get('/{id}', [ProductShopController::class, 'show'])->name('dashboard.productShop.show');
+            Route::put('/{id}', [ProductShopController::class, 'update'])->name('dashboard.productShop.update');
+            Route::delete('/{id}', [ProductShopController::class, 'delete'])->name('dashboard.productShop.destroy');
+        });
 
     });
 });

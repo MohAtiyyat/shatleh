@@ -2,17 +2,19 @@
 
 namespace App\Http\Requests\Dashboard\Product;
 
+use App\Traits\UserRuleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShowProductRequest extends FormRequest
 {
+    use UserRuleTrait;
 
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->admin();
     }
 
     /**

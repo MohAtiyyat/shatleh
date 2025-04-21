@@ -2,16 +2,18 @@
 
 namespace App\Http\Requests\Dashboard\Catrgory;
 
+use App\Traits\UserRuleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShowCategoryRequest extends FormRequest
 {
+    use UserRuleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->admin();
     }
 
     /**
