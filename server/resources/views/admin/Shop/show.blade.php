@@ -1,125 +1,112 @@
 @extends('admin.layout.master')
 
 @section('title', 'Shop Details')
-@section('Shops_Show')
-    active
-@endsection
-@section('content')
+@section('Shops_Show', 'active')
 
-<?php
-    $shop = $shop ?? [
-        'id' => '',
-        'name' => 'N/A',
-        'details' => 'No details available',
-        'owner_name' => 'N/A',
-        'owner_phone_number' => 'N/A',
-        'is_partner' => false,
-        'address_id' => 'N/A',
-        'employee_id' => 'N/A',
-        'image' => null,
-        'created_at' => 'N/A',
-        'updated_at' => 'N/A'
-    ];
-?>
-    <div class="content">
-        <div class="container-fluid">
+@section('content')
+    <div class="content py-1 item">
+        <div class="">
             <div class="row justify-content-center">
                 <div class="col-lg-10 col-md-12">
                     <div class="card border-0 shadow-lg rounded-lg overflow-hidden">
                         <!-- Header -->
-                        <div class="card-header bg-gradient-primary text-white p-4">
+                        <div class="card-header bg-gradient-success text-white p-4">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h2 class="mb-0 font-weight-bold">{{ $shop['name'] ?? 'Shop Details' }}</h2>
+                                <h2 class="mb-0 font-weight-bold text-capitalize">
+                                    {{ $shop->name ?? 'Shop Details' }}
+                                </h2>
                                 <div>
-                                    <a href="{{ url('/dashboard/shop') }}"
-                                       class="btn btn-light btn-sm mr-2"
+                                    <a href="{{ route('dashboard.Shop') }}"
+                                       class="btn btn-light btn-sm mr-2 rounded-pill px-3"
                                        title="Back to Shops">
-                                        <i class="fas fa-arrow-left"></i> Back
+                                        <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
-                                    <a href="{{ route('shop.create') }}"
-                                       class="btn btn-light btn-sm"
+                                    <a href="{{ route('dashboard.Shop.create') }}"
+                                       class="btn btn-light btn-sm rounded-pill px-3"
                                        title="Add New Shop">
-                                        <i class="fas fa-plus"></i> New
+                                        <i class="fas fa-plus mr-1"></i> New
                                     </a>
                                 </div>
                             </div>
                         </div>
                         <!-- Body -->
-                        <div class="card-body p-5 bg-white">
-                            <div class="row">
-                                <!-- Image Section -->
-                                <div class="col-md-5">
-                                    <div class="position-relative text-center">
-                                        <img src="{{ $shop['image'] ?? 'https://via.placeholder.com/400' }}"
-                                             alt="{{ $shop['name'] }}"
-                                             class="img-fluid rounded-lg shadow-sm"
-                                             style="max-height: 400px; object-fit: cover; width: 100%;">
+                        <div class="card-body p-5 bg-light">
+                            <!-- Image Section (Top-Left with Wrapping) -->
+                            <div class="image-wrapper float-left mr-4 mb-4">
+                                <img src="{{ $shop->image ?? 'https://placehold.co/350' }}"
+                                     alt="{{ $shop->name }}"
+                                     class="rounded-lg shadow-sm"
+                                     style="max-height: 350px; object-fit: cover; width: 100%; max-width: 350px;">
+                            </div>
+                            <!-- Details Section (Wrapping Around Image) -->
+                            <div class="details-wrapper">
+                                <div class="row">
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Shop Name</h5>
+                                        <p class="text-dark">{{ $shop->name ?? 'N/A' }}</p>
                                     </div>
-                                </div>
-                                <!-- Details Section -->
-                                <div class="col-md-7">
-                                    <div class="pl-md-4 pt-4 pt-md-0">
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Shop Name</h5>
-                                            <p class="h4 text-dark font-weight-semibold">{{ $shop['name'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Details</h5>
-                                            <p class="text-dark">{{ $shop['details'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Owner Name</h5>
-                                            <p class="text-dark">{{ $shop['owner_name'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Owner Phone Number</h5>
-                                            <p class="text-dark">{{ $shop['owner_phone_number'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Partner Status</h5>
-                                            <p class="text-{{ $shop['is_partner'] ? 'success' : 'danger' }} font-weight-medium">
-                                                {{ $shop['is_partner'] ? 'Partner' : 'Not Partner' }}
-                                            </p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Address ID</h5>
-                                            <p class="text-dark">{{ $shop['address_id'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Employee ID</h5>
-                                            <p class="text-dark">{{ $shop['employee_id'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Shop ID</h5>
-                                            <p class="text-dark">#{{ $shop['id'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Created At</h5>
-                                            <p class="text-dark">{{ $shop['created_at'] }}</p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <h5 class="text-muted font-weight-bold">Updated At</h5>
-                                            <p class="text-dark">{{ $shop['updated_at'] }}</p>
-                                        </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Partner Status</h5>
+                                        <span class="badge badge-pill {{ $shop->is_partner ? 'badge-success' : 'badge-danger' }} px-3 py-2">
+                                            {{ $shop->is_partner ? 'Partner' : 'Not Partner' }}
+                                        </span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Owner Name</h5>
+                                        <p class="text-dark">{{ $shop->owner_name ?? 'N/A' }}</p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Owner Phone Number</h5>
+                                        <p class="text-dark">{{ $shop->owner_phone_number ?? 'N/A' }}</p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Employee</h5>
+                                        <p class="text-dark">{{ $shop->employee->first_name ?? 'N/A' }}</p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Shop ID</h5>
+                                        <p class="text-dark">#{{ $shop->id ?? 'N/A' }}</p>
+                                    </div>
+                                    <div class="col-12 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Details</h5>
+                                        <p class="text-dark">{{ $shop->details ?? 'No details available' }}</p>
+                                    </div>
+                                    <div class="col-12 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
+                                        <p class="text-dark">
+                                            {{ $shop->address ? ($shop->address->street . ', ' . $shop->address->city . ', ' . $shop->address->state . ', ' . $shop->address->country . ' ' . $shop->address->postal_code) : 'N/A' }}
+                                        </p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Created At</h5>
+                                        <p class="text-dark">
+                                            {{ \Carbon\Carbon::parse($shop->created_at)->format('M d, Y H:i') }}
+                                        </p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Updated At</h5>
+                                        <p class="text-dark">
+                                            {{ \Carbon\Carbon::parse($shop->updated_at)->format('M d, Y H:i') }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
+                            <div class="clearfix"></div>
                         </div>
                         <!-- Footer -->
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
-                            <a href="{{ url('/dashboard/shop/' . $shop['id']) }}/edit"
-                               class="btn btn-outline-primary btn-lg mr-3 rounded-pill px-4">
-                                <i class="fas fa-edit mr-2"></i>Edit Shop
+                            <a href="{{ route('dashboard.Shop.edit', $shop->id) }}"
+                               class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
+                                <i class="fas fa-edit mr-2"></i> Edit Shop
                             </a>
-                            <form action="{{ url('/dashboard/shop/' . $shop['id']) }}"
-                                  method="POST"
-                                  style="display: inline-block;">
+                            <form action="{{ route('dashboard.Shop.destroy', $shop->id) }}"
+                                  method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        class="btn btn-outline-danger btn-lg rounded-pill px-4"
+                                        class="btn btn-outline-danger btn-md rounded-pill px-4"
                                         onclick="return confirm('Are you sure you want to delete this shop?')">
-                                    <i class="fas fa-trash mr-2"></i>Delete
+                                    <i class="fas fa-trash mr-2"></i> Delete
                                 </button>
                             </form>
                         </div>
@@ -130,32 +117,58 @@
     </div>
 
     <style>
-        .card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
-        }
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #007bff 0%, #0057b3 100%);
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
         }
         .btn-outline-primary, .btn-outline-danger {
             transition: all 0.3s ease;
+            border-width: 2px;
         }
         .btn-outline-primary:hover {
             background-color: #007bff;
             color: white;
+            border-color: #007bff;
         }
         .btn-outline-danger:hover {
             background-color: #dc3545;
             color: white;
+            border-color: #dc3545;
         }
         .rounded-lg {
             border-radius: 0.75rem !important;
         }
         .badge-pill {
             border-radius: 50rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .badge-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .card-body {
+            background-color: #f8f9fa;
+        }
+        h5.text-muted {
+            font-size: 1rem;
+            color: #6c757d !important;
+        }
+        p.text-dark {
+            font-size: 1.1rem;
+            color: #343a40 !important;
+        }
+        .image-wrapper {
+            float: left;
+        }
+        .details-wrapper {
+            overflow: hidden;
+        }
+        .clearfix {
+            clear: both;
         }
     </style>
 @endsection
