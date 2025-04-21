@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Address\DeleteAddressRequest;
+use App\Http\Requests\Dashboard\Shop\DeleteShopRequest;
 use App\Http\Requests\Dashboard\Shop\StoreShopRequest;
 use App\Http\Requests\Dashboard\Shop\UpdateShopRequest;
 use App\Models\Address;
@@ -17,7 +18,7 @@ class ShopController extends Controller
     public function index()
     {
 
-        $shops = Shop::with(['address', 'employee'])-> paginate(10);
+        $shops = Shop::with(['address', 'employee'])->get();
         return view('admin.Shop.all', compact('shops'));
     }
 
@@ -39,7 +40,7 @@ class ShopController extends Controller
 
         $data = $request->validated();
 
-        dd($data);
+
         $shop = Shop::create($data);
 
         return redirect()->route('dashboard.Shop');
@@ -60,7 +61,7 @@ class ShopController extends Controller
         return redirect()->route('dashboard.Shop');
     }
 
-    public function delete(DeleteAddressRequest $request)
+    public function delete(DeleteShopRequest $request)
     {
         $shop = Shop::findOrFail($request->id);
         $shop->delete();

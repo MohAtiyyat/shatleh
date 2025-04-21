@@ -32,7 +32,7 @@ class StoreShopRequest extends FormRequest
             'owner_name' => 'required|string|max:255',
             'is_partner' => 'required|boolean',
             'image' => 'image|mimes:jpg,png,jpeg,webp|max:255',
-            'employee_id' => 'required|exists:employees,id',
+            'employee_id' => 'required|exists:users,id',
         ];
     }
 }

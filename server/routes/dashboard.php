@@ -27,7 +27,7 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
 
         Route::prefix('shop')->group(function () {
             Route::get('/', [ShopController::class, 'index'])->name('dashboard.Shop');
-            Route::get('/create', [ShopController::class, 'create'])->name('shop.create');
+            Route::get('/create', [ShopController::class, 'create'])->name('dashboard.Shop.create');
             Route::post('/create', [ShopController::class, 'store'])->name('dashboard.Shop.store');
             Route::get('/{id}/edit', [ShopController::class, 'edit'])->name('dashboard.Shop.edit');
             Route::get('/{id}', [ShopController::class, 'show'])->name('dashboard.Shop.show');
