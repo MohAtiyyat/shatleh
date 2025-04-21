@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests\Dashboard\Product;
 
+use App\Traits\FormRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use App\Traits\UserRuleTrait;
 
-class AllProductRequest extends FormRequest
+class DeleteProductShopRequest extends FormRequest
 {
-    use UserRuleTrait;
+    use FormRequestTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -25,7 +24,7 @@ class AllProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+
         ];
     }
 }

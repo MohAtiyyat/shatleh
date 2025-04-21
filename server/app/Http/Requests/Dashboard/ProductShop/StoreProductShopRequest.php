@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests\Dashboard\Product;
 
+use App\Traits\FormRequestTrait;
+use App\Traits\UserRuleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\UserRuleTrait;
 
-class AllProductRequest extends FormRequest
+class StoreProductShopRequest extends FormRequest
 {
-    use UserRuleTrait;
+    use FormRequestTrait, UserRuleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -25,7 +26,10 @@ class AllProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+           'product_id' => 'required|exists:products,id',
+            'shop_id' => 'required|exists:shops,id',
+            'employee_id' => 'required|exists:users,id',
+            'cost' => 'required|numeric|min:0',
         ];
     }
 }

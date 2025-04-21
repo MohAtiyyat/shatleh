@@ -3,18 +3,16 @@
 namespace App\Http\Requests\Dashboard\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use App\Traits\UserRuleTrait;
 
-class AllProductRequest extends FormRequest
+class ShowProductShopRequest extends FormRequest
 {
-    use UserRuleTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->admin();
+        return $this->admin();;
     }
 
     /**
@@ -25,7 +23,7 @@ class AllProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+
         ];
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\AddressController;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\ProductShopController;
 use App\Http\Controllers\Dashboard\ShopController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -13,9 +14,11 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
     Route::get('/login', function () {return view('admin.login.login');});
     Route::post('/login', [AuthController::class, 'Login'])->name('dashboard.login');
 
-    Route::middleware('auth:web')->group(function () {
+    Route::middleware(['auth:web', 'role:Admin|super-admin'])->group(function () {
 
+        Route::get('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
         Route::post('/logout', [AuthController::class, 'Logout'])->name('dashboard.logout');
+    
 
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('dashboard.product');
@@ -55,6 +58,7 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
             Route::get('/{id}',[CategoryController::class, 'show'])->name('dashboard.category.show');
             Route::put('/{id}',[CategoryController::class, 'update'])->name('dashboard.category.update');
             Route::delete('/{id}',[CategoryController::class, 'delete'])->name('dashboard.category.delete');
+
         });
 
 

@@ -132,6 +132,9 @@
         margin: 0 10px;
     }
 }
+.big{
+    width: 100%;
+}
 .management-form-page { padding: 20px; }
 .container { max-width: 1200px; margin: 0 auto; }
 .header { margin-bottom: 20px; }

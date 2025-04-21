@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\UserRuleTrait;
 
-class AllProductRequest extends FormRequest
+class AllProductShopRequest extends FormRequest
 {
     use UserRuleTrait;
     /**
