@@ -57,7 +57,7 @@
                                       placeholder="{{ $field['placeholder'] ?? '' }}"
                                       {{ $field['required'] ?? false ? 'required' : '' }}
                                       {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
-                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }} cols="155" rows="3">{{ $item[$field['name']] ?? ($field['value'] ?? '') }}</textarea>
+                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }} class="big" rows="3">{{ $item[$field['name']] ?? ($field['value'] ?? '') }}</textarea>
                         @else
                             <input type="{{ $field['type'] ?? 'text' }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                    placeholder="{{ $field['placeholder'] ?? '' }}"
