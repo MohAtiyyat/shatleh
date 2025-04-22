@@ -23,7 +23,7 @@
                 <!-- Render Fields -->
                 @foreach($fields as $field)
                     <div class="form-group">
-                        <label for="{{ $field['name'] }}">{{ $field['label'] }} {{ $field['required'] ?? false ? '*' : '' }}</label>
+                        <label for="{{ $field['name'] }}">{{ $field['label'] }} {{ $field['required'] ?? false ? '' : '' }}</label>
                         @if($field['type'] === 'select')
                             <select id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                     {{ $field['required'] ?? false ? 'required' : '' }}>
