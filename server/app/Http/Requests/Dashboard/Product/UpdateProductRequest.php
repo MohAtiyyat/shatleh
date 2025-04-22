@@ -3,11 +3,12 @@
 namespace App\Http\Requests\Dashboard\Product;
 
 use App\Traits\FormRequestTrait;
+use App\Traits\UserRuleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
 {
-    use FormRequestTrait;
+    use FormRequestTrait, UserRuleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -29,7 +30,7 @@ class UpdateProductRequest extends FormRequest
                 'description_ar' => 'required|string',
                 'description_en' => 'required|string',
                 'price' => 'required|integer',
-                'image' => 'required',
+                'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
                 'status' => 'required|integer',
                 'availability' => 'required|integer',
                 'category_id' => 'integer|exists:categories,id',

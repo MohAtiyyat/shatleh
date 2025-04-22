@@ -26,18 +26,19 @@ class ProductController extends Controller
         return view('admin.Product.createUpdate');
     }
 
-    public function store(StoreProductRequest $request){
+    public function store(StoreProductRequest $request)
+{
+    $data = $request->validated();
 
-
-        $data = $request->all();
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-            $validated['image'] = Storage::url($imagePath); // Saves full URL, e.g., "http://example.com/storage/products/image.jpg"
-        }
-        Product::create($data);
-
-        return redirect()->route('dashboard.product');
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('products', 'public');
+        $data['image'] = Storage::url($imagePath); // Save URL to image column
     }
+
+    Product::create($data);
+
+    return redirect()->route('dashboard.product')->with('success', 'Product created successfully.');
+}
 
     public function edit( $id){
         $item = Product::findOrFail($id);
@@ -45,12 +46,28 @@ class ProductController extends Controller
         return view('admin.Product.createUpdate', compact('item'));
     }
 
-    public function update(UpdateProductRequest $request, Product $id){
+    public function update(UpdateProductRequest $request, Product $product)
+    {
         $data = $request->validated();
 
-        $id->update($data);
+        try {
+            if ($request->hasFile('image')) {
+                // Delete old image if it exists
+                if ($product->image) {
+                    $oldImagePath = ltrim(parse_url($product->image, PHP_URL_PATH), '/storage/');
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+                // Store new image
+                $imagePath = $request->file('image')->store('products', 'public');
+                $data['image'] = Storage::url($imagePath);
+            }
 
-        return redirect()->route('dashboard.product');
+            $product->update($data);
+
+            return redirect()->route('dashboard.product')->with('success', 'Product updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to update product: ' . $e->getMessage()]);
+        }
     }
 
     public function show($product){
@@ -58,10 +75,13 @@ class ProductController extends Controller
         return view('admin.Product.show', compact('product'));
     }
 
-   public function delete(DeleteProductRequest $request, $id)
+    public function delete(DeleteProductRequest $request, $id)
     {
-        // The ID is validated by DeleteProductRequest
         $product = Product::findOrFail($id);
+        if ($product->image) {
+            $imagePath = ltrim(parse_url($product->image, PHP_URL_PATH), '/storage/');
+            Storage::disk('public')->delete($imagePath);
+        }
         $product->delete();
 
         return redirect()->route('dashboard.product')->with('success', 'Product deleted successfully.');

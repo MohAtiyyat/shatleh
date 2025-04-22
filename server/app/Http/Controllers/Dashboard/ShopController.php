@@ -40,10 +40,14 @@ class ShopController extends Controller
 
         $data = $request->validated();
 
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('shops', 'public');
+            $data['image'] = Storage::url($imagePath);
+        }
 
-        $shop = Shop::create($data);
+        Shop::create($data);
 
-        return redirect()->route('dashboard.Shop');
+        return redirect()->route('dashboard.Shop')->with('success', 'Shop created successfully.');
     }
 
     public function edit($id)
@@ -53,19 +57,41 @@ class ShopController extends Controller
         return view('admin.Shop.createUpdate', compact('shop', 'addresses'));
     }
 
-    public function update(UpdateShopRequest $request)
+    public function update(UpdateShopRequest $request, $id)
     {
-        $shop = Shop::findOrFail($request->id);
-        $data = $request->all();
-        $shop->update($data);
-        return redirect()->route('dashboard.Shop');
+        $shop = Shop::findOrFail($id);
+        $data = $request->validated();
+
+        try {
+            if ($request->hasFile('image')) {
+                // Delete old image if it exists
+                if ($shop->image) {
+                    $oldImagePath = ltrim(parse_url($shop->image, PHP_URL_PATH), '/storage/');
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+                // Store new image
+                $imagePath = $request->file('image')->store('shops', 'public');
+                $data['image'] = Storage::url($imagePath);
+            }
+
+            $shop->update($data);
+
+            return redirect()->route('dashboard.Shop')->with('success', 'Shop updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to update shop: ' . $e->getMessage()]);
+        }
     }
 
-    public function delete(DeleteShopRequest $request)
+    public function delete(DeleteShopRequest $request, $id)
     {
-        $shop = Shop::findOrFail($request->id);
+        $shop = Shop::findOrFail($id);
+        if ($shop->image) {
+            $imagePath = ltrim(parse_url($shop->image, PHP_URL_PATH), '/storage/');
+            Storage::disk('public')->delete($imagePath);
+        }
         $shop->delete();
-        return redirect()->route('dashboard.Shop');
+
+        return redirect()->route('dashboard.Shop')->with('success', 'Shop deleted successfully.');
     }
 
 }

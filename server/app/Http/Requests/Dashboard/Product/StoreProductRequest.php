@@ -31,7 +31,7 @@ class StoreProductRequest extends FormRequest
             'description_ar' => 'required',
             'description_en' => 'required',
             'price' => 'required|integer',
-            'image' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|integer',
             'availability' => 'required|integer',
             'category_id' => 'integer',

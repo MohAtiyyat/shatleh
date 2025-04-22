@@ -4,6 +4,7 @@
     'method' => 'POST',
     'item' => null,
     'fields' => [],
+    'errors' => null, // Expect MessageBag or null
 ])
 
 <div class="management-form-page">
@@ -14,21 +15,21 @@
 
         <div class="form-container">
             <form id="managementForm" enctype="multipart/form-data" method="POST" action="{{ $action }}">
-                @if($method === 'POST' && !$item)
-                    @csrf
-                @elseif($method === 'PUT' && $item)
-                    @csrf
+                @csrf
+                @if($method === 'PUT' && $item)
                     @method('PUT')
                 @endif
 
                 <!-- Render Fields -->
                 @foreach($fields as $field)
                     <div class="form-group">
-                        <label for="{{ $field['name'] }}">{{ $field['label'] }} {{ $field['required'] ?? false ? '' : '' }}</label>
+                        <label for="{{ $field['name'] }}">{{ $field['label'] }} {{ $field['required'] ?? false ? '*' : '' }}</label>
                         @if($field['type'] === 'select')
-                            <select id="{{ $field['name'] }}" name="{{ $field['name'] }}" {{ $field['required'] ?? false ? 'required' : '' }}>
+                            <select id="{{ $field['name'] }}" name="{{ $field['name'] }}"
+                                    {{ $field['required'] ?? false ? 'required' : '' }}>
                                 @foreach($field['options'] ?? [] as $value => $label)
-                                    <option value="{{ $value }}" {{ $item && $item[$field['name']] === $value ? 'selected' : '' }}>
+                                    <option value="{{ $value }}"
+                                            {{ old($field['name'], $item[$field['name']] ?? '') == $value ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
                                 @endforeach
@@ -38,17 +39,20 @@
                                 <div class="mb-3">
                                     <label>Current Image</label>
                                     <div>
-                                        <img src="{{ $item[$field['name']] }}" alt="Current Image" style="max-width: 200px; height: auto; border-radius: 0.35rem;">
+                                        <img src="{{ $item[$field['name']] }}"
+                                             alt="Current Image"
+                                             style="max-width: 200px; height: auto; border-radius: 0.35rem;">
                                     </div>
                                 </div>
                             @endif
                             <div class="input-group">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
+                                    <input type="file" class="custom-file-input"
+                                           id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                            accept="{{ $field['accept'] ?? '' }}"
                                            {{ $field['required'] ?? false && !$item ? 'required' : '' }}>
                                     <label class="custom-file-label" for="{{ $field['name'] }}">
-                                        {{ $item && $item[$field['name']] ? basename($item[$field['name']]) : ($field['placeholder'] ?? 'Choose file') }}
+                                        Choose file
                                     </label>
                                 </div>
                             </div>
@@ -57,18 +61,23 @@
                                       placeholder="{{ $field['placeholder'] ?? '' }}"
                                       {{ $field['required'] ?? false ? 'required' : '' }}
                                       {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
-                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }} class="big" rows="3">{{ $item[$field['name']] ?? ($field['value'] ?? '') }}</textarea>
+                                      {{ $field['disabled'] ?? false ? 'disabled' : '' }}
+                                      class="big" rows="3">{{ old($field['name'], $item[$field['name']] ?? ($field['value'] ?? '')) }}</textarea>
                         @else
-                            <input type="{{ $field['type'] ?? 'text' }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}"
+                            <input type="{{ $field['type'] ?? 'text' }}"
+                                   id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                    placeholder="{{ $field['placeholder'] ?? '' }}"
                                    {{ $field['required'] ?? false ? 'required' : '' }}
                                    {{ $field['dir'] ?? '' ? 'dir="' . $field['dir'] . '"' : '' }}
                                    {{ $field['disabled'] ?? false ? 'disabled' : '' }}
-                                   value="{{ $item[$field['name']] ?? ($field['value'] ?? '') }}"
+                                   value="{{ old($field['name'], $item[$field['name']] ?? ($field['value'] ?? '')) }}"
                                    {{ $field['step'] ?? '' ? 'step="' . $field['step'] . '"' : '' }}
-                                   {{ $field['min'] ?? '' ? 'min="' . $field['min'] . '"' : '' }}>
+                                   {{ $field['min'] ?? '' ? 'min="' . $field['min'] . '"' : '' }}
+                                   {{ $field['maxlength'] ?? '' ? 'maxlength="' . $field['maxlength'] . '"' : '' }}>
                         @endif
-
+                        @error($field['name'])
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 @endforeach
 
@@ -84,7 +93,6 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/customCss/form.css') }}">
-
 @endsection
 
 @section('scripts')

@@ -3,11 +3,12 @@
 namespace App\Http\Requests\Dashboard\Product;
 
 use App\Traits\FormRequestTrait;
+use App\Traits\UserRuleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DeleteProductRequest extends FormRequest
 {
-    use FormRequestTrait;
+    use FormRequestTrait, UserRuleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */

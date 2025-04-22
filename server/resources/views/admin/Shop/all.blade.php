@@ -19,10 +19,10 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>
-                        <img src="{{ $item->image ? asset('storage/image/' . $item->image) : 'https://placehold.co/75' }}"
+                        <img src="{{ $item->image ?? 'https://placehold.co/60x60' }}"
                              alt="Shop Image"
                              class="img-thumbnail"
-                             style="width: 60px; height: 60px;">
+                             style="width: 60px; height: 60px; object-fit: cover;">
                     </td>
                     <td>{{ $item->name ?? 'N/A' }}</td>
                     <td>{{ $item->details ?? 'N/A' }}</td>
