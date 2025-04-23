@@ -21,6 +21,6 @@
             ['name' => 'employee_display', 'label' => 'Assigned Employee', 'type' => 'text', 'value' => auth()->user()->first_name ?? 'N/A', 'disabled' => true, 'aria-disabled' => 'true'],
             ['name' => 'image', 'label' => 'Image', 'type' => 'file', 'accept' => 'image/jpeg,image/png,image/jpg,image/webp', 'required' => false, 'aria-required' => 'false']
         ]"
-        :errors="$errors ?? []"
+        :errors="$errors"
     />
 @endsection

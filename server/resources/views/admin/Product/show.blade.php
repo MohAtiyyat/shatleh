@@ -34,7 +34,7 @@
                             <!-- Image Section (Top-Left with Wrapping) -->
                             <div class="image-wrapper float-left mr-4 mb-4">
                                 <!--the image will be fixed soon-->
-                                <img src="https://placehold.co/350"
+                                <img src="{{ $product->image ?? 'https://placehold.co/350' }}"
                                      alt="{{ $product['name_en'] . $product['name_ar'] }}"
                                      class="rounded-lg shadow-sm"
                                      style="max-height: 350px; object-fit: cover; width: 100%; max-width: 350px;">

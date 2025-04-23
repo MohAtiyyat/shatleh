@@ -17,10 +17,10 @@
             <tr>
                 <td>{{ $product->id }}</td>
                 <td>
-                    <img src="{{ $product->image ? asset('storage/image/' . $product->image) : 'https://placehold.co/75' }}"
+                    <img src="{{ $product->image ?? 'https://placehold.co/60x60' }}"
                          alt="Product Image"
                          class="img-thumbnail"
-                         style="width: 60px; height: 60px;">
+                         style="width: 60px; height: 60px; object-fit: cover;">
                 </td>
                 <td>{{ $product->name_en ?? 'N/A' }}</td>
                 <td>{{ $product->name_ar ?? 'N/A' }}</td>

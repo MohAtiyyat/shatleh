@@ -23,7 +23,7 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
             Route::post('/create', [ProductController::class, 'store'])->name('dashboard.product.create');
             Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('dashboard.product.edit');
             Route::get('/{id}', [ProductController::class, 'show'])->name('dashboard.product.show');
-            Route::put('/{id}', [ProductController::class, 'update'])->name('dashboard.product.update');
+            Route::put('/{product}', [ProductController::class, 'update'])->name('dashboard.product.update');
             Route::delete('/{id}', [ProductController::class, 'delete'])->name('dashboard.product.destroy');
         });
 
