@@ -6,45 +6,77 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Address\DeleteAddressRequest;
 use App\Http\Requests\Dashboard\Address\StoreAddressRequest;
 use App\Http\Requests\Dashboard\Address\UpdateAddressRequest;
-use App\Http\Requests\Dashboard\Shop\UpdateShopRequest;
 use App\Models\Address;
-use Illuminate\Http\Request;
+use App\Models\Country;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class AddressController extends Controller
 {
     public function index()
     {
-        $addresses = Address::all();
-        return response()->json($addresses, 200);
+        $addresses = Address::with(['country', 'user'])->paginate(50);
+        return view('admin.Address.all', compact('addresses'));
     }
 
-    public function show($id)
+    public function create()
     {
-        $address = Address::findOrFail($id);
-        return response()->json($address, 200);
+        $countries = Country::select('id', 'name_en')->get()->pluck('name_en', 'id')->toArray();
+        $users = User::select('id', DB::raw("CONCAT(first_name, ' ', last_name) as full_name"))
+            ->get()
+            ->pluck('full_name', 'id')
+            ->toArray();
+        return view('admin.Address.createUpdate', compact('countries', 'users'));
     }
+
     public function store(StoreAddressRequest $request)
     {
         $data = $request->validated();
 
-        Address::create($data);
-
-        return response()->json(['message' => 'Registration successful'], 200);
+        try {
+            Address::create($data);
+            return redirect()->route('dashboard.Address.index')->with('success', 'Address created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to create address: ' . $e->getMessage()]);
+        }
     }
 
-    public function update(UpdateAddressRequest $request)
+    public function show(Address $address)
+    {
+        $address->load(['country', 'user']);
+        return view('admin.Address.show', compact('address'));
+    }
+
+    public function edit(Address $address)
+    {
+        $countries = Country::select('id', 'name_en')->get()->pluck('name_en', 'id')->toArray();
+        $users = User::select('id', DB::raw("CONCAT(first_name, ' ', last_name) as full_name"))
+            ->get()
+            ->pluck('full_name', 'id')
+            ->toArray();
+        return view('admin.Address.createUpdate', compact('address', 'countries', 'users'));
+    }
+
+    public function update(UpdateAddressRequest $request, Address $address)
     {
         $data = $request->validated();
 
-        Address::update($data);
-
-        return response()->json(['message' => 'Registration successful'], 200);
+        try {
+            $address->update($data);
+            return redirect()->route('dashboard.Address.index')->with('success', 'Address updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to update address: ' . $e->getMessage()]);
+        }
     }
 
-    public function delete(DeleteAddressRequest $request)
+    public function delete(DeleteAddressRequest $request, Address $address)
     {
-        $id = $request->id;
-        Address::where('id', $id)->delete();
-        return response()->json(['message' => 'Registration successful'], 200);
+        try {
+            $address->delete();
+            return redirect()->route('dashboard.Address.index')->with('success', 'Address deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to delete address: ' . $e->getMessage()]);
+        }
     }
+
 }

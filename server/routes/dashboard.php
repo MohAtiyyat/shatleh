@@ -37,14 +37,14 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
             Route::delete('/{id}', [ShopController::class, 'delete'])->name('dashboard.Shop.destroy');
         });
 
-        Route::prefix('address')->group(function () {
-            Route::get('/', [AddressController::class, 'index'])->name('dashboard.address');
-            Route::get('/create', [AddressController::class, 'create'])->name('dashboard.address.create');
-            Route::post('/create', [AddressController::class, 'store'])->name('dashboard.address.store');
-            Route::get('/{id}/edit', [AddressController::class, 'edit'])->name('dashboard.address.edit');
-            Route::get('/{id}', [AddressController::class, 'show'])->name('dashboard.address.show');
-            Route::put('/{id}', [AddressController::class, 'update'])->name('dashboard.address.update');
-            Route::delete('/{id}', [AddressController::class, 'delete'])->name('dashboard.address.destroy');
+        Route::prefix('Address')->name('dashboard.Address.')->group(function () {
+            Route::get('/', [AddressController::class, 'index'])->name('index');
+            Route::get('/create', [AddressController::class, 'create'])->name('create');
+            Route::post('/store', [AddressController::class, 'store'])->name('store');
+            Route::get('/{address}/edit', [AddressController::class, 'edit'])->name('edit');
+            Route::get('/{address}', [AddressController::class, 'show'])->name('show');
+            Route::put('/{address}', [AddressController::class, 'update'])->name('update');
+            Route::delete('/{address}', [AddressController::class, 'delete'])->name('destroy');
         });
 
         Route::prefix('category')->group(function () {

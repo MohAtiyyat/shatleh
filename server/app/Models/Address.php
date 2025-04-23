@@ -33,4 +33,7 @@ class Address extends Model
         return $this->hasOne(User::class);
     }
 
+    public function shop(){
+        return $this->hasOne(Shop::class);
+    }
 }

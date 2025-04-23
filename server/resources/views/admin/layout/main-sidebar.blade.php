@@ -85,7 +85,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.Address.index') }}" class="nav-link @yield('Addresses_Show')">
                         <ion-icon class="nav-icon" name="location-outline"></ion-icon>
                         <p>Addresses Management</p>
                     </a>

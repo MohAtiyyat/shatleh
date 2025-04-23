@@ -25,9 +25,9 @@ class UpdateAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => $this->id('addresses'), 
+            'id' => $this->id('addresses'),
             'title' => 'required|string',
-            'country_id' => 'required|string:exists:countries,id|default:1',
+            'country_id' => 'required|string:exists:countries,id',
             'city' => 'required|string',
             'address_line' => 'required|string',
         ];

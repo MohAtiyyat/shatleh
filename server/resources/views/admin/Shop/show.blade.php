@@ -74,7 +74,7 @@
                                     <div class="col-12 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
                                         <p class="text-dark">
-                                            {{ $shop->address ? ($shop->address->street . ', ' . $shop->address->city . ', ' . $shop->address->state . ', ' . $shop->address->country . ' ' . $shop->address->postal_code) : 'N/A' }}
+                                            {{ $shop->address ? ($shop->address->address_line . ', ' . $shop->address->city . ', ' . $shop->address->state . ', ' . $shop->address->country->name_en) : 'N/A' }}
                                         </p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
