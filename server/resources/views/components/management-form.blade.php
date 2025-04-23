@@ -30,7 +30,13 @@
                                     {{ $field['multiple'] ?? false ? 'multiple' : '' }}>
                                 @foreach($field['options'] ?? [] as $value => $label)
                                     <option value="{{ $value }}"
-                                            {{ $item && in_array($value, old($field['name'], $item[str_replace('[]', '', $field['name'])] ?? [])) ? 'selected' : '' }}>
+                                            @if($item)
+                                                @if($field['multiple'] ?? false)
+                                                    {{ in_array($value, old($field['name'], $item[str_replace('[]', '', $field['name'])] ?? [])) ? 'selected' : '' }}
+                                                @else
+                                                    {{ old($field['name'], $item[$field['name']] ?? '') == $value ? 'selected' : '' }}
+                                                @endif
+                                            @endif>
                                         {{ $label }}
                                     </option>
                                 @endforeach
@@ -69,6 +75,11 @@
                                     </label>
                                 </div>
                             </div>
+                            @if($field['name'] === 'images[]')
+                                <small class="form-text text-muted">Upload up to 5 images, each up to 2MB (JPEG, PNG, JPG).</small>
+                            @elseif($field['type'] === 'file')
+                                <small class="form-text text-muted">Upload one image, up to 2MB (JPEG, PNG, JPG).</small>
+                            @endif
                         @elseif($field['type'] === 'textarea')
                             <textarea id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                       placeholder="{{ $field['placeholder'] ?? '' }}"
