@@ -26,22 +26,34 @@
                         <label for="{{ $field['name'] }}">{{ $field['label'] }} {{ $field['required'] ?? false ? '' : '' }}</label>
                         @if($field['type'] === 'select')
                             <select id="{{ $field['name'] }}" name="{{ $field['name'] }}"
-                                    {{ $field['required'] ?? false ? 'required' : '' }}>
+                                    {{ $field['required'] ?? false ? 'required' : '' }}
+                                    {{ $field['multiple'] ?? false ? 'multiple' : '' }}>
                                 @foreach($field['options'] ?? [] as $value => $label)
                                     <option value="{{ $value }}"
-                                            {{ old($field['name'], $item[$field['name']] ?? '') == $value ? 'selected' : '' }}>
+                                            {{ $item && in_array($value, old($field['name'], $item[str_replace('[]', '', $field['name'])] ?? [])) ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
                                 @endforeach
                             </select>
                         @elseif($field['type'] === 'file')
-                            @if($item && $item[$field['name']] && $field['name'] === 'image')
+                            @if($item && $item[str_replace('[]', '', $field['name'])] && $field['name'] !== 'images[]' && is_string($item[str_replace('[]', '', $field['name'])]))
                                 <div class="mb-3">
                                     <label>Current Image</label>
                                     <div>
-                                        <img src="{{ $item[$field['name']] }}"
+                                        <img src="{{ $item[str_replace('[]', '', $field['name'])] }}"
                                              alt="Current Image"
                                              style="max-width: 200px; height: auto; border-radius: 0.35rem;">
+                                    </div>
+                                </div>
+                            @elseif($item && $field['name'] === 'images[]' && is_array($item['image']))
+                                <div class="mb-3">
+                                    <label>Current Images</label>
+                                    <div class="d-flex flex-wrap">
+                                        @foreach($item['image'] as $image)
+                                            <img src="{{ $image }}"
+                                                 alt="Current Image"
+                                                 style="max-width: 100px; height: auto; border-radius: 0.35rem; margin: 5px;">
+                                        @endforeach
                                     </div>
                                 </div>
                             @endif
@@ -50,9 +62,10 @@
                                     <input type="file" class="custom-file-input"
                                            id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                            accept="{{ $field['accept'] ?? '' }}"
-                                           {{ $field['required'] ?? false && !$item ? 'required' : '' }}>
+                                           {{ $field['required'] ?? false && !$item ? 'required' : '' }}
+                                           {{ $field['multiple'] ?? false ? 'multiple' : '' }}>
                                     <label class="custom-file-label" for="{{ $field['name'] }}">
-                                        Choose file
+                                        Choose file{{ $field['multiple'] ?? false ? '(s)' : '' }}
                                     </label>
                                 </div>
                             </div>
@@ -75,9 +88,14 @@
                                    {{ $field['min'] ?? '' ? 'min="' . $field['min'] . '"' : '' }}
                                    {{ $field['maxlength'] ?? '' ? 'maxlength="' . $field['maxlength'] . '"' : '' }}>
                         @endif
-                        @error($field['name'])
+                        @error(str_replace('[]', '', $field['name']))
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
+                        @if($field['name'] === 'images[]')
+                            @error('images.*')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        @endif
                     </div>
                 @endforeach
 
@@ -99,8 +117,13 @@
     <script>
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', function(e) {
-                const fileName = e.target.files[0]?.name || 'Choose file';
-                e.target.nextElementSibling.textContent = fileName;
+                const files = e.target.files;
+                const label = e.target.nextElementSibling;
+                if (files.length > 1) {
+                    label.textContent = `${files.length} files selected`;
+                } else {
+                    label.textContent = files[0]?.name || 'Choose file(s)';
+                }
             });
         });
     </script>
