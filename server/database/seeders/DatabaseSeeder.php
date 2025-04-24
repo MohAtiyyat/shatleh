@@ -130,22 +130,5 @@ class DatabaseSeeder extends Seeder
              ]);
              $user->assignRole('Employee');
          }
-
-         // Create Customer User
-         $customer = User::create([
-             'first_name' => 'Emma',
-             'last_name' => 'Brown',
-             'email' => 'customer@example.com',
-             'email_verified_at' => now(),
-             'password' => Hash::make('password'),
-             'phone_number' => '7778889999',
-             'language' => 'en',
-             'ip_country_id' => 1,
-             'time_zone' => 'America/New_York',
-             'is_banned' => false,
-             'bio' => 'Regular customer',
-             'address_id' => 1,
-         ]);
-         $customer->assignRole('Customer');
     }
 }

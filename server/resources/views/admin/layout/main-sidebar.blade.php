@@ -37,7 +37,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('customer') }}" class="nav-link @yield('Customers_Show')">
+                    <a href="{{ route('dashboard.customer.index') }}" class="nav-link @yield('Customers_Show')">
                         <ion-icon class="nav-icon" name="people-outline"></ion-icon>
                         <p>Customers Management</p>
                     </a>
@@ -113,7 +113,7 @@
                         <ion-icon class="nav-icon" name="help-outline"></ion-icon>
                         <p>Service Requests Management</p>
                     </a>
-                </li>   
+                </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <ion-icon class="nav-icon" name="chatbubble-outline"></ion-icon>
