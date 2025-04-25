@@ -19,7 +19,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.staff') }}" class="nav-link">
                         <ion-icon class="nav-icon" name="people-outline"></ion-icon>
                         <p>Users Management</p>
                     </a>
