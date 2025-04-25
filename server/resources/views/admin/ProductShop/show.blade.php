@@ -49,7 +49,7 @@
                                         <p class="text-dark mb-0">{{ $record->shop_name ?? 'N/A' }}</p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Employee</h5>
+                                        <h5 class="text-muted font-weight-semibold mb-2">Added By</h5>
                                         <p class="text-dark mb-0">{{ $record->employee_name ?? 'N/A' }}</p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">

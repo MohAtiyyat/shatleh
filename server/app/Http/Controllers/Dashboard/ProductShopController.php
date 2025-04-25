@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\Product\StoreProductShopRequest;
+use App\Http\Requests\Dashboard\ProductShop\StoreProductShopRequest;
 use App\Http\Requests\Dashboard\Product\UpdateProductShopRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,14 +36,14 @@ class ProductShopController extends Controller
         return view('admin.ProductShop.createUpdate', compact('products', 'shops', 'users'));
     }
 
-    public function store(StoreProductShopRequest $request)
+    public function store(Request $request)
     {
-        $request->validated();
+        $request->all();
 
         DB::table('product_shops')->insert([
             'product_id' => $request->product_id,
             'shop_id' => $request->shop_id,
-            'employee_id' => $request->employee_id,
+            'employee_id' => $request->employee_id??1,
             'cost' => $request->cost,
             'created_at' => now(),
             'updated_at' => now(),

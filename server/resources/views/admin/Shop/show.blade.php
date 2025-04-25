@@ -16,12 +16,12 @@
                                     {{ $shop->name ?? 'Shop Details' }}
                                 </h2>
                                 <div>
-                                    <a href="{{ route('dashboard.Shop') }}"
+                                    <a href="{{ route('dashboard.shop') }}"
                                        class="btn btn-light btn-sm mr-2 rounded-pill px-3"
                                        title="Back to Shops">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
-                                    <a href="{{ route('dashboard.Shop.create') }}"
+                                    <a href="{{ route('dashboard.shop.create') }}"
                                        class="btn btn-light btn-sm rounded-pill px-3"
                                        title="Add New Shop">
                                         <i class="fas fa-plus mr-1"></i> New
@@ -73,9 +73,11 @@
                                     </div>
                                     <div class="col-12 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
-                                        <p class="text-dark">
-                                            {{ $shop->address ? ($shop->address->street . ', ' . $shop->address->city . ', ' . $shop->address->state . ', ' . $shop->address->country . ' ' . $shop->address->postal_code) : 'N/A' }}
-                                        </p>
+                                        <a href="{{ route('dashboard.address.show', $shop->address->id) }}">
+                                            <p>
+                                                {{ $shop->address ? ($shop->address->street . ', ' . $shop->address->city . ', ' . $shop->address->state . ', ' . $shop->address->country . ' ' . $shop->address->postal_code) : 'N/A' }}
+                                            </p>
+                                        </a>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Created At</h5>
@@ -95,11 +97,11 @@
                         </div>
                         <!-- Footer -->
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
-                            <a href="{{ route('dashboard.Shop.edit', $shop->id) }}"
+                            <a href="{{ route('dashboard.shop.edit', $shop->id) }}"
                                class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
                                 <i class="fas fa-edit mr-2"></i> Edit Shop
                             </a>
-                            <form action="{{ route('dashboard.Shop.destroy', $shop->id) }}"
+                            <form action="{{ route('dashboard.shop.destroy', $shop->id) }}"
                                   method="POST">
                                 @csrf
                                 @method('DELETE')
