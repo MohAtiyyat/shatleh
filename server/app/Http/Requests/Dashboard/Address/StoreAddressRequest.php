@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Dashboard\Address;
 
-use App\Traits\UserRuleTrait;
+use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAddressRequest extends FormRequest
 {
-    use UserRuleTrait;
+    use UserRoleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */

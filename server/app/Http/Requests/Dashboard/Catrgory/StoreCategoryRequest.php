@@ -3,12 +3,12 @@
 namespace App\Http\Requests\Dashboard\Catrgory;
 
 use App\Traits\FormRequestTrait;
-use App\Traits\UserRuleTrait;
+use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCategoryRequest extends FormRequest
 {
-    use FormRequestTrait, UserRuleTrait;
+    use FormRequestTrait, UserRoleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
