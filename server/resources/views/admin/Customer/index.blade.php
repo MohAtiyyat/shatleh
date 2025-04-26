@@ -25,7 +25,10 @@
                         <form action="{{ route($Route . '.toggleBan', $item->id) }}" method="POST">
                             @csrf
                             @method('PATCH')
-                            <input type="checkbox" onchange="this.form.submit()" {{ $item->user->is_banned ? 'checked' : '' }} class="form-check-input">
+                            <label class="switch">
+                                <input type="checkbox" onchange="this.form.submit()" {{ $item->user->is_banned ? 'checked' : '' }} class="form-check-input">
+                                <span class="slider round"></span>
+                            </label>
                         </form>
                     </td>
                     <td>
