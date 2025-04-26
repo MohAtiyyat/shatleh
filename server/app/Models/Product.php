@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = 'products';
 
     protected $fillable = [
@@ -20,6 +20,11 @@ class Product extends Model
         'description_ar',
         'status',
         'availability',
+        'sold_quantity',
+    ];
+
+    protected $casts = [
+        'image' => 'array',
     ];
 
     public function orders()
@@ -28,5 +33,19 @@ class Product extends Model
                     ->withPivot('price', 'quantity')
                     ->withTimestamps()
                     ->withTrashed();
+    }
+
+    public function shops()
+    {
+        return $this->belongsToMany(Shop::class, 'product_shops', 'product_id', 'shop_id')
+            ->withPivot('cost', 'employee_id')
+            ->withTimestamps();
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_products', 'product_id', 'category_id')
+            ->as('category_products')
+            ->withTimestamps();
     }
 }
