@@ -127,4 +127,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Shop::class, 'employee_id');
     }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function specialties()
+    {
+        return $this->belongsToMany(Specialty::class, 'expert_specialty', 'expert_id', 'specialty_id')
+                    ->withTimestamps();
+    }
 }

@@ -72,6 +72,13 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
 
         Route::name('staff')->prefix('staff')->group(function () {
             Route::get('/', [StaffController::class, 'index'])->name('');
+            Route::get('/create', [StaffController::class, 'create'])->name('.create');
+            Route::post('/create', [StaffController::class, 'store'])->name('.store');
+            Route::get('/{id}/edit', [StaffController::class, 'edit'])->name('.edit');
+            Route::get('/{id}', [StaffController::class, 'show'])->name('.show');
+            Route::put('/{id}', [StaffController::class, 'update'])->name('.update');
+            Route::delete('/{id}', [StaffController::class, 'delete'])->name('.destroy');
+            Route::post('/{id}/change-password', [StaffController::class, 'resetPassword'])->name('.resetPassword');
         });
     });
 });

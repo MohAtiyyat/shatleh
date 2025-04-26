@@ -3,12 +3,12 @@
 namespace App\Http\Requests\Dashboard\ProductShop;
 
 use App\Traits\FormRequestTrait;
-use App\Traits\UserRuleTrait;
+use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductShopRequest extends FormRequest
 {
-    use UserRuleTrait;
+    use UserRoleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */

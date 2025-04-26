@@ -25,7 +25,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('dashboard.staff') }}" class="nav-link">
+                    <a href="{{ route('dashboard.staff') }}" class="nav-link @yield('Staff_Show')">
                         <ion-icon class="nav-icon" name="people-outline"></ion-icon>
                         <p>Staff Management</p>
                     </a>
