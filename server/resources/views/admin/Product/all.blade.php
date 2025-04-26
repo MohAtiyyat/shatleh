@@ -7,7 +7,7 @@
     <x-management-table
         title="Product Management"
         :headers="[
-            '#', 'Image', 'Name (EN)', 'Name (AR)', 'Price', 'Status', 'Availability', 'Description (EN)', 'Description (AR)', 'Updated', 'Actions'
+            '#', 'Name (AR)', 'Price', 'Status', 'Availability', 'Sold Quantity', 'Actions'
         ]"
         :items="$products"
         :Route="'dashboard.product'"
@@ -16,13 +16,6 @@
         @foreach ($products as $product)
             <tr>
                 <td>{{ $product->id }}</td>
-                <td>
-                    <img src="{{ $product->image ?? 'https://placehold.co/60x60' }}"
-                         alt="Product Image"
-                         class="img-thumbnail"
-                         style="width: 60px; height: 60px; object-fit: cover;">
-                </td>
-                <td>{{ $product->name_en ?? 'N/A' }}</td>
                 <td>{{ $product->name_ar ?? 'N/A' }}</td>
                 <td>${{ number_format($product->price, 2) }}</td>
                 <!-- Status -->
@@ -47,10 +40,7 @@
                 @endphp
                 <td><span class="{{ $availability['class'] }}">{{ $availability['label'] }}</span></td>
 
-
-                <td>{{ Str::limit($product->description_en, 30) }}</td>
-                <td>{{ Str::limit($product->description_ar, 30) }}</td>
-                <td>{{ \Carbon\Carbon::parse($product->updated_at)->toDateString() }}</td>
+                <td>{{ $product->sold_quantity ?? 0 }}</td>
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
@@ -73,6 +63,5 @@
             </tr>
         @endforeach
     </x-slot>
-
     </x-management-table>
 @endsection

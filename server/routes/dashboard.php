@@ -3,6 +3,7 @@
 use App\Http\Controllers\Dashboard\AddressController;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
 use App\Http\Controllers\Dashboard\ShopController;
@@ -66,6 +67,12 @@ Route::middleware('web')->prefix('dashboard')->group(function () {
             Route::get('/{id}', [ProductShopController::class, 'show'])->name('dashboard.productShop.show');
             Route::put('/{id}', [ProductShopController::class, 'update'])->name('dashboard.productShop.update');
             Route::delete('/{id}', [ProductShopController::class, 'delete'])->name('dashboard.productShop.destroy');
+        });
+
+        Route::group(['as' => 'dashboard.'], function () {
+            Route::resource('customer', CustomerController::class);
+            Route::patch('customer/{customer}/toggle-ban', [CustomerController::class, 'toggleBan'])->name('customer.toggleBan');
+            Route::patch('customer/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('customer.resetPassword');
         });
 
     });

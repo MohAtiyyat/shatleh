@@ -37,15 +37,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('customer') }}" class="nav-link @yield('Customers_Show')">
+                    <a href="{{ route('dashboard.customer.index') }}" class="nav-link @yield('Customers_Show')">
                         <ion-icon class="nav-icon" name="people-outline"></ion-icon>
                         <p>Customers Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <ion-icon class="nav-icon" name="shield-outline"></ion-icon>
-                        <p>Roles Management</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -54,12 +48,12 @@
                         <p>Categories Management</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="#" class="nav-link">
                         <ion-icon class="nav-icon" name="document-text-outline"></ion-icon>
                         <p>Posts Management</p>
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <ion-icon class="nav-icon" name="star-outline"></ion-icon>
@@ -92,20 +86,8 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <ion-icon class="nav-icon" name="wallet-outline"></ion-icon>
-                        <p>Payment Info Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
                         <ion-icon class="nav-icon" name="pricetag-outline"></ion-icon>
                         <p>Coupons Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <ion-icon class="nav-icon" name="globe-outline"></ion-icon>
-                        <p>Countries Management</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -128,32 +110,8 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <ion-icon class="nav-icon" name="list-outline"></ion-icon>
-                        <p>Order Details Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
                         <ion-icon class="nav-icon" name="help-outline"></ion-icon>
                         <p>Service Requests Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <ion-icon class="nav-icon" name="grid-outline"></ion-icon>
-                        <p>Category Products Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <ion-icon class="nav-icon" name="pricetags-outline"></ion-icon>
-                        <p>Coupon Products Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link @yield('Experts_Show')">
-                        <ion-icon class="nav-icon" name="ribbon-outline"></ion-icon>
-                        <p>Expert Specialty Management</p>
                     </a>
                 </li>
                 <li class="nav-item">
