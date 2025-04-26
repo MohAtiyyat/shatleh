@@ -54,8 +54,7 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         $customer->load('user');
-
-        $ordersCount = $customer->orders()->count();
+        $ordersCount = $customer->orders->count();
         $cartItems = $customer->cart()->with('product')->get();
         $addresses = $customer->user->defaultAddress()->get();
         return view('admin.Customer.show', compact('customer', 'ordersCount', 'cartItems', 'addresses'));

@@ -60,7 +60,7 @@
                                         <h5 class="text-muted font-weight-semibold mb-2">Orders Count</h5>
                                         {{--this will be handled soon}}
                                         {{-- <a href="{{ route('dashboard.orders.index', ['search' => $customer->user->first_name . ' ' . $customer->user->last_name]) }}"
-                                           class="text-dark">{{ $ordersCount }}</a> --}}
+                                                                                       class="text-dark">{{ $ordersCount?? '0' }}</a> --}}
                                     </div>
                                     <div class="col-12 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Cart Items</h5>
@@ -69,7 +69,7 @@
                                         @else
                                             <ul class="list-group">
                                                 @foreach($cartItems as $item)
-                                                    <li class="list-group-item">{{ $item->product->name_en ?? 'N/A' }} (Qty: {{ $item->quantity }})</li>
+                                                <li class="list-group-item">{{ $item->product->name_en ?? 'N/A' }} (Qty: {{ $item->quantity }})</li>
                                                 @endforeach
                                             </ul>
                                         @endif
