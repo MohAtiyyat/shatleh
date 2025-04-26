@@ -19,9 +19,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('customer') }}" class="nav-link @yield('Customers_Show')">
                         <ion-icon class="nav-icon" name="people-outline"></ion-icon>
-                        <p>Users Management</p>
+                        <p>Customers Management</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('dashboard.staff') }}" class="nav-link @yield('Staff_Show')">
+                        <ion-icon class="nav-icon" name="people-outline"></ion-icon>
+                        <p>Staff Management</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -97,7 +103,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('dashboard.Shop') }}" class="nav-link @yield('Shops_Show')">
+                    <a href="{{ route('dashboard.shop') }}" class="nav-link @yield('Shops_Show')">
                         <ion-icon class="nav-icon" name="storefront-outline"></ion-icon>
                         <p>Shops Management</p>
                     </a>

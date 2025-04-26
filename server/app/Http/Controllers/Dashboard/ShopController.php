@@ -47,7 +47,7 @@ class ShopController extends Controller
 
         Shop::create($data);
 
-        return redirect()->route('dashboard.Shop')->with('success', 'Shop created successfully.');
+        return redirect()->route('dashboard.shop')->with('success', 'Shop created successfully.');
     }
 
     public function edit($id)
@@ -76,7 +76,7 @@ class ShopController extends Controller
 
             $shop->update($data);
 
-            return redirect()->route('dashboard.Shop')->with('success', 'Shop updated successfully.');
+            return redirect()->route('dashboard.shop')->with('success', 'Shop updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to update shop: ' . $e->getMessage()]);
         }
@@ -91,7 +91,7 @@ class ShopController extends Controller
         }
         $shop->delete();
 
-        return redirect()->route('dashboard.Shop')->with('success', 'Shop deleted successfully.');
+        return redirect()->route('dashboard.shop')->with('success', 'Shop deleted successfully.');
     }
 
 }
