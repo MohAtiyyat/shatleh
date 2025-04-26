@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Dashboard\Product;
+namespace App\Http\Requests\Dashboard\ProductShop;
 
 use App\Traits\FormRequestTrait;
-use App\Traits\UserRuleTrait;
+use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreProductShopRequest extends FormRequest
 {
-    use FormRequestTrait, UserRuleTrait;
+    use UserRoleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */

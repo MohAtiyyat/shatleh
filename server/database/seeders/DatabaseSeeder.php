@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
          $adminRole = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
          $adminRole->givePermissionTo(Permission::all());
 
-         $managerRole = Role::create(['name' => 'Manager', 'guard_name' => 'web']);
+         $managerRole = Role::create(['name' => 'Expert', 'guard_name' => 'web']);
          $managerRole->givePermissionTo([
              'view shops',
              'edit shops',

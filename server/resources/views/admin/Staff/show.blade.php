@@ -1,7 +1,7 @@
 @extends('admin.layout.master')
 
-@section('title', 'Product Shop Details')
-@section('ProductShop_Show', 'active')
+@section('title', 'Staff Details')
+@section('Staff_Show', 'active')
 
 @section('content')
     <div class="content py-1 item">
@@ -13,17 +13,17 @@
                         <div class="card-header bg-gradient-success text-white p-4">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h2 class="mb-0 font-weight-bold text-capitalize">
-                                    {{ $record->product_name ?? 'Product Shop Details' }} / {{ $record->shop_name ?? '' }}
+                                    {{  $record->id .'. '.$record->roles->pluck('name')[0] ?? 'N/A' }} / {{ $record->first_name . ' ' . $record->last_name  ?? 'Staff Details'  }}
                                 </h2>
                                 <div>
-                                    <a href="{{ route('dashboard.productShop') }}"
+                                    <a href="{{URL::previous() }}"
                                        class="btn btn-light btn-sm mr-2 rounded-pill px-3"
                                        title="Back to Product Shops">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
-                                    <a href="{{ route('dashboard.productShop.create') }}"
+                                    <a href="{{ route('dashboard.staff.create') }}"
                                        class="btn btn-light btn-sm rounded-pill px-3"
-                                       title="Add New Product Shop">
+                                       title="Add New Staff">
                                         <i class="fas fa-plus mr-1"></i> New
                                     </a>
                                 </div>
@@ -35,37 +35,35 @@
                             <div class="details-wrapper">
                                 <div class="row">
                                     <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Cost</h5>
-                                        <p class="h4 text-dark font-weight-bold mb-0">
-                                            ${{ number_format($record->cost ?? 0, 2) }}
+                                        <h5 class="text-muted font-weight-semibold mb-2">Specialties</h5>
+                                        <p class="h4 text-dark mb-0">
+                                            {{ $record->specialties[0] ?? 'N/A' }}
                                         </p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Product</h5>
-                                        <p class="text-dark mb-0">{{ $record->product_name ?? 'N/A' }}</p>
+                                        <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
+                                        <a class="text-dark mb-0" href="{{ route('dashboard.address.show', $record->address->id) }}">{{ $record->Address->city ?? 'N/A' }}</a>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Shop</h5>
-                                        <p class="text-dark mb-0">{{ $record->shop_name ?? 'N/A' }}</p>
-                                    </div>
-                                    <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Added By</h5>
-                                        <p class="text-dark mb-0">{{ $record->employee_name ?? 'N/A' }}</p>
-                                    </div>
-                                    <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Record ID</h5>
-                                        <p class="text-dark mb-0">#{{ $record->id ?? 'N/A' }}</p>
-                                    </div>
-                                    <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Created At</h5>
-                                        <p class="text-dark mb-0">
-                                            {{ \Carbon\Carbon::parse($record->created_at)->format('M d, Y H:i') }}
+                                        <h5 class="text-muted font-weight-semibold mb-2">Email</h5>
+                                        <p class="h4 text-dark mb-0">
+                                            {{ $record->email ?? 'N/A' }}
                                         </p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Updated At</h5>
+                                        <h5 class="text-muted font-weight-semibold mb-2">Phone Number</h5>
+                                        <p class="text-dark mb-0">{{ $record->phone_number ?? 'N/A' }}</p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Register date</h5>
                                         <p class="text-dark mb-0">
-                                            {{ \Carbon\Carbon::parse($record->updated_at)->format('M d, Y H:i') }}
+                                            {{ \Carbon\Carbon::parse($record->created_at)->format('M d, Y') }}
+                                        </p>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Last modife date</h5>
+                                        <p class="text-dark mb-0">
+                                            {{ \Carbon\Carbon::parse($record->updated_at)->format('M d, Y') }}
                                         </p>
                                     </div>
                                 </div>
@@ -74,9 +72,9 @@
                         </div>
                         <!-- Footer -->
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
-                            <a href="{{ route('dashboard.productShop.edit', $record->id) }}"
+                            <a href="{{ route('dashboard.staff.edit', $record->id) }}"
                                class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
-                                <i class="fas fa-edit mr-2"></i> Edit Product Shop
+                                <i class="fas fa-edit mr-2"></i> Edit Staff
                             </a>
                             <form action="{{ route('dashboard.productShop.destroy', $record->id) }}"
                                   method="POST">

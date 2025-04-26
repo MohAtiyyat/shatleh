@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Auth;
 
-trait UserRuleTrait
+trait UserRoleTrait
 {
     public function admin(): bool
     {

@@ -7,7 +7,7 @@
     <x-management-table
         title="Product Shop Management"
         :headers="[
-            '#', 'Product Name', 'Shop Name', 'Cost', 'Employee Name', 'Created At', 'Updated At', 'Actions'
+            '#', 'Product Name', 'Shop Name', 'Cost', 'Added By', 'Created At', 'Updated At', 'Actions'
         ]"
         :items="$records"
         :Route="'dashboard.productShop'"
@@ -16,9 +16,9 @@
         @foreach ($records as $record)
             <tr>
                 <td>{{ $record->id }}</td>
-                <td>{{ $record->product_name ?? 'N/A' }}</td>
-                <td>{{ $record->shop_name ?? 'N/A' }}</td>
-                <td>${{ number_format($record->cost, 2) }}</td>
+                <td><a href="{{ route('dashboard.product.show', $record->id) }}">{{ $record->product_name ?? 'N/A' }}</a></td>
+                <td><a href="{{ route('dashboard.shop.show', $record->id) }}">{{ $record->shop_name ?? 'N/A' }}</a></td>
+                <td>JOD{{ number_format($record->cost, 2) }}</td>
                 <td>{{ $record->employee_name ?? 'N/A' }}</td>
                 <td>{{ \Carbon\Carbon::parse($record->created_at)->toDateString() }}</td>
                 <td>{{ \Carbon\Carbon::parse($record->updated_at)->toDateString() }}</td>

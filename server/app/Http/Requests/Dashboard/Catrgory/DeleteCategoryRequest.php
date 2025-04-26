@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Dashboard\Catrgory;
 
-use App\Traits\UserRuleTrait;
+use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DeleteCategoryRequest extends FormRequest
 {
-    use UserRuleTrait;
+    use UserRoleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
