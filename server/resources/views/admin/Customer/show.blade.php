@@ -69,7 +69,7 @@
                                         @else
                                             <ul class="list-group">
                                                 @foreach($cartItems as $item)
-                                                    <li class="list-group-item">{{ $item->product_name ?? 'N/A' }} (Qty: {{ $item->quantity }})</li>
+                                                    <li class="list-group-item">{{ $item->product->name_en ?? 'N/A' }} (Qty: {{ $item->quantity }})</li>
                                                 @endforeach
                                             </ul>
                                         @endif

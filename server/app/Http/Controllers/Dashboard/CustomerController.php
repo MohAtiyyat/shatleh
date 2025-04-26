@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Customer\StoreCustomerRequest;
+use App\Models\Cart;
 use App\Models\Customer;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -54,7 +56,7 @@ class CustomerController extends Controller
         $customer->load('user');
 
         $ordersCount = $customer->orders()->count();
-        $cartItems = $customer->cart()->get();
+        $cartItems = $customer->cart()->with('product')->get();
         $addresses = $customer->user->defaultAddress()->get();
         return view('admin.Customer.show', compact('customer', 'ordersCount', 'cartItems', 'addresses'));
     }
