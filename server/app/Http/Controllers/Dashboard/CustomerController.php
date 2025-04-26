@@ -53,7 +53,7 @@ class CustomerController extends Controller
     {
         $customer->load('user');
 
-        $ordersCount = $customer->orders()->count();
+        $ordersCount = $customer->orders->count();
         $cartItems = $customer->cart()->get();
         $addresses = $customer->user->defaultAddress()->get();
         return view('admin.Customer.show', compact('customer', 'ordersCount', 'cartItems', 'addresses'));
