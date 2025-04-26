@@ -138,41 +138,5 @@
             });
         });
     </script>
-   @if(session('success'))
-   <script>
-       Swal.fire({
-           toast: true,
-           position: 'top-end', // top-right corner
-           icon: 'success',
-           title: '{{ session('success') }}',
-           showConfirmButton: false,
-           timer: 2500,
-           timerProgressBar: true,
-           didOpen: (toast) => {
-               toast.addEventListener('mouseenter', Swal.stopTimer)
-               toast.addEventListener('mouseleave', Swal.resumeTimer)
-           }
-       });
-   </script>
-   @endif
-
-   @if(session('error'))
-   <script>
-       Swal.fire({
-           toast: true,
-           position: 'top-end',
-           icon: 'error',
-           title: '{{ session('error') }}',
-           showConfirmButton: false,
-           timer: 2500,
-           timerProgressBar: true,
-           didOpen: (toast) => {
-               toast.addEventListener('mouseenter', Swal.stopTimer)
-               toast.addEventListener('mouseleave', Swal.resumeTimer)
-           }
-       });
-   </script>
-   @endif
-
 
 @endsection
