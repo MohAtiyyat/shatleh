@@ -31,8 +31,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Order::class, 'order_details', 'product_id', 'order_id')
             ->withPivot('price', 'quantity')
-            ->as('order_details')
-            ->withTimestamps();
+            ->withTimestamps()
+            ->withTrashed();
     }
 
     public function shops()
