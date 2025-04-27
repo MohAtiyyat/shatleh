@@ -5,11 +5,11 @@ namespace App\Http\Requests\Dashboard\Customer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Traits\FormRequestTrait;
-use App\Traits\UserRuleTrait;
+use App\Traits\UserRoleTrait;
 
 class StoreCustomerRequest extends FormRequest
 {
-    use FormRequestTrait , UserRuleTrait;
+    use FormRequestTrait , UserRoleTrait;
 
     public function authorize(): bool
     {
@@ -18,6 +18,7 @@ class StoreCustomerRequest extends FormRequest
 
     public function rules(): array
     {
+
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -27,7 +28,7 @@ class StoreCustomerRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($this->route('customer')?->user_id),
             ],
             'phone_number' => 'required|string|max:20',
-            'language' => 'required|string|max:10',
+
         ];
     }
 }
