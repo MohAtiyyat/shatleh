@@ -71,7 +71,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::delete('/{id}', [ProductShopController::class, 'delete'])->name('productShop.destroy');
         });
 
-        Route::group(['as' => 'dashboard.'], function () {
+        Route::group([], function () {
             Route::resource('customer', CustomerController::class);
             Route::patch('customer/{customer}/toggle-ban', [CustomerController::class, 'toggleBan'])->name('customer.toggleBan');
             Route::patch('customer/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('customer.resetPassword');

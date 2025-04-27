@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Customer\StoreCustomerRequest;
+use App\Http\Requests\Dashboard\Customer\UpdateCustomerRequest;
 use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
@@ -26,26 +27,16 @@ class CustomerController extends Controller
 
     public function store(StoreCustomerRequest $request)
     {
-        $validated = $request->validated();
+        $data = $request->validated();
 
-        $user = User::create([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'email' => $validated['email'],
-            'phone_number' => $validated['phone_number'],
-            'language' => $validated['language'],
-            'password' => Hash::make('default_password'), // Set a default or generate
-            'email_verified_at' => now(),
-            'ip_country_id' => 1, // Default value, adjust as needed
-            'time_zone' => 'UTC', // Default value
-            'address_id' => 1, // Default value, adjust as needed
-            'bio' => '',
-        ]);
+        $data['password'] = Hash::make("1234");
+        $user = User::create(
+            $data
+        );
 
         Customer::create([
             'user_id' => $user->id,
             'balance' => 0,
-            'payment_info_id' => 1, // Default value, adjust as needed
         ]);
 
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer created successfully.');
@@ -66,23 +57,13 @@ class CustomerController extends Controller
         return view('admin.Customer.createUpdate', compact('customer'));
     }
 
-    public function update(Request $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'phone_number' => 'required|string|max:20',
-            'language' => 'required|string|max:10',
-        ]);
+        $data = $request->validated();
 
-        $customer->user->update([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'email' => $validated['email'],
-            'phone_number' => $validated['phone_number'],
-            'language' => $validated['language'],
-        ]);
+        $customer->user->update(
+            $data
+        );
 
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer updated successfully.');
     }

@@ -16,7 +16,8 @@
                                     {{ $product->name_en ?? 'Product Details' }} / {{ $product->name_ar ?? '' }}
                                 </h2>
                                 <div>
-                                    <a href="{{ route('dashboard.product') }}"
+                                    <a href="{{ URL::previous() }}"
+
                                        class="btn btn-light btn-sm mr-2 rounded-pill px-3"
                                        title="Back to Products">
                                         <i class="fas fa-arrow-left mr-1"></i> Back

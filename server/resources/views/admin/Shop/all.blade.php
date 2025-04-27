@@ -29,7 +29,7 @@
                     <td>{{ $item->owner_phone_number ?? 'N/A' }}</td> -->
                     <td>{{ $item->is_partner ? 'Yes' : 'No' }}</td>
                     <td>{{ $item->employee->first_name . ' ' . $item->employee->last_name ?? 'N/A' }}</td>
-                    <td><a href="{{ route('dashboard.address.show', $item->address->id) }}">{{ $item->address->city ?? 'N/A' }}</a></td>
+                    <td><a href="">{{ $item->address->city ?? 'N/A' }}</a></td>
                     <!-- <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->toDateString() : 'N/A' }}</td> -->
                     <td>
                         <div class="dropdown">
