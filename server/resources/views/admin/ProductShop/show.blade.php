@@ -16,7 +16,7 @@
                                     {{ $record->product_name ?? 'Product Shop Details' }} / {{ $record->shop_name ?? '' }}
                                 </h2>
                                 <div>
-                                    <a href="{{ route('dashboard.productShop') }}"
+                                    <a href="{{ URL::previous() }}"
                                        class="btn btn-light btn-sm mr-2 rounded-pill px-3"
                                        title="Back to Product Shops">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
