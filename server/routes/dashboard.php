@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\AddressController;
 use App\Http\Controllers\Dashboard\AuthController;
+use App\Http\Controllers\Dashboard\CartController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\ProductController;
@@ -87,5 +88,12 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::delete('/{id}', [StaffController::class, 'delete'])->name('.destroy');
             Route::post('/{id}/change-password', [StaffController::class, 'resetPassword'])->name('.resetPassword');
         });
+
+        Route::name('cart')->prefix('cart')->group(function () {
+            Route::get('/', [CartController::class, 'index'])->name('.index');
+            Route::get('/cartProducts/{id}', [CartController::class, 'show'])->name('.show');
+
+        });
+
     });
 });
