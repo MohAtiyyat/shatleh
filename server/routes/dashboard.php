@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
+use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\ServiceRequestController;
 use App\Http\Controllers\Dashboard\ShopController;
 use App\Http\Controllers\Dashboard\StaffController;
@@ -107,5 +108,24 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
 
         });
 
+        Route::name('service')->prefix('service')->group(function () {
+            Route::get('/', [ServiceController::class, 'index'])->name('');
+            Route::get('/create', [ServiceController::class, 'create'])->name('.create');
+            Route::post('/create', [ServiceController::class, 'store'])->name('.store');
+            Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('.edit');
+            Route::get('/{id}', [ServiceController::class, 'show'])->name('.show');
+            Route::put('/{id}', [ServiceController::class, 'update'])->name('.update');
+            Route::delete('/{id}', [ServiceController::class, 'delete'])->name('.destroy');
+        });
+
+    
     });
 });
+
+Route::get('/storage/{path}/{file}', function ($path, $file) {
+    $filePath = storage_path('app/public/' . $path . '/' . $file);
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+    abort(404); 
+})->where('path', '.*')->middleware('web');

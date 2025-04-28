@@ -67,7 +67,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link @yield('Services_Show')">
+                    <a href="{{ route('dashboard.service') }}" class="nav-link @yield('Services_Show')">
                         <ion-icon class="nav-icon" name="diamond-outline"></ion-icon>
                         <p>Services Management</p>
                     </a>
