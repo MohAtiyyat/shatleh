@@ -39,7 +39,7 @@
                                         <div class="carousel-inner">
                                             @foreach($product->image as $index => $image)
                                                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                    <img src="{{ $image }}"
+                                                    <img src="{{ asset($image) }}"
                                                          alt="{{ $product->name_en . ' ' . $product->name_ar }}"
                                                          class="rounded-lg shadow-sm"
                                                          style="max-height: 350px; object-fit: cover; width: 100%; max-width: 350px;">

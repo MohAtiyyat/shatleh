@@ -39,7 +39,7 @@ class ProductController extends Controller
                 $imagePath = $image->store('product_images', 'public');
                 $imagePaths[] = Storage::url($imagePath);
             }
-            $data['image'] = json_encode($imagePaths);
+            $data['image'] = $imagePaths;
         }
 
         $product = Product::create($data);
@@ -79,7 +79,7 @@ class ProductController extends Controller
                     $imagePath = $image->store('product_images', 'public');
                     $imagePaths[] = Storage::url($imagePath);
                 }
-                $data['image'] = json_encode($imagePaths);
+                $data['image'] = $imagePaths;
             }
 
             $product->update($data);
