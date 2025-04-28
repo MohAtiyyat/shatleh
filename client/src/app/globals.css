@@ -1,16 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --primary-bg: #e8f5e9; /* Header background */
-  --secondary-bg: #a5d6a7; /* Active language toggle */
-  --accent-color: #337A5B; /* Title and borders */
-  --text-primary: #337A5B; /* Default text */
-  --text-hover: #374151; /* Hover text */
-  --focus-ring: rgba(165, 214, 167, 0.5); /* Focus ring */
-  /* Adding footer-specific colors to match your current footer */
+  --primary-bg: #e8f5e9;
+  --secondary-bg: #a5d6a7;
+  --accent-color: #337A5B;
+  --header-bg: #e4f5e5e9;
+  --text-primary: #337A5B;
+  --text-hover: #374151;
+  --focus-ring: rgba(165, 214, 167, 0.5);
   --footer-bg: #0f4229;
   --footer-accent: #189b62;
   --footer-hover: #3bd727;
+  --text-white: #ffffff;
+  --text-gray: #707070;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --accent-highlight: #a0f923;
 }
 
 @layer base {
@@ -18,10 +23,15 @@
     font-family: system-ui, sans-serif;
     background-color: var(--primary-bg);
     color: var(--text-primary);
+    margin: 0;
   }
 
   html[lang="ar"] {
     direction: rtl;
+  }
+
+  body {
+    margin: 0;
   }
 }
 
@@ -53,10 +63,9 @@
     ring-color: var(--focus-ring);
   }
 
-  /* New footer-specific classes */
   .footer-link {
     @apply text-sm transition-colors duration-200;
-    color: white;
+    color: var(--text-white);
   }
 
   .footer-link:hover {
@@ -65,16 +74,25 @@
 
   .footer-title {
     @apply text-lg font-semibold mb-4 border-b pb-2;
+    color: var(--text-white);
     border-color: var(--footer-accent);
   }
 
   .footer-icon {
     @apply w-8 h-8 rounded-full flex items-center justify-center transition-colors;
     background-color: var(--footer-accent);
+    color: var(--text-white);
   }
 
   .footer-icon:hover {
     background-color: var(--footer-hover);
+    color: var(--text-white);
+  }
+
+  .sticky-container {
+    @apply rounded-lg shadow-md;
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
   }
 
   .animate-header {
@@ -83,6 +101,45 @@
 
   .animate-lang {
     animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @media (max-width: 430px) {
+    .category-svg-left {
+      left: 0;
+    }
+
+    .category-svg-right {
+      right: 0;
+    }
+
+    .section-padding {
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+
+    .section-full-width {
+      width: 100%;
+      max-width: none;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .category-svg-left {
+      left: 0.5rem;
+    }
+
+    .category-svg-right {
+      right: 0.5rem;
+    }
+
+    .section-padding {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
   }
 
   @media (max-width: 767px) {
@@ -107,6 +164,7 @@
     transform: translateY(-100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -118,6 +176,7 @@
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);

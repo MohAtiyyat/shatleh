@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
-import axios from 'axios';
 
 export default function SignUp() {
     const t = useTranslations('signup');

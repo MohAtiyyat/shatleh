@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import axios from 'axios';
+// import axios from 'axios';
 
 export default function Login() {
     const t = useTranslations('login');
