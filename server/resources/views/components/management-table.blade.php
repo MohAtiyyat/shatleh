@@ -13,9 +13,11 @@
         <div class="flex header-actions w-full p-3">
             <div class="btn-group" id="export-tools"></div>
             <div class="ml-auto">
-                <a href="{{ route($Route . '.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus fa-sm mr-2"></i>Add New
-                </a>
+                @if (Route::has($Route . '.create'))
+                    <a href="{{ route($Route . '.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus fa-sm mr-2"></i>Add New
+                    </a>
+                @endif
             </div>
         </div>
         <div class="card-body p-0">

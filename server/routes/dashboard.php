@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
+use App\Http\Controllers\Dashboard\ServiceRequestController;
 use App\Http\Controllers\Dashboard\ShopController;
 use App\Http\Controllers\Dashboard\StaffController;
 use Illuminate\Support\Facades\Route;
@@ -87,5 +88,8 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::delete('/{id}', [StaffController::class, 'delete'])->name('.destroy');
             Route::post('/{id}/change-password', [StaffController::class, 'resetPassword'])->name('.resetPassword');
         });
+
+        Route::resource('service-request', ServiceRequestController::class)->only(['index', 'show', 'edit', 'destroy']);
+        Route::post('service-request/{serviceRequest}/assign', [ServiceRequestController::class, 'assign'])->name('service-request.assign');
     });
 });

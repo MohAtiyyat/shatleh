@@ -109,7 +109,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.service-request.index') }}" class="nav-link @yield('ServiceRequests_Show')">
                         <ion-icon class="nav-icon" name="help-outline"></ion-icon>
                         <p>Service Requests Management</p>
                     </a>
