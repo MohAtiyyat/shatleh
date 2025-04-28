@@ -83,7 +83,6 @@ export const useCartStore = create<CartState>()(
         const items = get().items;
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart`, {
-            method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
