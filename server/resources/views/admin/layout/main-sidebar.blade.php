@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link @yield('Categories_Show')">
+                    <a href="{{route('dashboard.category')}}" class="nav-link @yield('Categories_Show')">
                         <ion-icon class="nav-icon" name="file-tray-stacked-outline"></ion-icon>
                         <p>Categories Management</p>
                     </a>
@@ -93,7 +93,7 @@
                 <li class="nav-item">
                     <a href="{{ route('dashboard.productShop') }}" class="nav-link @yield('ProductShop_Show')">
                         <ion-icon class="nav-icon" name="storefront-outline"></ion-icon>
-                        <p>Product Shops Management</p>
+                        <p>Products in Shops</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -111,7 +111,7 @@
                 <li class="nav-item">
                     <a href="{{ route('dashboard.service-request.index') }}" class="nav-link @yield('ServiceRequests_Show')">
                         <ion-icon class="nav-icon" name="help-outline"></ion-icon>
-                        <p>Service Requests Management</p>
+                        <p>Service Requests</p>
                     </a>
                 </li>
                 <li class="nav-item">

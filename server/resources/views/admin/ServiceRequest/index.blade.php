@@ -6,7 +6,7 @@
 @section('content')
     <x-management-table
         title="Service Request Management"
-        :headers="['#', 'Customer Name', 'Assign To Expert', 'Managed By Employee', 'Actions']"
+        :headers="['#', 'Customer Name', 'Assign To Expert','Status', 'Managed By Employee','Address']"
         :items="$serviceRequests"
         :Route="'dashboard.service-request'"
     >
@@ -42,40 +42,38 @@
                         @endif
                     </td>
 
-                    {{-- Managed By Employee --}}
+                    {{-- Status --}}
                     <td>
-                        {{ $serviceRequest->employee?->first_name }} {{ $serviceRequest->employee?->last_name }}
+                        <form method="POST" action="{{ route($Route . '.update', $serviceRequest->id) }}">
+                            @csrf
+                            @method('PATCH')
+                            <select name="status" onchange="this.form.submit()" class="form-select">
+                                <option value="{{ $serviceRequest->status }}">{{ $serviceRequest->status }}</option>
+                                <option value="pending">Pending</option>
+                                <option value="in progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </form>
                     </td>
 
-                    {{-- Actions --}}
+                    {{-- Managed By Employee --}}
                     <td>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="{{ route($Route . '.show', $serviceRequest->id) }}">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route($Route . '.edit', $serviceRequest->id) }}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form action="{{ route($Route . '.destroy', $serviceRequest->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this service request?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
+                        <a href="{{ route('dashboard.staff', ['search' => $serviceRequest->employee?->email]) }}">
+                            {{ $serviceRequest->employee?->first_name }} {{ $serviceRequest->employee?->last_name }}
+                        </a>
+                    </td>
+
+                    {{--Address--}}
+                    <td>
+                        @include('/components/address-popout', [
+                    'address' => [
+                        'id' => $serviceRequest->address->id,
+                        'title' => $serviceRequest->address->city,
+                        'country' => $serviceRequest->address->country ?? 'N/A',
+                        'city' => $serviceRequest->address->city ?? 'N/A',
+                        'address_line' => $serviceRequest->address->address_line ?? 'N/A'
+                    ]
+                ])
                     </td>
                 </tr>
             @endforeach
