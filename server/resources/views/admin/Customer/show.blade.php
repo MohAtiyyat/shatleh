@@ -85,9 +85,10 @@
                                                 {{ $addresses->first()->address_line ?? 'N/A' }}, {{ $addresses->first()->city ?? 'N/A' }}, {{ $addresses->first()->country->name_en ?? 'N/A' }}
                                             </p>
                                             @if ($addresses->count() > 1)
-                                                {{--change the route to address.index when its done--}}
-                                                <a href="{{ route('dashboard.customer.index', ['search' => $customer->user->email]) }}"
-                                                    class="text-primary">View all addresses</a>
+                                            {{--not tested yet--}}
+                                                @include('/components/address-popout', [
+                                                    'addresses' => [$addresses->address]
+                                                ])
                                             @endif
                                         @else
                                             <p class="text-dark">No address available</p>
