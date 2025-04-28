@@ -16,10 +16,10 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with('media')->latest()->paginate(10);
-        
-        return view('dashboard.categories.index', compact('categories'));
+
+        return view('admin.Category.index', compact('categories'));
     }
-    
+
     public function show()
     {
 
@@ -39,7 +39,7 @@ class CategoryController extends Controller
         $category->save();
         return redirect()->route('dashboard.category')->with('success', 'Category created successfully');
     }
-    
+
     public function edit()
     {
         return view('dashboard.categories.edit');
