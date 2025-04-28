@@ -1,66 +1,41 @@
-'use client';
+"use client"
 
-import { useTranslations } from 'next-intl';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation"
+import HeroSection from "../../../components/landingPage/hero-section"
+import CategoriesSection from "../../../components/landingPage/categories-section"
+import TopSellersSection from "../../../components/landingPage/top-sellers-section"
+import ServicesSection from "../../../components/landingPage/services-section"
+import BlogSection from "../../../components/landingPage/blog-section"
+import CustomerReviewSection from "../../../components/landingPage/customer-review-section"
+import type { Locale } from "../../../lib" 
+import FeedbackForm from "../../../components/landingPage/feedback-form"
 
 export default function Home() {
-  const t = useTranslations('home');
-  const pathname = usePathname();
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const pathname = usePathname()
+  const currentLocale = (pathname.split("/")[1] as Locale) || "ar"
 
   return (
-    
-    <div className="container mx-auto max-w-3xl px-4 py-12 text-center ">
-      <h1 className="text-4xl font-bold text-gray-800 mb-6">
-        {t('welcome') }{" "} { t('title') }
-      </h1>
-      <p className="text-lg text-gray-600 mb-8">
-        {t('description')}
-      </p>
-      <div className="flex justify-center space-x-4">
-        <Link
-          href={`/${currentLocale}/products`}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
-        >
-          {t('shopNow')}
-        </Link>
-        <Link
-          href={`/${currentLocale}/service`}
-          className="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors"
-        >
-          {t('requestService')}
-        </Link>
-      </div>
+    <main className="bg-[var(--primary-bg)] min-h-screen overflow-hidden">
+      {/* Hero Section */}
+      <HeroSection currentLocale={currentLocale} />
 
-      <h1 className="text-4xl font-bold text-gray-800 mb-6">
-        {t('welcome') }{" "} { t('title') }
-      </h1>
-      <p className="text-lg text-gray-600 mb-8">
-        {t('description')}
-      </p>
-      <div className="flex justify-center space-x-4">
-        <Link
-          href={`/${currentLocale}/products`}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
-        >
-          {t('shopNow')}
-        </Link>
-        <Link
-          href={`/${currentLocale}/service`}
-          className="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors"
-        >
-          {t('requestService')}
-        </Link>
-      </div>
+      {/* Categories Section */}
+      <CategoriesSection currentLocale={currentLocale} />
 
-      <h1 className="text-4xl font-bold text-gray-800 mb-6">
-        {t('welcome') }{" "} { t('title') }
-      </h1>
-      <p className="text-lg text-gray-600 mb-8">
-        {t('description')}
-      </p>
-      
-    </div>
-  );
+      {/* Top Sellers Section */}
+      <TopSellersSection currentLocale={currentLocale} />
+
+      {/* Services Section */}
+      <ServicesSection currentLocale={currentLocale} />
+
+      {/* Blog Section */}
+      <BlogSection currentLocale={currentLocale} />
+
+      {/* Customer Review Section */}
+      <CustomerReviewSection currentLocale={currentLocale} />
+
+      {/* Feedback Form Section */}
+      <FeedbackForm currentLocale={currentLocale} />
+    </main>
+  )
 }
