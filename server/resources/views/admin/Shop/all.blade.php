@@ -29,7 +29,23 @@
                     <td>{{ $item->owner_phone_number ?? 'N/A' }}</td> -->
                     <td>{{ $item->is_partner ? 'Yes' : 'No' }}</td>
                     <td>{{ $item->employee->first_name . ' ' . $item->employee->last_name ?? 'N/A' }}</td>
-                    <td><a href="">{{ $item->address->city ?? 'N/A' }}</a></td>
+                    <td>
+                        @if($item->address)
+                            @include('/components/address-popout', [
+                                'addresses' => [
+                                    [
+                                        'id' => $item->address->id,
+                                        'title' => $item->address->city,
+                                        'country' => $item->address->country ?? 'N/A',
+                                        'city' => $item->address->city ?? 'N/A',
+                                        'address_line' => $item->address->address_line ?? 'N/A'
+                                    ]
+                                ]
+                            ])
+                        @else
+                            N/A
+                        @endif
+                    </td>
                     <!-- <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->toDateString() : 'N/A' }}</td> -->
                     <td>
                         <div class="dropdown">

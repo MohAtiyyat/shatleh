@@ -24,7 +24,7 @@ class StoreStaffRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {   
+    {
         // dd(Request::input());
         return [
             'first_name' => 'required|string|max:255',
@@ -32,6 +32,8 @@ class StoreStaffRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users,email,',
             'phone_number' => 'nullable|string|max:255|unique:users,phone_number,',
             'role' => 'required|exists:roles,name',
+            'specialties' => 'array',
+            'specialties.*' => 'exists:specialties,id',
         ];
     }
 }

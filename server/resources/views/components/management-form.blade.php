@@ -4,7 +4,8 @@
     'method' => 'POST',
     'item' => null,
     'fields' => [],
-    'errors' => null, // Expect MessageBag or null
+    'errors' => null,
+    'specialties' => [], // Added specialties
 ])
 
 <div class="management-form-page">
@@ -109,12 +110,34 @@
                         @endif
                     </div>
                 @endforeach
+                @if(!empty($specialties))
+    <div id="specialties-container" class="specialties-container hidden">
+        <label class="specialties-title">Specialties</label>
+        <div class="specialties-list">
+            @foreach($specialties as $specialty)
+                <label class="specialty-item" for="specialty-{{ $specialty->id }}">
+                    <input
+                        class="specialty-checkbox"
+                        type="checkbox"
+                        name="specialties[]"
+                        value="{{ $specialty->id }}"
+                        id="specialty-{{ $specialty->id }}"
+                        @if(isset($item) && $item->specialties->contains($specialty->id)) checked @endif
+                    >
+                    <span>{{ $specialty->name_ar }}</span>
+                </label>
+            @endforeach
+        </div>
+    </div>
+@endif
+
 
                 <div class="footer">
                     <button type="submit" class="btn btn-primary">
                         {{ $item ? 'Update Item' : 'Create Item' }}
                     </button>
                 </div>
+
             </form>
         </div>
     </div>
@@ -137,6 +160,24 @@
                 }
             });
         });
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleSelect = document.getElementById('role');
+            const specialtiesContainer = document.getElementById('specialties-container');
+
+            function toggleSpecialties() {
+                if (roleSelect.value === 'Expert') {
+                    specialtiesContainer.style.display = 'block';
+                } else {
+                    specialtiesContainer.style.display = 'none';
+                    specialtiesContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                }
+            }
+
+            roleSelect.addEventListener('change', toggleSpecialties);
+            toggleSpecialties(); // Initial check
+        });
     </script>
 
 @endsection
+
+

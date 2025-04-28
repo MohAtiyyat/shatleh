@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Staff\StoreStaffRequest;
 use App\Http\Requests\Dashboard\Staff\UpdateStaffRequest;
+use App\Models\Specialty;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Role;
@@ -12,9 +13,9 @@ use Spatie\Permission\Models\Role;
 class StaffController extends Controller
 {
     public function index() {
-        $records = User::with('roles', 'addresses')->get()->filter(
+        $records = User::with('roles', 'addresses','specialties')->get()->filter(
             fn ($user) => $user->roles->contains(fn ($role) => in_array($role->name, ['Expert', 'Employee']))
-        ); 
+        );
         return view('admin.Staff.all', compact('records'));
     }
     public function show($id) {
@@ -27,13 +28,15 @@ class StaffController extends Controller
 
     public function create() {
         $roles = Role::select('name')->whereIn('name', ['Expert', 'Employee'])->get();
-        return view('admin.Staff.createUpdate', compact('roles'));
+        $specialties = Specialty::select('id', 'name_ar')->get();
+        return view('admin.Staff.createUpdate', compact('roles', 'specialties'));
     }
 
     public function edit($id) {
-        $staff = User::with('roles', 'addresses')->find($id);
+        $staff = User::with('roles', 'addresses', 'specialties')->find($id);
         $roles = Role::whereIn('name', ['Expert', 'Employee'])->get();
-        return view('admin.Staff.createUpdate', compact('staff', 'roles'));
+        $specialties = Specialty::select('id', 'name_ar')->get();
+        return view('admin.Staff.createUpdate', compact('staff', 'roles', 'specialties'));
     }
     public function store(StoreStaffRequest $request) {
         $data = $request->validated();
@@ -44,9 +47,11 @@ class StaffController extends Controller
         $staff = User::create(Arr::except($data, ['role']));
 
         $staff->assignRole($data['role']);
-
+        if ($data['role'] === 'Expert' && isset($data['specialties'])) {
+            $staff->specialties()->sync($data['specialties']);
+        }
         return redirect()->route('dashboard.staff')->with('success', __('Staff created successfully.'));
-     
+
     }
     public function update(UpdateStaffRequest $request, $id) {
         $data = $request->validated();
@@ -54,6 +59,12 @@ class StaffController extends Controller
         if ($staff) {
             $staff->update(Arr::except($data, ['role']));
             $staff->syncRoles($data['role']);
+
+            if ($data['role'] === 'Expert' && isset($data['specialties'])) {
+                $staff->specialties()->sync($data['specialties']);
+            } else {
+                $staff->specialties()->detach(); // Remove specialties if role changed
+            }
             return redirect()->route('dashboard.staff')->with('success', __('Staff updated successfully.'));
         }
         return redirect()->route('dashboard.staff')->with('error', __('Staff not found.'));

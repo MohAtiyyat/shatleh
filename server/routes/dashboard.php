@@ -87,6 +87,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::put('/{id}', [StaffController::class, 'update'])->name('.update');
             Route::delete('/{id}', [StaffController::class, 'delete'])->name('.destroy');
             Route::post('/{id}/change-password', [StaffController::class, 'resetPassword'])->name('.resetPassword');
+            Route::patch('/{id}/toggle-ban', [StaffController::class, 'ban'])->name('.toggleBan');
         });
 
         Route::prefix('service-request')->name('service-request.')->group(function () {

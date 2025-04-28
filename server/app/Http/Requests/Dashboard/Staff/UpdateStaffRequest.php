@@ -22,7 +22,7 @@ class UpdateStaffRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {   
+    {
         // dd(Request::input());
         return [
             'first_name' => 'required|string|max:255',
@@ -30,6 +30,8 @@ class UpdateStaffRequest extends FormRequest
             'email' => 'required|string|email|max:255',
             'phone_number' => 'nullable|string|max:255',
             'role' => 'required|exists:roles,name',
+            'specialties' => 'array',
+            'specialties.*' => 'exists:specialties,id',
         ];
     }
 }

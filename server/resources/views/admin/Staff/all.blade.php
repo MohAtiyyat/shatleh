@@ -7,12 +7,13 @@
     <x-management-table
         title="Staff Management"
         :headers="[
-            '#', 'Name', 'Email', 'Phone', 'Role', 'Address', 'Banned', 'Actions'
+            '#', 'Name', 'Email', 'Phone', 'Role','spacility', 'Address', 'Banned', 'Actions'
         ]"
         :items="$records"
         :Route="'dashboard.staff'"
     >
     <x-slot name="rows">
+        @php($Route = 'dashboard.staff')
         @foreach ($records as $record)
             <tr>
                 <td>{{ $record->id }}</td>
@@ -20,8 +21,27 @@
                 <td>{{ $record->email ?? 'N/A' }}</td>
                 <td>{{ $record->phone_number ?? 'N/A' }}</td>
                 <td>{{ $record->roles->pluck('name')[0] ?? 'N/A' }}</td>
-                <td>{{ $record->Address->city ?? 'N/A' }}</td>
-                <td>{{ $record->is_banned ? 'Yes' : 'No'  }}</td>
+                <td>
+                    @include('admin.Staff.specialty-popout', [
+                        'specialties' => $record->specialties,
+                        'recordId' => $record->id
+                    ])
+                </td>
+                <td>
+                    @include('/components/address-popout', [
+                        'addresses' => $record->addresses
+                    ])
+                </td>
+                <td>
+                    <form action="{{ route($Route . '.toggleBan', $record->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <label class="switch">
+                            <input type="checkbox" onchange="this.form.submit()" {{ $record->is_banned ? 'checked' : '' }} class="form-check-input">
+                            <span class="slider round"></span>
+                        </label>
+                    </form>
+                </td>
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
