@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Dashboard\Product;
+namespace App\Http\Requests\Dashboard\ProductShop;
 
 use App\Traits\FormRequestTrait;
+use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class UpdateProductShopRequest extends FormRequest
 {
-    use FormRequestTrait;
+    use FormRequestTrait , UserRoleTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,8 +25,9 @@ class UpdateProductShopRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-                'product_id' => 'required|exists:products,id',
+            'product_id' => 'required|exists:products,id',
             'shop_id' => 'required|exists:shops,id',
             'employee_id' => 'required|exists:users,id',
             'cost' => 'required|numeric|min:0',

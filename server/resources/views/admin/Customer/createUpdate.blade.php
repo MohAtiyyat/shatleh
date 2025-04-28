@@ -14,7 +14,6 @@
                 ['name' => 'last_name', 'label' => 'Last Name', 'type' => 'text', 'placeholder' => 'Enter last name', 'required' => true, 'aria-required' => 'true', 'maxlength' => 255],
                 ['name' => 'email', 'label' => 'Email', 'type' => 'email', 'placeholder' => 'Enter email address', 'required' => true, 'aria-required' => 'true', 'maxlength' => 255],
                 ['name' => 'phone_number', 'label' => 'Phone Number', 'type' => 'text', 'placeholder' => 'Enter phone number', 'required' => true, 'aria-required' => 'true', 'maxlength' => 20],
-                ['name' => 'language', 'label' => 'Language', 'type' => 'select', 'options' => ['en' => 'English', 'es' => 'Spanish', 'fr' => 'French'], 'required' => true, 'aria-required' => 'true']
             ]"
             :errors="$errors"
         />

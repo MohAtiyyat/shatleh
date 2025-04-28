@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\ProductShop\StoreProductShopRequest;
-use App\Http\Requests\Dashboard\Product\UpdateProductShopRequest;
+use App\Http\Requests\Dashboard\ProductShop\UpdateProductShopRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -36,7 +36,7 @@ class ProductShopController extends Controller
         return view('admin.ProductShop.createUpdate', compact('products', 'shops', 'users'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductShopRequest $request)
     {
         $request->all();
 

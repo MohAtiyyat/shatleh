@@ -8,35 +8,94 @@
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب"
   },
+  "metadata": {
+    "title": "شتلة",
+    "description": "منصة زراعية أردنية تقدم منتجات وخدمات زراعية وتعليمية بإشراف مختصين لهواة الزراعة والتزيين."
+  },
   "footer": {
     "aboutUs": "معلومات عنا",
-    "aboutUsDescription": "لوريم إيبسوم نص وهمي بسيط متوفر في السوق للطباعة. المزيد...",
+    "aboutUsDescription": "منصة زراعية أردنية تقدم منتجات وخدمات زراعية وتعليمية بإشراف مختصين لهواة الزراعة والتزيين.",
     "quickLinks": "روابط سريعة",
     "products": "المنتجات",
-    "blog": "المدونة",
+    "blog": "المحتوى التعليمي",
     "services": "الخدمات",
-    "about": "حول",
-    "recentPosts": "المشاركات الأخيرة",
-    "recentPost1": {
-      "title": "موريس نيكي ريسيبوس نون إليمنتوم",
-      "date": "23 مايو 2021"
-    },
-    "recentPost2": {
-      "title": "مايسيناس إنتيردوم لوريم إليفيند أوركي أليكوام",
-      "date": "23 مايو 2021"
-    },
+    "about": "معلومات عنا",
+    "recentPosts": "المقالات الأخيرة",
     "contactInfo": "معلومات الاتصال",
-    "email": "support@example.com",
-    "phone": "+1 (555) 123-4567",
+    "email": "shatlehteam@gmail.com",
+    "phone": "0798827244",
     "address": "123 شارع الخضراء، جناح 456، مدينة الغابات، FC 78910",
-    "copyright": "© {year} بواسطة Themesfflat"
+    "copyright": "© 2025 Shatleh منصة شتلة. جميع الحقوق محفوظة."
   },
   "home": {
-    "title": "التجارة الإلكترونية",
+    "title": "الصفحة الرئيسية",
+    "morePosts": "المزيد من المقالات",
     "welcome": "مرحبًا بك في ",
     "description": "اكتشف مجموعة واسعة من المنتجات والخدمات المصممة حسب احتياجاتك.",
     "shopNow": "تسوق الآن",
-    "requestService": "طلب خدمة"
+    "requestService": "طلب خدمة",
+    "learnMore": "اعرف المزيد",
+    "categories": "الفئات",
+    "topSellers": "الأكثر مبيعًا",
+    "interestingBlog": "مدونة مثيرة للقراءة",
+    "customerReview": "آراء العملاء",
+    "readMore": "اقرأ المزيد",
+    "choosePlantsTitle": "نحن نساعد في اختيار النباتات الأنسب لك",
+    "choosePlantsDescription": "تشمل مجموعتنا مجموعة واسعة من الزهور، من الورود الكلاسيكية إلى الأوركيد الغريب، بالإضافة إلى مجموعة متنوعة من النباتات الداخلية والخارجية الخضراء، كما نقدم ترتيبات زهور فريدة مثالية لأي مناسبة، سواء كنت تتطلع لإضفاء إشراقة على منزلك أو إرسال هدية مدروسة."
+  },
+  "hero": {
+    "slide1": {
+      "subtitle": "مرحبًا بك في شتلة",
+      "title": "حوّل مساحتك بالطبيعة",
+      "description": "اكتشف مجموعة واسعة من النباتات والخدمات لجلب الخضرة إلى حياتك."
+    },
+    "slide2": {
+      "subtitle": "نباتات عالية الجودة",
+      "title": "نباتات طازجة وحيوية لكل منزل",
+      "description": "نقدم أفضل تشكيلة من النباتات الداخلية والخارجية لجميع احتياجاتك."
+    },
+    "slide3": {
+      "subtitle": "خدمات متخصصة",
+      "title": "خدمات بستنة احترافية",
+      "description": "فريقنا يقدم خدمات صيانة وتصميم عالية الجودة لحديقتك."
+    }
+  },
+  "categories": {
+    "categories": "استكشف فئاتنا"
+  },
+  "topSellers": {
+    "calatheaPlant": {
+      "title": "نبات كالاتيا",
+      "description": "لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينغ إليت"
+    }
+  },
+  "services": {
+    "indoorPlants": {
+      "title": "النباتات الداخلية",
+      "description": "اجلب جمال الطبيعة إلى مساحاتك الخارجية مع مجموعتنا الواسعة من النباتات الخارجية."
+    },
+    "outdoorPlants": {
+      "title": "النباتات الخارجية",
+      "description": "اجلب لمسة من الخضرة إلى مساحات معيشتك مع مجموعتنا من النباتات الداخلية، مثالية لتنقية الهواء وإضافة لمسة طبيعية إلى منزلك."
+    },
+    "plantPots": {
+      "title": "أواني النباتات",
+      "description": "أضف لمسة من الأناقة إلى مساحاتك الداخلية أو الخارجية مع مجموعتنا من أواني النباتات، متوفرة بأحجام وتصاميم متنوعة تناسب أي ديكور."
+    }
+  },
+  "customerReviews": {
+    "review1": {
+      "name": "ماكسن رافال",
+      "review": "لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينغ إليت، سيد دو إيوسمود تيمبور إنسيديدونت أوت لابوري إت دولوري ماجنا أليكوا. أوت إنيم أد مينيم فينيام،"
+    },
+    "review2": {
+      "name": "فينيلي ك",
+      "review": "لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينغ إليت، سيد دو إيوسمود تيمبور إنسيديدونت أوت لابوري إت دولوري ماجنا أليكوا. أوت إنيم أد مينيم فينيام،"
+    },
+    "review3": {
+      "name": "ليل ثاكور",
+      "review": "لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينغ إليت، سيد دو إيوسمود تيمبور إنسيديدونت أوت لابوري إت دولوري ماجنا أليكوا. أوت إنيم أد مينيم فينيام،"
+    }
   },
   "products": {
     "title": "منتجاتنا",
@@ -44,7 +103,43 @@
     "addToCart": "أضف إلى السلة",
     "noProducts": "لا توجد منتجات متاحة بعد.",
     "addedToCart": "تمت إضافة {name} إلى سلتك!",
-    "viewCart": "عرض السلة"
+    "viewCart": "عرض السلة",
+    "category": "الفئة",
+    "bestSelling": "الأكثر مبيعًا",
+    "availability": "التوفر",
+    "rating": "التقييم",
+    "filter": "تصفية",
+    "clearFilters": "مسح الفلاتر",
+    "clearAll": "مسح الكل",
+    "searchPlaceholder": "ابحث عن المنتجات...",
+    "contactForPrice": "اتصل لمعرفة السعر",
+    "topSellingLabel": "الأكثر مبيعًا",
+    "outOfStockLabel": "نفد المخزون",
+    "inStock": "متوفر",
+    "outOfStock": "نفد المخزون",
+    "notFound": "المنتج غير موجود",
+    "description": "الوصف",
+    "specification": "المواصفات",
+    "reviews": "التقييمات",
+    "suggestedProducts": "منتجات قد تُعجبك",
+    "buyNow": "اشترِ الآن",
+    "price": "السعر",
+    "technicalSpecifications": "المواصفات الفنية",
+    "size": "الحجم",
+    "type": "النوع",
+    "care": "مستوى العناية",
+    "light": "الإضاءة",
+    "readMore": "المزيد ...",
+    "readLess": "أقل",
+    "fullDescriptionExtension": "هذا النبات مثالي للمساحات الداخلية، يوفر خضرة مورقة وصيانة سهلة.",
+    "sizeValue": "متوسط",
+    "careValue": "منخفض",
+    "lightValue": "غير مباشر",
+    "processing": "جارٍ تحميل المنتجات..."
+  },
+  "pagination": {
+    "prev": "السابق",
+    "next": "التالي"
   },
   "login": {
     "title": "تسجيل الدخول",
@@ -79,15 +174,15 @@
     "invalidPhone": "رقم الهاتف غير صالح.",
     "apiUrlMissing": "خطأ في إعداد الخادم. يرجى التواصل مع الدعم.",
     "corsError": "غير قادر على الاتصال بالخادم. حاول مرة أخرى لاحقًا.",
-    "signupFailed": "فشل التسجيل. يرجى المحاولة مرة أخرى.",
+    "signupFailed": "فشل التسجيل. حاول مرة أخرى.",
     "error": "حدث خطأ أثناء إنشاء الحساب",
     "loginLinkText": "هنا"
   },
-  "profile": {
+  "user": {
     "title": "ملفي الشخصي",
     "email": "البريد الإلكتروني",
-    "phone": "رقم الهاتف",
-    "countryCode": "رمز البلد",
+    "phone": "الهاتف",
+    "countryCode": "رمز الدولة",
     "location": "الموقع",
     "edit": "تعديل الملف الشخصي",
     "save": "حفظ",
@@ -96,8 +191,8 @@
     "logout": "تسجيل الخروج",
     "viewServiceRequests": "عرض طلبات الخدمة",
     "loading": "جارٍ تحميل الملف الشخصي...",
-    "error": "فشل في تحميل الملف الشخصي",
-    "updateError": "فشل في تحديث الملف الشخصي",
+    "error": "فشل تحميل الملف الشخصي",
+    "updateError": "فشل تحديث الملف الشخصي",
     "orderHistory": "سجل الطلبات",
     "orderId": "رقم الطلب",
     "date": "التاريخ",
@@ -108,7 +203,7 @@
     "profilePhoto": "صورة الملف الشخصي",
     "myOrders": "طلباتي",
     "signOut": "تسجيل الخروج",
-    "account": "تفاصيل الحساب",
+    "account": "الحساب",
     "address": "العنوان",
     "payments": "المدفوعات"
   },
@@ -124,34 +219,104 @@
     "createdAt": "تاريخ الإنشاء",
     "noRequests": "لا توجد طلبات خدمة بعد.",
     "loading": "جارٍ تحميل الطلبات...",
-    "error": "فشل في تحميل الطلبات",
-    "submitError": "فشل في إرسال الطلب"
+    "error": "فشل تحميل الطلبات",
+    "submitError": "فشل إرسال الطلب"
   },
   "cart": {
     "title": "سلتك",
     "empty": "سلتك فارغة.",
     "price": "السعر",
     "remove": "إزالة",
-    "total": "المجموع",
+    "total": "الإجمالي",
     "clear": "مسح السلة",
     "checkout": "المتابعة للدفع",
     "checkoutAlert": "وظيفة الدفع قادمة قريبًا!",
-    "continueShopping": "متابعة التسوق"
+    "continueShopping": "متابعة التسوق",
+    "addProducts": "أضف بعض المنتجات إلى سلتك",
+    "shippingTaxes": "يتم حساب الشحن والضرائب عند الدفع.",
+    "loading": "جاري تحميل السلة...",
+    "summary": "الملخص",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "tax": "الضريبة",
+    "processing": "جارٍ المعالجة...",
+    "decrement": "إنقاص",
+    "increment": "زيادة"
   },
   "checkout": {
     "title": "الدفع",
-    "orderSummary": "ملخص الطلب",
-    "shippingAddress": "عنوان الشحن",
-    "paymentMethod": "طريقة الدفع",
+    "total": "الإجمالي",
+    "paymentDetails": "تفاصيل الدفع",
     "creditCard": "بطاقة ائتمان",
-    "paypal": "باي بال",
     "cashOnDelivery": "الدفع عند التسليم",
-    "total": "المجموع",
-    "placeOrder": "تقديم الطلب",
+    "cardNumber": "رقم البطاقة",
+    "cardHolder": "اسم حامل البطاقة",
+    "expiryDate": "تاريخ الانتهاء",
+    "cvv": "رمز التحقق",
+    "confirm": "تأكيد الطلب",
     "processing": "جارٍ المعالجة...",
-    "emptyCart": "سلتك فارغة",
-    "error": "فشل في إتمام الدفع",
-    "loading": "جارٍ تحميل تفاصيل الطلب..."
+    "success": "تم تقديم الطلب بنجاح!",
+    "orderSummary": "ملخص الطلب",
+    "price": "السعر",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "addressLine": "سطر العنوان",
+    "city": "المدينة",
+    "country": "الدولة",
+    "selectCountry": "اختر الدولة",
+    "phoneNumber": "رقم الهاتف",
+    "orderId": "رقم الطلب #{id}",
+    "orderDate": "تاريخ الطلب",
+    "noOrder": "لا توجد تفاصيل الطلب متاحة.",
+    "thankYou": "شكرًا لطلبك!",
+    "illustrationAlt": "رسم توضيحي لتأكيد الطلب",
+    "quantity": "الكمية: {qty}",
+    "continueShopping": "متابعة التسوق",
+    "support": "هل تحتاج إلى مساعدة؟ اتصل بـ",
+    "contactSupport": "فريق الدعم",
+    "exportPDF": "تنزيل الفاتورة",
+    "noOrderTitle": "لا توجد تفاصيل الطلب",
+    "errors": {
+      "invalidCardNumber": "يرجى إدخال رقم بطاقة مكون من 16 رقمًا",
+      "cardHolderRequired": "يرجى إدخال اسم حامل البطاقة",
+      "invalidExpiryDate": "يرجى إدخال تاريخ انتهاء صالح (شهر/سنة)",
+      "expiredCard": "انتهت صلاحية البطاقة",
+      "invalidCvv": "يرجى إدخال رمز تحقق صالح (3-4 أرقام)",
+      "firstNameRequired": "يرجى إدخال اسمك الأول",
+      "lastNameRequired": "يرجى إدخال اسم العائلة",
+      "addressLineRequired": "يرجى إدخال عنوانك",
+      "cityRequired": "يرجى إدخال المدينة",
+      "countryRequired": "يرجى اختيار الدولة",
+      "invalidPhone": "يرجى إدخال رقم هاتف صالح",
+      "checkoutFailed": "فشل الدفع. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "payments": {
+    "paymentMethods": "طرق الدفع",
+    "defaultSet": "تم تحديث طريقة الدفع الافتراضية",
+    "cannotDeleteLast": "يجب أن يكون لديك طريقة دفع واحدة على الأقل",
+    "paymentDeleted": "تم حذف طريقة الدفع",
+    "paymentAdded": "تمت إضافة طريقة الدفع",
+    "paymentUpdated": "تم تحديث طريقة الدفع",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "addPayment": "إضافة طريقة دفع",
+    "editPayment": "تعديل طريقة الدفع",
+    "cancel": "إلغاء",
+    "add": "إضافة",
+    "save": "حفظ",
+    "default": "افتراضي",
+    "cardNumber": "رقم البطاقة",
+    "cardHolder": "اسم حامل البطاقة",
+    "expiryDate": "تاريخ الانتهاء",
+    "cvv": "رمز التحقق",
+    "errors": {
+      "invalidCardNumber": "يرجى إدخال رقم بطاقة مكون من 16 رقمًا",
+      "cardHolderRequired": "يرجى إدخال اسم حامل البطاقة",
+      "invalidExpiryDate": "يرجى إدخال تاريخ انتهاء صالح (شهر/سنة)",
+      "expiredCard": "انتهت صلاحية البطاقة",
+      "invalidCvv": "يرجى إدخال رمز تحقق صالح (3-4 أرقام)"
+    }
   },
   "education": {
     "title": "المحتوى التعليمي",
@@ -166,8 +331,126 @@
     "noComments": "لا توجد تعليقات بعد.",
     "addComment": "أضف تعليقًا...",
     "submitComment": "إرسال التعليق",
-    "error": "فشل في تحميل المنشورات",
-    "submitError": "فشل في إرسال المنشور أو التعليق",
+    "error": "فشل تحميل المنشورات",
+    "submitError": "فشل إرسال المنشور أو التعليق",
     "loading": "جارٍ تحميل المنشورات..."
+  },
+  "pages": {
+    "home": "الرئيسية",
+    
+    "products": "المنتجات",
+    "blog": "المقالات",
+    "services": "الخدمات",
+    "about": "معلومات عنا",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب",
+    "profile": "ملفي الشخصي",
+    "cart": "سلتك",
+    "checkout": "الدفع",
+    "service": "طلبات الخدمة",
+    "education": "المحتوى التعليمي",
+    "itemName": "{itemName}",
+    "success": "نجاح"
+  },
+  "nav": {
+    "products": "المنتجات",
+    "about": "معلومات عنا"
+  },
+  "serviceRequest": {
+    "title": "طلب الخدمة",
+    "serviceName": "اسم الخدمة",
+    "selectService": "اختر خدمة",
+    "location": "الموقع",
+    "selectLocation": "اختر موقعًا",
+    "uploadImage": "رفع صورة",
+    "imageInstructions": "يرجى رفع صورة مربعة بحجم أقل من 100 كيلوبايت",
+    "tellUsMore": "أخبرنا المزيد",
+    "descriptionPlaceholder": "أدخل الوصف",
+    "errors": {
+      "serviceRequired": "يرجى اختيار خدمة",
+      "locationRequired": "يرجى اختيار موقع",
+      "descriptionRequired": "يرجى تقديم وصف",
+      "submitFailed": "فشل إرسال الطلب. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "firstName": "الاسم الأول",
+    "lastName": "الاسم الأخير",
+    "userName": "اسم المستخدم",
+    "email": "البريد الإلكتروني",
+    "phoneNumber": "رقم الهاتف",
+    "location": "الموقع",
+    "selectLocation": "اختر موقعًا",
+    "timeZone": "المنطقة الزمنية",
+    "selectTimeZone": "اختر منطقة زمنية",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "uploadPhoto": "رفع صورة جديدة",
+    "deletePhoto": "حذف الصورة",
+    "cancel": "إلغاء",
+    "saveChanges": "حفظ التغييرات",
+    "successMessage": "تم تحديث الملف الشخصي بنجاح",
+    "errors": {
+      "firstNameRequired": "الاسم الأول مطلوب",
+      "lastNameRequired": "الاسم الأخير مطلوب",
+      "userNameRequired": "اسم المستخدم مطلوب",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "البريد الإلكتروني غير صالح",
+      "phoneNumberRequired": "رقم الهاتف مطلوب",
+      "locationRequired": "الموقع مطلوب",
+      "timeZoneRequired": "المنطقة الزمنية مطلوبة",
+      "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+      "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+      "newPasswordLength": "يجب أن تكون كلمة المرور الجديدة 8 أحرف على الأقل",
+      "submitFailed": "فشل تحديث الملف الشخصي. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "orders": {
+    "title": "طلباتي",
+    "all": "الكل",
+    "inProgress": "قيد التنفيذ",
+    "delivered": "تم التوصيل",
+    "cancelled": "ملغاة",
+    "completed": "مكتمل",
+    "order": "طلب",
+    "paidWith": "مدفوع بـ",
+    "items": "عناصر",
+    "viewDetails": "عرض تفاصيل الطلب",
+    "hideDetails": "إخفاء تفاصيل الطلب",
+    "cancelOrder": "إلغاء الطلب",
+    "successMessage": "تم إلغاء الطلب بنجاح",
+    "errors": {
+      "cancelFailed": "فشل إلغاء الطلب. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "addresses": {
+    "title": "عناويني",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "addAddress": "إضافة عنوان",
+    "defaultSet": "تم تحديث العنوان الافتراضي",
+    "addressAdded": "تمت إضافة العنوان بنجاح",
+    "addressUpdated": "تم تحديث العنوان بنجاح",
+    "addressDeleted": "تم حذف العنوان بنجاح",
+    "cannotDeleteDefault": "لا يمكن حذف العنوان الافتراضي",
+    "form": {
+      "city": "المدينة",
+      "floor": "الطابق",
+      "street": "الشارع",
+      "aptNo": "رقم الشقة",
+      "buildingNo": "رقم المبنى",
+      "zipCode": "الرمز البريدي",
+      "confirm": "تأكيد",
+      "cancel": "إلغاء",
+      "switchToAdd": "التبديل إلى الإضافة"
+    },
+    "errors": {
+      "nameRequired": "الاسم مطلوب",
+      "streetRequired": "الشارع مطلوب",
+      "cityRequired": "المدينة مطلوبة",
+      "stateRequired": "الولاية مطلوبة",
+      "zipCodeRequired": "الرمز البريدي مطلوب"
+    }
   }
 }

@@ -10,6 +10,8 @@
       <script type="text/javascript" src="{{ URL::asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
       <!-- ChartJS -->
       <script type="text/javascript" src="{{ URL::asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
+      <!--Sweetalert2-->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <!-- Sparkline -->
       <script type="text/javascript" src="{{ URL::asset('assets/plugins/sparklines/sparkline.js') }}"></script>
       <!-- JQVMap -->

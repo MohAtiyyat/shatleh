@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
+use App\Http\Controllers\Dashboard\ServiceRequestController;
 use App\Http\Controllers\Dashboard\ShopController;
 use App\Http\Controllers\Dashboard\StaffController;
 use Illuminate\Support\Facades\Route;
@@ -72,10 +73,10 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::delete('/{id}', [ProductShopController::class, 'delete'])->name('productShop.destroy');
         });
 
-        Route::group([], function () {
-            Route::resource('customer', CustomerController::class);
-            Route::patch('customer/{customer}/toggle-ban', [CustomerController::class, 'toggleBan'])->name('customer.toggleBan');
-            Route::patch('customer/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('customer.resetPassword');
+        Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
+            Route::resource('', CustomerController::class);
+            Route::patch('/{customer}/toggle-ban', [CustomerController::class, 'toggleBan'])->name('toggleBan');
+            Route::patch('/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('resetPassword');
         });
 
         Route::name('staff')->prefix('staff')->group(function () {
@@ -87,6 +88,17 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::put('/{id}', [StaffController::class, 'update'])->name('.update');
             Route::delete('/{id}', [StaffController::class, 'delete'])->name('.destroy');
             Route::post('/{id}/change-password', [StaffController::class, 'resetPassword'])->name('.resetPassword');
+        });
+
+        Route::prefix('service-request')->name('service-request.')->group(function () {
+
+            Route::resource('/', ServiceRequestController::class)
+                ->only(['index', 'update'])
+                ->parameter('', 'service_request');
+
+            Route::post('{service_request}/assign', [ServiceRequestController::class, 'assign'])
+                ->name('assign')
+                ->whereNumber('service_request');
         });
 
         Route::name('cart')->prefix('cart')->group(function () {

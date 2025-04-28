@@ -16,7 +16,7 @@
                                     {{ $shop->name ?? 'Shop Details' }}
                                 </h2>
                                 <div>
-                                    <a href="{{ route('dashboard.shop') }}"
+                                    <a href="{{ URL::previous() }}"
                                        class="btn btn-light btn-sm mr-2 rounded-pill px-3"
                                        title="Back to Shops">
                                         <i class="fas fa-arrow-left mr-1"></i> Back

@@ -8,35 +8,95 @@
     "login": "Login",
     "signup": "Sign Up"
   },
+  "metadata": {
+    "title": "Shatleh",
+    "description": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts."
+  },
   "footer": {
     "aboutUs": "About Us",
-    "aboutUsDescription": "Lorem ipsum simply dummy text available in market the printing Text. MORE...",
+    "aboutUsDescription": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts.",
     "quickLinks": "Quick Links",
     "products": "Products",
-    "blog": "Blog",
+    "blog": "Educational Content",
     "services": "Services",
-    "about": "About",
-    "recentPosts": "Recent Posts",
-    "recentPost1": {
-      "title": "Mauris neque risibus non elementum",
-      "date": "23 May 2021"
-    },
-    "recentPost2": {
-      "title": "Maecenas interdum lorem eleifend orci aliquam",
-      "date": "23 May 2021"
-    },
+    "about": "About Us",
+    "recentPosts": "Recent Articles",
+
     "contactInfo": "Contact Info",
-    "email": "support@example.com",
-    "phone": "+1 (555) 123-4567",
+    "email": "shatlehteam@gmail.com",
+    "phone": "0798827244",
     "address": "123 Green Street, Suite 456, Forest City, FC 78910",
-    "copyright": "© {year} by Themesfflat"
+    "copyright": "© 2025 Shatleh Platform. All Rights Reserved."
   },
   "home": {
-    "title": "Ecommerce",
+    "title": "Home",
+    "morePosts": "More Posts",
     "welcome": "Welcome to ",
     "description": "Discover a wide range of products and services tailored to your needs.",
     "shopNow": "Shop Now",
-    "requestService": "Request a Service"
+    "requestService": "Request a Service",
+    "learnMore": "Learn More",
+    "categories": "Categories",
+    "topSellers": "Top Sellers",
+    "interestingBlog": "Interesting Blog To Read",
+    "customerReview": "Customer Review",
+    "readMore": "Read More",
+    "choosePlantsTitle": "We Help Choose The Most Suitable Plants For You",
+    "choosePlantsDescription": "Our selection includes a wide variety of flowers, from classic roses to exotic orchids, as well as a variety of lush indoor and outdoor plants and also offer unique floral arrangements that are perfect for any occasion, whether you're looking to brighten up your home or send a thoughtful gift."
+  },
+  "hero": {
+    "slide1": {
+      "subtitle": "Welcome to Shatleh",
+      "title": "Transform Your Space with Nature",
+      "description": "Discover a wide range of plants and services to bring greenery into your life."
+    },
+    "slide2": {
+      "subtitle": "Quality Plants",
+      "title": "Fresh and Vibrant Plants for Every Home",
+      "description": "We offer the best selection of indoor and outdoor plants for all your needs."
+    },
+    "slide3": {
+      "subtitle": "Expert Services",
+      "title": "Professional Gardening Services",
+      "description": "Our team provides top-notch maintenance and design services for your garden."
+    }
+  },
+  "categories": {
+   "categories": "Explore Our Categories"
+  },
+  "topSellers": {
+    "calatheaPlant": {
+      "title": "Calathea Plant",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+    }
+  },
+  "services": {
+    "indoorPlants": {
+      "title": "Indoor Plants",
+      "description": "Bring the beauty of nature to your outdoor spaces with our wide selection of outdoor plants."
+    },
+    "outdoorPlants": {
+      "title": "Outdoor Plants",
+      "description": "Bring a touch of greenery to your living spaces with our collection of indoor plants, perfect for purifying the air and adding a natural touch to your home."
+    },
+    "plantPots": {
+      "title": "Plant Pots",
+      "description": "Add a touch of style to your indoor or outdoor spaces with our collection of plant pots, available in a variety of sizes and designs to fit any decor."
+    }
+  },
+  "customerReviews": {
+    "review1": {
+      "name": "Maxn Raval",
+      "review": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,"
+    },
+    "review2": {
+      "name": "Venely K",
+      "review": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,"
+    },
+    "review3": {
+      "name": "Lil Thakur",
+      "review": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,"
+    }
   },
   "products": {
     "title": "Our Products",
@@ -44,7 +104,43 @@
     "addToCart": "Add to Cart",
     "noProducts": "No products available yet.",
     "addedToCart": "{name} has been added to your cart!",
-    "viewCart": "View Cart"
+    "viewCart": "View Cart",
+    "category": "Category",
+    "bestSelling": "Best Selling",
+    "availability": "Availability",
+    "rating": "Rating",
+    "filter": "Filter",
+    "clearFilters": "Clear Filters",
+    "clearAll": "Clear All",
+    "searchPlaceholder": "Search products...",
+    "contactForPrice": "Contact for Price",
+    "topSellingLabel": "Top Selling",
+    "outOfStockLabel": "Out of Stock",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "notFound": "Product not found",
+    "description": "Description",
+    "specification": "Specification",
+    "reviews": "Reviews",
+    "suggestedProducts": "Products You Might Like",
+    "buyNow": "Buy Now",
+    "price": "Price",
+    "technicalSpecifications": "Technical Specifications",
+    "size": "Size",
+    "type": "Type",
+    "care": "Care Level",
+    "light": "Light",
+    "readMore": "More ...",
+    "readLess": "Less",
+    "fullDescriptionExtension": "This plant is perfect for indoor spaces, offering lush greenery and easy maintenance.",
+    "sizeValue": "Medium",
+    "careValue": "Low",
+    "lightValue": "Indirect",
+    "processing": "Processing..."
+  },
+  "pagination": {
+    "prev": "Previous",
+    "next": "Next"
   },
   "login": {
     "title": "Login",
@@ -83,7 +179,7 @@
     "error": "An error occurred during signup",
     "loginLinkText": "here"
   },
-  "profile": {
+  "user": {
     "title": "My Profile",
     "email": "Email",
     "phone": "Phone",
@@ -136,22 +232,93 @@
     "clear": "Clear Cart",
     "checkout": "Proceed to Checkout",
     "checkoutAlert": "Checkout functionality coming soon!",
-    "continueShopping": "Continue Shopping"
+    "continueShopping": "Continue Shopping",
+    "addProducts": "Add some products to your cart",
+    "shippingTaxes": "Shipping and taxes calculated at checkout.",
+    "loading": "Loading cart...",
+    "summary": "Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "processing": "Processing...",
+    "decrement": "Decrement",
+    "increment": "Increment"
   },
   "checkout": {
     "title": "Checkout",
-    "orderSummary": "Order Summary",
-    "shippingAddress": "Shipping Address",
-    "paymentMethod": "Payment Method",
-    "creditCard": "Credit Card",
-    "paypal": "PayPal",
-    "cashOnDelivery": "Cash on Delivery",
+    "cart": "Your Cart",
     "total": "Total",
-    "placeOrder": "Place Order",
+    "paymentDetails": "Payment Details",
+    "creditCard": "Credit Card",
+    "cashOnDelivery": "Cash on Delivery",
+    "cardNumber": "Card Number",
+    "cardHolder": "Card Holder Name",
+    "expiryDate": "Expiry Date",
+    "cvv": "CVV",
+    "confirm": "Confirm Order",
     "processing": "Processing...",
-    "emptyCart": "Your cart is empty",
-    "error": "Failed to complete checkout",
-    "loading": "Loading order details..."
+    "success": "Order placed successfully!",
+    "orderSummary": "Order Summary",
+    "price": "Price",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "addressLine": "Address Line",
+    "city": "City",
+    "country": "Country",
+    "selectCountry": "Select Country",
+    "phoneNumber": "Phone Number",
+    "orderId": "Order Number #{id}",
+    "orderDate": "Order Date",
+    "noOrder": "No order details available.",
+    "thankYou": "Thank you for your order!",
+    "illustrationAlt": "Order confirmation illustration",
+    "quantity": "Qty: {qty}",
+    "continueShopping": "Continue Shopping",
+    "support": "Need help? Contact our",
+    "contactSupport": "support team",
+    "exportPDF": "download the invoice",
+    "noOrderTitle": "No order details available!",
+    "errors": {
+      "invalidCardNumber": "Please enter a valid 16-digit card number",
+      "cardHolderRequired": "Please enter the cardholder's name",
+      "invalidExpiryDate": "Please enter a valid expiry date (MM/YYYY)",
+      "expiredCard": "The card has expired",
+      "invalidCvv": "Please enter a valid CVV (3-4 digits)",
+      "firstNameRequired": "Please enter your first name",
+      "lastNameRequired": "Please enter your last name",
+      "addressLineRequired": "Please enter your address",
+      "cityRequired": "Please enter your city",
+      "countryRequired": "Please select your country",
+      "invalidPhone": "Please enter a valid phone number",
+      "checkoutFailed": "Checkout failed. Please try again."
+    }
+  },
+ "payments": {
+    "paymentMethods": "Payment Methods",
+    "defaultSet": "Default payment method updated",
+    "cannotDeleteLast": "You must have at least one payment method",
+    "paymentDeleted": "Payment method deleted",
+    "paymentAdded": "Payment method added",
+    "paymentUpdated": "Payment method updated",
+    "edit": "Edit",
+    "delete": "Delete",
+    "addPayment": "Add Payment Method",
+    "editPayment": "Edit Payment Method",
+    "cancel": "Cancel",
+    "add": "Add",
+    "save": "Save",
+    "default": "Default",
+    "cardNumber": "Card Number",
+    "cardHolder": "Card Holder Name",
+    "expiryDate": "Expiry Date",
+    "cvv": "CVV",
+    "errors": {
+      "invalidCardNumber": "Please enter a valid 16-digit card number",
+      "cardHolderRequired": "Please enter the cardholder's name",
+      "invalidExpiryDate": "Please enter a valid expiry date (MM/YYYY)",
+      "expiredCard": "The card has expired",
+      "invalidCvv": "Please enter a valid CVV (3-4 digits)"
+    }
   },
   "education": {
     "title": "Educational Content",
@@ -169,5 +336,122 @@
     "error": "Failed to load posts",
     "submitError": "Failed to submit post or comment",
     "loading": "Loading posts..."
+  },
+  "pages": {
+    "home": "Home",
+    "products": "Products",
+    "blog": "Blog Posts",
+    "services": "Services",
+    "about": "About Us",
+    "login": "Login",
+    "signup": "Sign Up",
+    "profile": "My Profile",
+    "cart": "Your Cart",
+    "checkout": "Checkout",
+    "service": "Service Requests",
+    "education": "Educational Content",
+    "itemName": "{itemName}",
+    "success": "Success"
+  },
+  "nav": {
+    "products": "Products",
+    "about": "About"
+  },
+  "serviceRequest": {
+    "title": "Service Request",
+    "serviceName": "Service Name",
+    "selectService": "Select a service",
+    "location": "Location",
+    "selectLocation": "Select a location",
+    "uploadImage": "Upload Image",
+    "imageInstructions": "Please upload a square image, size less than 100KB",
+    "tellUsMore": "Tell Us More",
+    "descriptionPlaceholder": "Enter description",
+    "errors": {
+      "serviceRequired": "Please select a service",
+      "locationRequired": "Please select a location",
+      "descriptionRequired": "Please provide a description",
+      "submitFailed": "Failed to submit request. Please try again."
+    }
+  },
+  "profile": {
+    "title": "User Profile",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "userName": "User Name",
+    "email": "Email Address",
+    "phoneNumber": "Phone Number",
+    "location": "Location",
+    "selectLocation": "Select a location",
+    "timeZone": "Time Zone",
+    "selectTimeZone": "Select a time zone",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "uploadPhoto": "Upload New Photo",
+    "deletePhoto": "Delete Photo",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "successMessage": "Profile updated successfully",
+    "errors": {
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "userNameRequired": "User name is required",
+      "emailRequired": "Email address is required",
+      "emailInvalid": "Invalid email address",
+      "phoneNumberRequired": "Phone number is required",
+      "locationRequired": "Location is required",
+      "timeZoneRequired": "Time zone is required",
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "newPasswordLength": "New password must be at least 8 characters",
+      "submitFailed": "Failed to update profile. Please try again."
+    }
+  },
+  "orders": {
+    "title": "My Orders",
+    "all": "All",
+    "inProgress": "In Progress",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "order": "Order",
+    "paidWith": "Paid with",
+    "items": "Items",
+    "viewDetails": "View Order Details",
+    "hideDetails": "Hide Order Details",
+    "cancelOrder": "Cancel Order",
+    "successMessage": "Order cancelled successfully",
+    "errors": {
+      "cancelFailed": "Failed to cancel order. Please try again."
+    }
+  },
+  "addresses": {
+    "title": "My Addresses",
+    "edit": "Edit",
+    "delete": "Delete",
+    "addAddress": "Add Address",
+    "defaultSet": "Default address updated",
+    "addressAdded": "Address added successfully",
+    "addressUpdated": "Address updated successfully",
+    "addressDeleted": "Address deleted successfully",
+    "cannotDeleteDefault": "Cannot delete the default address",
+    "form": {
+      "city": "City",
+      "floor": "Floor",
+      "street": "Street",
+      "aptNo": "Apt No",
+      "buildingNo": "Building No",
+      "zipCode": "Zip Code",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "switchToAdd": "Switch to Add"
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "streetRequired": "Street is required",
+      "cityRequired": "City is required",
+      "stateRequired": "State is required",
+      "zipCodeRequired": "Zip code is required"
+    }
   }
 }

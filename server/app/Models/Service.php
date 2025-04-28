@@ -17,13 +17,6 @@ class Service extends Model
         'status',
     ];
 
-    public function service_requests()
-    {
-        return $this->hasMany(Customer::class ,'service_requests', 'service_id', 'customer_id')
-            ->withpivot('address_id', 'details', 'image', 'employee_id', 'expert_id', 'status')
-            ->as('service_requests')
-            ->withTimestamps();
-    }
 
 
 }

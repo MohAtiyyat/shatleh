@@ -13,10 +13,10 @@
         <div class="flex header-actions w-full p-3">
             <div class="btn-group" id="export-tools"></div>
             <div class="ml-auto">
-                @if(Route::has($Route . '.create'))
-                <a href="{{ route($Route . '.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus fa-sm mr-2"></i>Add New
-                </a>
+                @if (Route::has($Route . '.create'))
+                    <a href="{{ route($Route . '.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus fa-sm mr-2"></i>Add New
+                    </a>
                 @endif
             </div>
         </div>
@@ -110,4 +110,37 @@
       });
 
     </script>
+@if(session('success'))
+<script>
+    Swal.fire({
+        toast: true,
+        position: 'top-end', // top-right corner
+        icon: 'success',
+        title: '{{ session('success') }}',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: false,
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: '{{ session('error') }}',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+@endif
+
+
 @endsection
