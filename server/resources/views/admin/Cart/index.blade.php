@@ -9,17 +9,17 @@
         :headers="[
             '#', 'Owner Name', 'Products Count', 'Total Price'
         ]"
-        :items="$carts"
+        :items="$records"
         :Route="null"
     >
         <x-slot:rows>
             @php($Route = 'dashboard.cart')
-            @foreach ($carts as $item)
+            @foreach ($records as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->customer->user->first_name }} {{ $item->customer->user->last_name }}</td>
-                    <td><a href="{{ route($Route . '.show', $item->id)}}">{{ $item-> }}</a></td>
-                    <td>{{ number_format($item->total_price, 2) }}</td>
+                    <td>{{ $item->first_name }} {{ $item->last_name }}</td>
+                    <td><a href="">{{ $item->cart->count() }}</a></td>
+                    <td>{{ $total_price[$item->id]? $total_price[$item->id]/100 : 'N/A' }}</td>
                 </tr>
             @endforeach
         </x-slot:rows>

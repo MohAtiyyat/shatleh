@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -13,56 +14,17 @@ class CartController extends Controller
      */
     public function index()
     {
-        $carts = Cart::with(['customer', 'product'])->get();
-        dd($carts);
-        return view('admin.Cart.index' , compact('carts'));
-    }
+        $records = User::with(['cart.product'])
+        ->whereHas('cart')
+        ->get();
+        $total_price = [];
+        $records->each(function ($record) use (&$total_price) {
+            $record->cart->each(function ($cart) use (&$total_price, $record) {
+                $total_price[$record->id] = $cart->product->price * $cart->quantity + (isset($total_price[$record->id]) ? $total_price[$record->id] : 0);
+            }); 
+        });
+        
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    return view('admin.cart.index', compact('records', 'total_price'));
+}
 }

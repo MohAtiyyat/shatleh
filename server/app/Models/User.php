@@ -138,4 +138,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Specialty::class, 'expert_specialty', 'expert_id', 'specialty_id')
                     ->withTimestamps();
     }
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, 'customer_id');
+    }
 }
