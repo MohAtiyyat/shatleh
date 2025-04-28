@@ -17,6 +17,14 @@ class Service extends Model
         'status',
     ];
 
+    protected $casts = [
+        'image' => 'array',
+    ];
+    public function getImageAttribute($value)
+    {
+        return json_decode($value);
+    }
+
 
 
 }
