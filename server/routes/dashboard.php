@@ -72,10 +72,10 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::delete('/{id}', [ProductShopController::class, 'delete'])->name('productShop.destroy');
         });
 
-        Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
-            Route::resource('', CustomerController::class);
-            Route::patch('/{customer}/toggle-ban', [CustomerController::class, 'toggleBan'])->name('toggleBan');
-            Route::patch('/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('resetPassword');
+        Route::group([], function () {
+            Route::resource('customer', CustomerController::class);
+            Route::patch('customer/{customer}/toggle-ban', [CustomerController::class, 'toggleBan'])->name('customer.toggleBan');
+            Route::patch('customer/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('customer.resetPassword');
         });
 
         Route::name('staff')->prefix('staff')->group(function () {
