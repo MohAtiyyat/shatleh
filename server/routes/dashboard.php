@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\AddressController;
 use App\Http\Controllers\Dashboard\AuthController;
+use App\Http\Controllers\Dashboard\CartController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\ProductController;
@@ -99,5 +100,12 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
                 ->name('assign')
                 ->whereNumber('service_request');
         });
+
+        Route::name('cart')->prefix('cart')->group(function () {
+            Route::get('/', [CartController::class, 'index'])->name('.index');
+            Route::get('/{id}', [CartController::class, 'show'])->name('.show');
+
+        });
+
     });
 });

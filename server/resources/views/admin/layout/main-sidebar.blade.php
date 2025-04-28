@@ -31,7 +31,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.cart.index') }}" class="nav-link @yield('Carts_Show')">
                         <ion-icon class="nav-icon" name="cart-outline"></ion-icon>
                         <p>Carts Management</p>
                     </a>

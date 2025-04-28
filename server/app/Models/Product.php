@@ -27,6 +27,11 @@ class Product extends Model
         'image' => 'array',
     ];
 
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, 'product_id', 'id');
+    }
+
     public function orders()
     {
         return $this->belongsToMany(Order::class, 'order_details', 'product_id', 'order_id')
