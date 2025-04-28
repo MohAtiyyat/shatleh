@@ -103,7 +103,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
 
         Route::name('cart')->prefix('cart')->group(function () {
             Route::get('/', [CartController::class, 'index'])->name('.index');
-            Route::get('/cartProducts/{id}', [CartController::class, 'show'])->name('.show');
+            Route::get('/{id}', [CartController::class, 'show'])->name('.show');
 
         });
 

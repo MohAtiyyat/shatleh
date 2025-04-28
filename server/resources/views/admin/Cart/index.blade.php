@@ -18,7 +18,8 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->first_name }} {{ $item->last_name }}</td>
-                    <td><a href="">{{ $item->cart->count() }}</a></td>
+                    
+                    <td><a href="{{ route($Route . '.show', $item->id) }}">{{ $item->cart->count() }}</a></td>
                     <td>{{ $total_price[$item->id]? $total_price[$item->id]/100 : 'N/A' }}</td>
                 </tr>
             @endforeach
