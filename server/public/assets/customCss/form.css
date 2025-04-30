@@ -150,3 +150,35 @@
 .footer { margin-top: 20px; text-align: right; }
 .btn-primary { background-color: #4e73df; border: none; padding: 10px 20px; color: #fff; border-radius: 4px; cursor: pointer; }
 .btn-primary:hover { background-color: #375ec8; }
+.specialties-container.hidden {
+    display: none;
+}
+.specialties-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+.specialty-item {
+    display: flex;
+    align-items: center;
+    background: #d6f9e0;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #bde7ce;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.specialty-item:hover {
+    background: #82ea83;
+    box-shadow: 0 2px 6px rgba(22, 239, 94, 0.271);
+}
+
+/* Checkbox */
+.specialty-checkbox {
+    margin-right: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    accent-color: #078e48;
+}
+
+

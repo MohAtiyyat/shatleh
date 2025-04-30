@@ -1,22 +1,33 @@
-<a href="#" data-toggle="modal" data-target="#addressModal-{{ $address['id'] }}">
-    {{ $address['title'] }}
-</a>
+@if(!empty($addresses) && count($addresses))
+    @php
+        $firstAddress = $addresses[0];
+        $modalId = 'addressModal-' . $firstAddress['id'];
+    @endphp
 
-<!-- Modal -->
-<div class="modal fade" id="addressModal-{{ $address['id'] }}" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel-{{ $address['id'] }}" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addressModalLabel-{{ $address['id'] }}">Address Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p><strong>Country:</strong> {{ $address['country']->name_en . ' ' . $address['country']->name_ar }}</p>
-        <p><strong>City:</strong> {{ $address['city'] }}</p>
-        <p><strong>Address Line:</strong> {{ $address['address_line'] }}</p>
+    <a href="#" data-toggle="modal" data-target="#{{ $modalId }}">
+        {{ $firstAddress['title'] ?? ($firstAddress['city'] ?? 'View Addresses') }}
+    </a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="{{ $modalId }}" tabindex="-1" role="dialog" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="{{ $modalId }}Label">Addresses</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            @foreach($addresses as $address)
+                <div class="mb-3 p-2 border rounded">
+                    <p><strong>Country:</strong> {{ $address['country']->name_en ?? 'N/A' }} {{ $address['country']->name_ar ?? '' }}</p>
+                    <p><strong>City:</strong> {{ $address['city'] ?? 'N/A' }}</p>
+                    <p><strong>Address Line:</strong> {{ $address['address_line'] ?? 'N/A' }}</p>
+                </div>
+            @endforeach
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+@endif

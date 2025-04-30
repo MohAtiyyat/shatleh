@@ -66,14 +66,8 @@
                     {{--Address--}}
                     <td>
                         @include('/components/address-popout', [
-                    'address' => [
-                        'id' => $serviceRequest->address->id,
-                        'title' => $serviceRequest->address->city,
-                        'country' => $serviceRequest->address->country ?? 'N/A',
-                        'city' => $serviceRequest->address->city ?? 'N/A',
-                        'address_line' => $serviceRequest->address->address_line ?? 'N/A'
-                    ]
-                ])
+                            'addresses' => [$serviceRequest->address]
+                        ])
                     </td>
                 </tr>
             @endforeach
