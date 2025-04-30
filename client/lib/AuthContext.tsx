@@ -2,12 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import axios from 'axios';
 
 type AuthContextType = {
     isAuthenticated: boolean;
     userId: string | null;
-    login: (token: string, userId: string) => void;
-    logout: () => void;
+    login: (token: string, userId: string) => Promise<void>;
+    logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,14 +32,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     }, []);
 
-    const login = (token: string, userId: string) => {
+    const login = async (token: string, userId: string) => {
         localStorage.setItem('token', token);
         localStorage.setItem('userId', userId);
         setIsAuthenticated(true);
         setUserId(userId);
     };
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            console.log('Logging out...');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No token found in localStorage for logout.');
+                return;
+            }
+            console.log('Token found:', token);
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+            console.log('API URL:', apiUrl); // Debug log
+            await axios.post(
+                `${apiUrl}/api/logout`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+            );
+        } catch (error) {
+            console.error('Logout API call failed:', error);
+            throw new Error('Logout failed. Please try again later.');
+        }
+
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         setIsAuthenticated(false);
@@ -60,3 +85,4 @@ export const useAuth = () => {
     }
     return context;
 };
+

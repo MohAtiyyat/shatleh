@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-// import axios from 'axios';
-
+import axios from 'axios';
+import { useAuth } from '../../../../lib/AuthContext'; 
 export default function Login() {
     const t = useTranslations('login');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { login } = useAuth(); // Use AuthContext
     const currentLocale = pathname.split('/')[1] || 'ar';
     const redirectPath = searchParams.get('redirect') || '/';
     const [email, setEmail] = useState('');
@@ -22,44 +23,28 @@ export default function Login() {
         setError('');
         setLoading(true);
 
+
         try {
-            // if (!process.env.NEXT_PUBLIC_API_URL) {
-            //     throw new Error(t('apiUrlMissing'));
-            // }
 
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
-            formData.append('language', currentLocale);
-
-            // const response = await axios.post(
-            //     `http://127.0.0.1:8000/login`,
-            //     formData,
-            //     {
-                    
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //     }
-            // );
-            // console.log('formData', formData);
-            const response = fetch(`http://127.0.0.1:8000/login`, {
-                method: 'POST',
-                body: JSON.stringify({
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+            console.log('API URL:', apiUrl); // Debug log
+            const response = await axios.post(
+                `${apiUrl}/api/login`,
+                {
                     email,
                     password,
                     language: currentLocale,
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-
                 }
-            });
-            console.log('Response:', response);
-            const data =  response;
+            );
 
-            console.log('Data:', data);
-            // localStorage.setItem('userId', userId);
+            const { token, user } = response.data;
+
+            if (!token || !user?.id) {
+                throw new Error(t('loginFailed'));
+            }
+
+            // Store token and userId in AuthContext and localStorage
+            login(token, user.id);
 
             router.push(`/${currentLocale}${redirectPath}`);
         } catch (error: unknown) {
@@ -138,7 +123,7 @@ export default function Login() {
                                 <Link
                                     href={
                                         redirectPath
-                                               ? `/${currentLocale}/register?redirect=${encodeURIComponent(redirectPath)}`
+                                            ? `/${currentLocale}/register?redirect=${encodeURIComponent(redirectPath)}`
                                             : `/${currentLocale}/register`
                                     }
                                     className="font-bold text-[var(--text-primary)] hover:text-[var(--text-hover)]"
