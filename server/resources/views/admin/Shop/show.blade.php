@@ -67,9 +67,17 @@
                                         <h5 class="text-muted font-weight-semibold mb-2">Shop ID</h5>
                                         <p class="text-dark">#{{ $shop->id ?? 'N/A' }}</p>
                                     </div>
-                                    <div class="col-12 mb-4">
+                                    <div class="col-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Details</h5>
                                         <p class="text-dark">{{ $shop->details ?? 'No details available' }}</p>
+                                    </div>
+                                    <div class="col-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Products Count</h5>
+                                        <a href="{{ route('dashboard.productShop', ['search' => $shop->name]) }}">
+                                            <p>
+                                                {{ $shop->products->count() ?? 'N/A' }}
+                                            </p>
+                                        </a>
                                     </div>
                                     <div class="col-12 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
