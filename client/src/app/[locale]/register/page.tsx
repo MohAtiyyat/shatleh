@@ -1,5 +1,5 @@
+'use client';
 
-"use client";
 import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -7,8 +7,8 @@ import Link from 'next/link';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
-import axios from 'axios';
 import { useAuth } from '../../../../lib/AuthContext';
+import { register } from '../../../../lib/api';   // Import register function
 
 export default function SignUp() {
     const t = useTranslations('signup');
@@ -50,9 +50,6 @@ export default function SignUp() {
         }
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-            console.log('API URL:', apiUrl); // Debug log
-
             const phoneNumber = phoneRef.current
                 ? parsePhoneNumberFromString(`+${phoneRef.current}`)
                 : null;
@@ -77,34 +74,24 @@ export default function SignUp() {
 
             console.log('Data to send:', dataToSend); // Debug log
 
-            const response = await axios.post(`${apiUrl}/api/register`, dataToSend, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-            });
+            const response = await register(dataToSend); // Use the API register function
+            console.log('Response:', response); // Debug log
 
-            console.log('Response:', response.data); // Debug log
-
-            const { token, user } = response.data;
+            const { token, user } = response;
 
             if (!token || !user?.id) {
                 throw new Error(t('signupFailed'));
             }
 
-            login(token, user.id);
-
+            await login(token, user.id);
             router.push(`/${currentLocale}${redirectPath}`);
-        } catch (error: unknown) {
+        } catch (error) {
             console.error('Registration error:', error);
-            const err = error as {
-                message: string;
-                response?: { data?: { message?: string; error?: string } };
-            };
+            const err = error instanceof Error ? error : new Error(t('signupFailed'));
             setError(
                 err.message.includes('Network Error')
                     ? t('corsError')
-                    : err.response?.data?.message || err.response?.data?.error || t('signupFailed')
+                    : err.message || t('signupFailed')
             );
         } finally {
             setLoading(false);

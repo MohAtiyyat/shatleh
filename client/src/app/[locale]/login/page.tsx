@@ -1,16 +1,19 @@
-"use client";
+'use client';
+
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import axios from 'axios';
-import { useAuth } from '../../../../lib/AuthContext'; 
+import { useAuth } from '../../../../lib/AuthContext';
+import { login } from '../../../../lib/api'; 
+
+
 export default function Login() {
     const t = useTranslations('login');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { login } = useAuth(); // Use AuthContext
+    const { login: authLogin } = useAuth(); // Rename to avoid naming conflict
     const currentLocale = pathname.split('/')[1] || 'ar';
     const redirectPath = searchParams.get('redirect') || '/';
     const [email, setEmail] = useState('');
@@ -23,36 +26,28 @@ export default function Login() {
         setError('');
         setLoading(true);
 
-
         try {
+            const response = await login({
+                email,
+                password,
+                language: currentLocale,
+            }); // Use the API login function
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-            console.log('API URL:', apiUrl); // Debug log
-            const response = await axios.post(
-                `${apiUrl}/api/login`,
-                {
-                    email,
-                    password,
-                    language: currentLocale,
-                }
-            );
-
-            const { token, user } = response.data;
+            const { token, user } = response;
 
             if (!token || !user?.id) {
                 throw new Error(t('loginFailed'));
             }
 
-            // Store token and userId in AuthContext and localStorage
-            login(token, user.id);
-
+            await authLogin(token, user.id);
             router.push(`/${currentLocale}${redirectPath}`);
-        } catch (error: unknown) {
-            const err = error as { message: string; response?: { data?: { message?: string } } };
+        } catch (error) {
+            console.error('Login error:', error);
+            const err = error instanceof Error ? error : new Error(t('loginFailed'));
             setError(
                 err.message.includes('Network Error')
                     ? t('corsError')
-                    : err.response?.data?.message || t('loginFailed')
+                    : err.message || t('loginFailed')
             );
         } finally {
             setLoading(false);
