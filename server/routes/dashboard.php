@@ -15,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(function () {
+    // logging test route
+    Route::get('/test-log', function () {
+        \Log::channel('mysql')->info('Test log entry', [
+            'user_id' => 456,
+            'action' => 'logout',
+        ]);
+        return 'Log entry created';
+    });
 
 
     Route::get('/login', function () {return view('admin.login.login');});
