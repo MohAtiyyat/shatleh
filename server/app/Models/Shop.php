@@ -20,7 +20,7 @@ class Shop extends Model
     ];
 
     public function products(){
-        return $this->belongsToMany(Shop::class, 'product_shops', 'product_id', 'shop_id')
+        return $this->belongsToMany(Product::class, 'product_shops', 'shop_id','product_id')
         ->withPivot('cost', 'employee_id')
         ->withTimestamps();
     }

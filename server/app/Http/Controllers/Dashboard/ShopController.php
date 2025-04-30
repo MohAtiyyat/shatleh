@@ -24,7 +24,7 @@ class ShopController extends Controller
 
     public function show($id)
     {
-        $shop = Shop::with(['address', 'employee'])->findOrFail($id);
+        $shop = Shop::findOrFail($id);
         return view('admin.Shop.show', compact('shop'));
     }
 
