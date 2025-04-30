@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
-
+import { AuthProvider } from "../../../lib/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -69,9 +69,11 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={localee} messages={messages}>
             <html lang={localee} dir={direction} bbai-tooltip-injected="true">
                 <body className={inter.className}>
-                    <Header />
-                    <main>{children}</main>
-                    <Footer />
+                    <AuthProvider>
+                        <Header />
+                        <main>{children}</main>
+                        <Footer />
+                    </AuthProvider>
                 </body>
             </html>
         </NextIntlClientProvider>

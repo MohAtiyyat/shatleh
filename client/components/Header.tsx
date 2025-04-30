@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -7,25 +8,23 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '../lib/store';
+import { useAuth } from '../lib/AuthContext'; 
 
 const Header = () => {
     const t = useTranslations();
     const pathname = usePathname();
     const router = useRouter();
-    const isAuthenticated = true;
+    const { isAuthenticated, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [language, setLanguage] = useState('');
     const currentLocale = pathname.split('/')[1] || 'en';
     const { items, syncWithBackend } = useCartStore();
 
-    // Calculate total cart quantity
     const cartQuantity = items.reduce((total, item) => total + (item.quantity || 0), 0);
-
 
     useEffect(() => {
         setLanguage(currentLocale);
-        // Sync cart with backend when locale changes
         syncWithBackend(currentLocale).catch((error) => {
             console.error('Failed to sync cart on locale change:', error);
         });
@@ -35,14 +34,14 @@ const Header = () => {
     const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
 
     const switchLanguage = () => {
-        const newLocale = currentLocale === "en" ? "ar" : "en"
-        const newPath = pathname.replace(/^\/(en|ar)/, `/${newLocale}`)
-        router.push(newPath)
-    }
+        const newLocale = currentLocale === 'en' ? 'ar' : 'en';
+        const newPath = pathname.replace(/^\/(en|ar)/, `/${newLocale}`);
+        router.push(newPath);
+    };
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        router.push(`/${currentLocale}/login`);
+        logout();
+        toggleUserMenu();
     };
 
     const navItems = [
@@ -53,16 +52,17 @@ const Header = () => {
     ];
 
     return (
-        <header className="w-full text-text-primary  h-[10vh] shadow-md transition-all duration-300 ease-in-out animate-header md:px-6 sm:px-6 sticky z-50 top-0 bg-[var(--primary-bg)]">
+        <header className="w-full text-text-primary h-[10vh] shadow-md transition-all duration-300 ease-in-out animate-header md:px-6 sm:px-6 sticky z-50 top-0 bg-[var(--primary-bg)]">
             <div className="px-4 flex justify-between items-center h-full">
                 <div className="flex items-center space-x-6">
-                    <Link href={`/${currentLocale}`} className="flex items-center ">
+                    <Link href={`/${currentLocale}`} className="flex items-center">
                         <Image
                             src="/header logo.svg"
                             alt="Logo"
                             width={20}
                             height={20}
                             className="w-30 h-30"
+                            priority
                         />
                     </Link>
                     <nav className="hidden md:flex space-x-6 items-center">
@@ -83,16 +83,14 @@ const Header = () => {
                         className="lang-toggle animate-lang hover:text-text-hover cursor-pointer px-3 py-1 rounded-md transition-colors"
                         onClick={switchLanguage}
                     >
-                        <span>{currentLocale === "en" ? "عربي" : "English"}</span>
+                        <span>{currentLocale === 'en' ? 'عربي' : 'English'}</span>
                     </button>
                     <div className="relative">
                         <Link href={`/${currentLocale}/cart`} className="md:flex hidden mx-4">
                             <ShoppingCart className="w-6 h-6 text-text-primary hover:text-text-hover transition-colors" />
-
                             <span className="absolute -top-2 left-7 w-5 h-5 bg-accent text-white rounded-full flex items-center justify-center bg-red-400 border-2 p-2 text-xs">
                                 {cartQuantity}
                             </span>
-
                         </Link>
                     </div>
 
@@ -111,38 +109,35 @@ const Header = () => {
                                 <div className={`absolute ${language === 'ar' ? 'left-2' : 'right-2'} z-50 mt-2 w-48 bg-white text-text-primary rounded-md shadow-lg`}>
                                     <Link
                                         href={`/${currentLocale}/account`}
-                                        className="block px-4 py-2 hover:bg-gray-100  items-center whitespace-nowrap"
+                                        className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
                                         onClick={toggleUserMenu}
                                     >
                                         <span className="inline-flex">{t('user.account')}</span>
                                     </Link>
                                     <Link
                                         href={`/${currentLocale}/address`}
-                                        className="block px-4 py-2 hover:bg-gray-100  items-center whitespace-nowrap"
+                                        className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
                                         onClick={toggleUserMenu}
                                     >
                                         <span className="inline-flex">{t('user.address')}</span>
                                     </Link>
                                     <Link
                                         href={`/${currentLocale}/payments`}
-                                        className="block px-4 py-2 hover:bg-gray-100  items-center whitespace-nowrap"
+                                        className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
                                         onClick={toggleUserMenu}
                                     >
                                         <span className="inline-flex">{t('user.payments')}</span>
                                     </Link>
                                     <Link
                                         href={`/${currentLocale}/orders`}
-                                        className="block px-4 py-2 hover:bg-gray-100  items-center whitespace-nowrap"
+                                        className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
                                         onClick={toggleUserMenu}
                                     >
                                         <span className="inline-flex">{t('user.myOrders')}</span>
                                     </Link>
                                     <button
-                                        onClick={() => {
-                                            toggleUserMenu();
-                                            handleLogout();
-                                        }}
-                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100  items-center whitespace-nowrap"
+                                        onClick={handleLogout}
+                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
                                     >
                                         <span className="inline-flex">{t('user.logout')}</span>
                                     </button>
@@ -154,19 +149,23 @@ const Header = () => {
                         <>
                             <Link
                                 href={`/${currentLocale}/login`}
-                                className="nav-item hidden md:flex items-center whitespace-nowrap "
+                                className="nav-item hidden md:flex items-center whitespace-nowrap"
                             >
                                 <span className="inline-flex">{t('header.login')}</span>
                             </Link>
                             <Link
                                 href={`/${currentLocale}/register`}
-                                className="nav-item hidden md:flex  items-center whitespace-nowrap"
+                                className="nav-item hidden md:flex items-center whitespace-nowrap"
                             >
                                 <span className="inline-flex">{t('header.signup')}</span>
                             </Link>
                         </>
                     )}
-                    <button className={`md:hidden focus:outline-none ${currentLocale === 'ar' ? ' pr-3' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
+                    <button
+                        className={`md:hidden focus:outline-none ${currentLocale === 'ar' ? ' pr-3' : ''}`}
+                        onClick={toggleMenu}
+                        aria-label="Toggle menu"
+                    >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                                 strokeLinecap="round"
@@ -191,7 +190,6 @@ const Header = () => {
                                 <span className="inline-flex">{item.label}</span>
                             </Link>
                         ))}
-
                         <div className="relative py-2 nav-item">
                             <Link href={`/${currentLocale}/cart`} className="md:hidden flex mx-4">
                                 <ShoppingCart className="w-6 h-6 text-text-primary hover:text-text-hover transition-colors" />
@@ -200,7 +198,6 @@ const Header = () => {
                                 >
                                     {cartQuantity}
                                 </span>
-
                             </Link>
                         </div>
                     </div>
