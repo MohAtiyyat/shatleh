@@ -19,7 +19,7 @@ class ProductController extends Controller
     {
         $products = Product::paginate(50);
 
-        return view('admin.Product.all', compact('products'));
+        return view('admin.Product.index', compact('products'));
     }
 
     public function create()

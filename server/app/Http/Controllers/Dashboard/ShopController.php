@@ -19,7 +19,7 @@ class ShopController extends Controller
     {
 
         $shops = Shop::with(['address', 'employee'])->get();
-        return view('admin.Shop.all', compact('shops'));
+        return view('admin.Shop.index', compact('shops'));
     }
 
     public function show($id)

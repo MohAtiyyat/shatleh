@@ -16,7 +16,7 @@ class StaffController extends Controller
         $records = User::with('roles', 'addresses','specialties')->get()->filter(
             fn ($user) => $user->roles->contains(fn ($role) => in_array($role->name, ['Expert', 'Employee']))
         );
-        return view('admin.Staff.all', compact('records'));
+        return view('admin.Staff.index', compact('records'));
     }
     public function show($id) {
         $record = User::with('roles', 'addresses', 'specialties')->find($id);
