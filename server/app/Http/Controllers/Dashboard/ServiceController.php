@@ -45,7 +45,7 @@ class ServiceController extends Controller
     public function edit($id)
     {
         $item = Service::findOrFail($id);
-        return view('admin.Product.createUpdate', compact('item'));
+        return view('admin.Service.createUpdate', compact('item'));
     }
 
     public function update(UpdateServiceRequest $request, Service $service)

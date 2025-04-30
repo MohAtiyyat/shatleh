@@ -26,6 +26,10 @@ class Product extends Model
     protected $casts = [
         'image' => 'array',
     ];
+    public function getImageAttribute($value)
+    {
+        return json_decode($value);
+    }
 
     public function cart()
     {
