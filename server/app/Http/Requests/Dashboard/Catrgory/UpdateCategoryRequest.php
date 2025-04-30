@@ -25,13 +25,12 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => $this->id('categories'),
-            'name_ar' => $this->name('categories', 'ar'),
-            'name_en' => $this->name('categories', 'en'),
-            'description_ar' => $this->description(),
-            'description_en' => $this->description(),
+            'name_en' => 'required|string|max:255',
+            'name_ar' => 'required|string|max:255',
+            'description_en' => 'nullable|string',
+            'description_ar' => 'nullable|string',
+            'parent_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_main' => 'nullable|boolean',
         ];
     }
 }

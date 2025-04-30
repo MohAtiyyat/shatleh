@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     protected $table = 'categories';
-    
+
     protected $fillable = [
         'name_en',
         'name_ar',
         'description_en',
-        'description_ar', 
-        'image', 
+        'description_ar',
+        'image',
     ];
 
     public function products()
