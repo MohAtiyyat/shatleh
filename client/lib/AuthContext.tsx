@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import axios from 'axios';
+import { logoutApi } from './api';
 
 type AuthContextType = {
     isAuthenticated: boolean;
@@ -41,26 +41,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const logout = async () => {
         try {
-            console.log('Logging out...');
             const token = localStorage.getItem('token');
             if (!token) {
-                console.error('No token found in localStorage for logout.');
-                return;
+                throw new Error('No token found in localStorage for logout.');
             }
-            console.log('Token found:', token);
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-            console.log('API URL:', apiUrl); // Debug log
-            await axios.post(
-                `${apiUrl}/api/logout`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                }
-            );
+            await logoutApi(token); // Use the API logout function
+            console.log('Logout successful');
         } catch (error) {
-            console.error('Logout API call failed:', error);
+            console.error('Logout failed:', error);
             throw new Error('Logout failed. Please try again later.');
         }
 
@@ -85,4 +73,3 @@ export const useAuth = () => {
     }
     return context;
 };
-
