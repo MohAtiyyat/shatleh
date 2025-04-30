@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CartController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CustomerController;
+use App\Http\Controllers\Dashboard\LogController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
 use App\Http\Controllers\Dashboard\ServiceController;
@@ -24,6 +25,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         return 'Log entry created';
     });
 
+    Route::get('/logs', [LogController::class, 'index'])->name('logs');
 
     Route::get('/login', function () {return view('admin.login.login');});
     Route::post('/login', [AuthController::class, 'Login'])->name('login');
