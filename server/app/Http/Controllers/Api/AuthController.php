@@ -40,17 +40,9 @@ class AuthController extends Controller
     {
         try {
             $data = $request->validated();
-            $user = User::create([
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
-                'phone_number' => $data['phone_number'],
-                'language' => $data['language'],
-                'ip_country_id' => $data['ip_country_id']
-            ]);
+            $user = User::create($data);
 
-            $user->assignRole('customer');
+            $user->assignRole('Customer');
 
             Auth::login($user);
 
