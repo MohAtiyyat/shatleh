@@ -80,12 +80,6 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <ion-icon class="nav-icon" name="location-outline"></ion-icon>
-                        <p>Addresses Management</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
                         <ion-icon class="nav-icon" name="pricetag-outline"></ion-icon>
                         <p>Coupons Management</p>
                     </a>

@@ -60,7 +60,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::get('/{id}/edit',[CategoryController::class, 'edit'])->name('category.edit');
             Route::get('/{id}',[CategoryController::class, 'show'])->name('category.show');
             Route::put('/{id}',[CategoryController::class, 'update'])->name('category.update');
-            Route::delete('/{id}',[CategoryController::class, 'delete'])->name('category.delete');
+            Route::delete('/{id}',[CategoryController::class, 'destroy'])->name('category.destroy');
 
         });
 
@@ -119,7 +119,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::delete('/{id}', [ServiceController::class, 'delete'])->name('.destroy');
         });
 
-    
+
     });
 });
 
@@ -128,5 +128,5 @@ Route::get('/storage/{path}/{file}', function ($path, $file) {
     if (file_exists($filePath)) {
         return response()->file($filePath);
     }
-    abort(404); 
+    abort(404);
 })->where('path', '.*')->middleware('web');
