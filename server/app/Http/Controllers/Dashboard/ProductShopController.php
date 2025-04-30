@@ -25,7 +25,7 @@ class ProductShopController extends Controller
             ->whereNull('product_shops.deleted_at')
             ->get();
 
-        return view('admin.ProductShop.all', compact('records'));
+        return view('admin.ProductShop.index', compact('records'));
     }
 
     public function create()

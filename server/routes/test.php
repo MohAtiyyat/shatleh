@@ -8,11 +8,11 @@ Route::prefix('test')->group(function () {
     });
     
     Route::get('/product', function () {
-        return view('admin.product.all');
+        return view('admin.product.index');
     })->name('product');
     
     Route::get('/customer', function () {
-        return view('admin.customer.all');
+        return view('admin.customer.index');
     })->name('customer');
     
     Route::get('/customer/create', function () {
@@ -25,7 +25,7 @@ Route::prefix('test')->group(function () {
     
     
     Route::get('/order', function () {
-        return view('admin.Order.all');
+        return view('admin.Order.index');
     })->name('order');
     
     Route::get('/product/{id}', function () {
