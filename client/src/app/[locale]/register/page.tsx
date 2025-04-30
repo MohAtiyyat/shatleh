@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
+import axios from 'axios';
 
 export default function SignUp() {
     const t = useTranslations('signup');
@@ -37,7 +38,6 @@ export default function SignUp() {
         e.preventDefault();
         setError('');
         setLoading(true);
-        console.log('Form data:', formData);
 
         if (formData.password !== formData.confirmPassword) {
             setError(t('passwordMismatch'));
@@ -46,8 +46,6 @@ export default function SignUp() {
         }
 
         try {
-         
-
             const phoneNumber = parsePhoneNumberFromString(`+${phoneRef.current}`);
             if (!phoneNumber || !phoneNumber.isValid()) {
                 throw new Error(t('invalidPhone'));
@@ -55,54 +53,24 @@ export default function SignUp() {
 
             const full_phone_number = `+${phoneNumber.countryCallingCode}${phoneNumber.nationalNumber}`;
 
-            const formDataToSend = new FormData();
-            formDataToSend.append('first_name', formData.firstName);
-            formDataToSend.append('last_name', formData.lastName);
-            formDataToSend.append('email', formData.email);
-            formDataToSend.append('password', formData.password);
-            formDataToSend.append('phone_number', full_phone_number);
-            formDataToSend.append('language', currentLocale);
-            formDataToSend.append('ip_country_id', "12");
+            const dataToSend = {
+                first_name: formData.firstName,
+                last_name: formData.lastName,
+                email: formData.email,
+                password: formData.password,
+                phone_number: full_phone_number,
+                language: currentLocale,
+                ip_country_id: "12",
+            };
 
-            console.log('Form data to send:', formDataToSend);
+            const response = await axios.post('http://127.0.0.1:8000/api/register', dataToSend);
 
-            // const response = await axios.post(
-            //     `http://127.0.0.1:8000/register`,
-            //     formDataToSend,
-            //     {
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //     }
-            // );
-
-            const response = fetch(`http://127.0.0.1:8000/register`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    first_name: formData.firstName,
-                    last_name: formData.lastName,
-                    email: formData.email,
-                    password: formData.password,
-                    phone_number: full_phone_number,
-                    language: currentLocale,
-                    ip_country_id: "12"
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            // console
-
-            console.log('Response:', response);
-
-            // localStorage.setItem('token', token);
-            // localStorage.setItem('userId', userId);
+            console.log('Response:', response.data);
 
             router.push(`/${currentLocale}${redirectPath}`);
         } catch (error: unknown) {
             console.error('Error:', error);
-            const err = error as { message: string; response?: { data?: { message?: string } } };
+            const err = error as { message: string; response?: { data?: { message?: string; errors?: any } } };
             setError(
                 err.message.includes('Network Error')
                     ? t('corsError')
