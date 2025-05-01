@@ -20,7 +20,8 @@ interface ProductCarouselProps {
 }
 
 export default function ProductCarousel({ products, currentLocale, pageName }: ProductCarouselProps) {
-    const [activeIndex, setActiveIndex] = useState(Math.floor(products.length / 2))
+    console.log("products", products)
+    const [activeIndex, setActiveIndex] = useState(2)
     console.log("activeIndex", activeIndex)
     const [screenSize, setScreenSize] = useState<'small' | 'medium' | 'large'>('medium')
 
@@ -53,7 +54,7 @@ export default function ProductCarousel({ products, currentLocale, pageName }: P
             grabCursor: true,
             centeredSlides: true,
             slidesPerView: 'auto',
-            initialSlide: Math.floor(products.length / 2),
+            initialSlide: Math.floor(2),
             coverflowEffect: {
                 rotate: 0, // Match CategoryCarousel
                 stretch: overlap,
