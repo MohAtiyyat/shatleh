@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { formatPrice } from '../../lib/utils';
 
 type ProductCardProps = {
     product: {
@@ -102,7 +103,7 @@ export default function ProductCard({ product, index , pageName }: ProductCardPr
                     </span>
                 )}
                 <Image
-                    src={product.image || "/placeholder.svg"}
+                    src={ "/placeholder.svg"}
                     alt={product.name[currentLocale as "en" | "ar"]}
                     width={300}
                     height={270}
@@ -126,7 +127,7 @@ export default function ProductCard({ product, index , pageName }: ProductCardPr
                 </div>
                 <div className="flex justify-between items-center">
                     {product.price ? (
-                        <span className="font-medium text-white">{product.price}</span>
+                        <span className="font-medium text-white">{formatPrice(product.price , currentLocale)}</span>
                     ) : (
                         <span className="font-medium text-white">{t("products.contactForPrice")}</span>
                     )}
