@@ -4,77 +4,23 @@
 @section('Logs_Show', 'active')
 
 @section('content')
-<div class="container-fluid">
-    <div class="card shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">System Logs</h5>
+<div class="dashboard-cards-container my-5">
+    <a href="{{ route('dashboard.logs.customer') }}" class="dashboard-card customer-card">
+        <div class="card-icon">
+            <ion-icon name="people-circle-outline"></ion-icon>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>User</th>
-                            <th>Action</th>
-                            <th>Type</th>
-                            <th>Created At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($logs as $log)
-                            <tr>
-                                <td>{{ $log->id }}</td>
-                                <td>{{ $log->user ? $log->user->first_name . ' ' . $log->user->last_name : 'N/A' }}</td>
-                                <td>{{ $log->action }}</td>
-                                <td>
-                                    <span class="badge badge-{{ $log->log_type == 'error' ? 'danger' : ($log->log_type == 'warning' ? 'warning' : 'info') }}">
-                                        {{ ucfirst($log->log_type) }}
-                                    </span>
-                                </td>
-                                <td>{{ $log->created_at->format('Y-m-d H:i:s') }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+        <h3 class="card-title">Customer Logs</h3>
+    </a>
+
+    <a href="{{ route('dashboard.logs.staff') }}" class="dashboard-card staff-card">
+        <div class="card-icon">
+            <ion-icon name="briefcase-outline"></ion-icon>
         </div>
-    </div>
+        <h3 class="card-title">Staff Logs</h3>
+    </a>
 </div>
-@endsection
 
+@endsection
 @section('css')
-    <link rel="stylesheet" href="{{ asset('assets/customCss/table.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/customCss/log_index.css') }}">
 @endsection
-
-@if(session('success'))
-<script>
-    Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: '{{ session('success') }}',
-        showConfirmButton: false,
-        timer: 2500,
-        timerProgressBar: false,
-    });
-</script>
-@endif
-
-@if(session('error'))
-<script>
-    Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'error',
-        title: '{{ session('error') }}',
-        showConfirmButton: false,
-        timer: 2500,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    });
-</script>
-@endif

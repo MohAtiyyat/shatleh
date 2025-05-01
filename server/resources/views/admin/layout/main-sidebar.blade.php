@@ -73,7 +73,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('dashboard.logs') }}" class="nav-link @yield('Logs_Show')">
+                    <a href="{{ route('dashboard.logs.index') }}" class="nav-link @yield('Logs_Show')">
                         <ion-icon class="nav-icon" name="document-outline"></ion-icon>
                         <p>Logs Management</p>
                     </a>

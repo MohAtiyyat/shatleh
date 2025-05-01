@@ -19,14 +19,16 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
     // logging test route
     Route::get('/test-log', function () {
         \Log::channel('mysql')->info('Test log entry', [
-            'user_id' => 456,
+            'user_id' => 29,
             'action' => 'logout',
         ]);
         return 'Log entry created';
     });
-
-    Route::get('/logs', [LogController::class, 'index'])->name('logs');
-
+    Route::prefix('logs')->name('logs.')->group(function () {
+        Route::get('/', [LogController::class, 'index'])->name('index');//the index page has two buttons customer and staff
+        Route::get('/customer', [LogController::class, 'CustomerLog'])->name('customer');//the customer logs page
+        Route::get('/staff', [LogController::class, 'StaffLog'])->name('staff');//the staff logs page
+    });
     Route::get('/login', function () {return view('admin.login.login');});
     Route::post('/login', [AuthController::class, 'Login'])->name('login');
     Route::get('/logout', [AuthController::class, 'Logout'])->name('logout');
