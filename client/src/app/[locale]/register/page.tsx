@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -6,13 +7,15 @@ import Link from 'next/link';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
-import axios from 'axios';
+import { useAuth } from '../../../../lib/AuthContext';
+import { register } from '../../../../lib/api';   // Import register function
 
 export default function SignUp() {
     const t = useTranslations('signup');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { login } = useAuth();
     const currentLocale = pathname.split('/')[1] || 'ar';
     const redirectPath = searchParams.get('redirect') || '/';
     const phoneRef = useRef<string | null>(null);
@@ -32,6 +35,7 @@ export default function SignUp() {
 
     const handlePhoneChange = (value: string) => {
         phoneRef.current = value;
+        console.log('Phone input:', value); // Debug log
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -46,9 +50,14 @@ export default function SignUp() {
         }
 
         try {
-            const phoneNumber = parsePhoneNumberFromString(`+${phoneRef.current}`);
+            const phoneNumber = phoneRef.current
+                ? parsePhoneNumberFromString(`+${phoneRef.current}`)
+                : null;
             if (!phoneNumber || !phoneNumber.isValid()) {
-                throw new Error(t('invalidPhone'));
+                console.log('Invalid phone number:', phoneRef.current); // Debug log
+                setError(t('invalidPhone'));
+                setLoading(false);
+                return;
             }
 
             const full_phone_number = `+${phoneNumber.countryCallingCode}${phoneNumber.nationalNumber}`;
@@ -60,21 +69,29 @@ export default function SignUp() {
                 password: formData.password,
                 phone_number: full_phone_number,
                 language: currentLocale,
-                ip_country_id: "12",
+                ip_country_id: '12',
             };
 
-            const response = await axios.post('http://127.0.0.1:8000/api/register', dataToSend);
+            console.log('Data to send:', dataToSend); // Debug log
 
-            console.log('Response:', response.data);
+            const response = await register(dataToSend); // Use the API register function
+            console.log('Response:', response); // Debug log
 
+            const { token, user } = response;
+
+            if (!token || !user?.id) {
+                throw new Error(t('signupFailed'));
+            }
+
+            await login(token, user.id);
             router.push(`/${currentLocale}${redirectPath}`);
-        } catch (error: unknown) {
-            console.error('Error:', error);
-            const err = error as { message: string; response?: { data?: { message?: string; errors?: any } } };
+        } catch (error) {
+            console.error('Registration error:', error);
+            const err = error instanceof Error ? error : new Error(t('signupFailed'));
             setError(
                 err.message.includes('Network Error')
                     ? t('corsError')
-                    : err.response?.data?.message || t('signupFailed')
+                    : err.message || t('signupFailed')
             );
         } finally {
             setLoading(false);
@@ -106,6 +123,7 @@ export default function SignUp() {
                                     onChange={handleChange}
                                     className="w-full px-4 py-3 rounded-md bg-gradient-to-tl from-[#c1ebc3] to-[#94f198] border-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94f198]"
                                     required
+                                    autoComplete="given-name"
                                 />
                             </div>
                             <div>
@@ -120,6 +138,7 @@ export default function SignUp() {
                                     onChange={handleChange}
                                     className="w-full px-4 py-3 rounded-md bg-gradient-to-tl from-[#c1ebc3] to-[#94f198] border-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94f198]"
                                     required
+                                    autoComplete="family-name"
                                 />
                             </div>
                         </div>
@@ -136,6 +155,7 @@ export default function SignUp() {
                                 onChange={handleChange}
                                 className="w-full px-4 py-3 rounded-md bg-gradient-to-tl from-[#c1ebc3] to-[#94f198] border-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94f198]"
                                 required
+                                autoComplete="email"
                             />
                         </div>
 
@@ -188,6 +208,7 @@ export default function SignUp() {
                                 onChange={handleChange}
                                 className="w-full px-4 py-3 rounded-md bg-gradient-to-tl from-[#c1ebc3] to-[#94f198] border-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94f198]"
                                 required
+                                autoComplete="new-password"
                             />
                         </div>
 
@@ -203,6 +224,7 @@ export default function SignUp() {
                                 onChange={handleChange}
                                 className="w-full px-4 py-3 rounded-md bg-gradient-to-tl from-[#c1ebc3] to-[#94f198] border-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94f198]"
                                 required
+                                autoComplete="new-password"
                             />
                         </div>
 

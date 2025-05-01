@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mail;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -32,27 +33,21 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Login successful',
                 'token' => $token,
+                'user' => $user
             ], 200);
         }
         return response()->json(['login failed']);
     }
 
-    public function register(RegiseterRequest $request){
+    public function register(RegiseterRequest $request)
+    {
         try {
-        $data = $request->validated();
-        $user = User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'phone_number' => $data['phone_number'],
-            'language' => $data['language'],
-            'ip_country_id' => $data['ip_country_id']
-        ]);
+            $data = $request->validated();
+            $user = User::create($data);
 
-        $user->assignRole('customer');
+            $user->assignRole('Customer');
 
-        Auth::login($user);
+            Auth::login($user);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -64,16 +59,16 @@ class AuthController extends Controller
         ]);
         Mail::to($user->email)->send(new EmailVerification($otp, $user->language));
 
-        return response()->json(['message' => 'Registration successful', 'token' => $token], 200);
+            return response()->json(['message' => 'Registration successful', 'token' => $token, 'user' => $user], 200);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'reqgiser failed', 'throwable' => $th], 500);
         }
     }
 
-    public function logout(LogoutRequest $request){
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('dashboard/login');
+    public function logout(LogoutRequest $request)
+    {
+
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'logged out'], 200);
     }
 }
