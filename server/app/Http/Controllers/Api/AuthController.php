@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegiseterRequest;
 use App\Http\Requests\Dashboard\auth\LogoutRequest;
+use App\Mail\EmailVerification;
+use App\Models\OTP;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Mail;
 
 class AuthController extends Controller
 {
@@ -52,6 +55,14 @@ class AuthController extends Controller
         Auth::login($user);
 
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        $otp = rand(1000, 9999);
+        OTP::create([
+            'otp' => $otp,
+            'email' => $user->email,
+            'expired_at' => now()->addMinutes(5),
+        ]);
+        Mail::to($user->email)->send(new EmailVerification($otp, $user->language));
 
         return response()->json(['message' => 'Registration successful', 'token' => $token], 200);
         } catch (\Throwable $th) {
