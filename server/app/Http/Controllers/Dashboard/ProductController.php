@@ -17,15 +17,22 @@ class ProductController extends Controller
 {
     public function index(AllProductRequest $request)
     {
-        $products = Product::paginate(50);
+        $products = Product::all();
 
         return view('admin.Product.index', compact('products'));
     }
 
     public function create()
     {
-        $categories = Category::all();
-        return view('admin.Product.createUpdate', compact('categories'));
+        $categories = Category::whereNull('parent_id')->get();
+        $subcategories = Category::whereNotNull('parent_id')->get();
+
+        // Group subcategories by their parent category
+        $groupedSubcategories = $subcategories->groupBy('parent_id')->map(function ($group) {
+            return $group->pluck('name_ar', 'id');
+        });
+
+        return view('admin.Product.createUpdate', compact('categories', 'groupedSubcategories'));
     }
 
     public function store(StoreProductRequest $request)
@@ -44,9 +51,30 @@ class ProductController extends Controller
 
         $product = Product::create($data);
 
-        // Handle category assignments
+        // Handle main category
         if ($request->has('categories')) {
-            $product->categories()->sync($request->input('categories'));
+            $mainCategoryIds = $request->input('categories');
+            // Convert to array if not already
+            if (!is_array($mainCategoryIds)) {
+                $mainCategoryIds = [$mainCategoryIds];
+            }
+
+            // Add main category to the sync array
+            $categoryIds = $mainCategoryIds;
+
+            // Handle subcategories if present
+            if ($request->has('sub_categories')) {
+                $subCategoryIds = $request->input('sub_categories');
+                // Convert to array if not already
+                if (!is_array($subCategoryIds)) {
+                    $subCategoryIds = [$subCategoryIds];
+                }
+                // Merge main categories with subcategories
+                $categoryIds = array_merge($categoryIds, $subCategoryIds);
+            }
+
+            // Sync all categories (main + sub)
+            $product->categories()->sync($categoryIds);
         }
 
         return redirect()->route('dashboard.product')->with('success', 'Product created successfully.');
@@ -54,9 +82,25 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $item = Product::findOrFail($id);
-        $categories = Category::all();
-        return view('admin.Product.createUpdate', compact('item', 'categories'));
+        $item = Product::with('categories')->findOrFail($id);
+        $categories = Category::whereNull('parent_id')->get();
+        $subcategories = Category::whereNotNull('parent_id')->get();
+
+        $groupedSubcategories = $subcategories->groupBy('parent_id')->map(function ($group) {
+            return $group->pluck('name_ar', 'id');
+        });
+
+        // Get the main category (first category with no parent_id)
+        $selectedMainCategory = $item->categories->whereNull('parent_id')->first();
+        $selectedSubCategories = $item->categories->whereNotNull('parent_id')->pluck('id')->toArray();
+
+        return view('admin.Product.createUpdate', compact(
+            'item',
+            'categories',
+            'groupedSubcategories',
+            'selectedMainCategory',
+            'selectedSubCategories'
+        ));
     }
 
     public function update(UpdateProductRequest $request, Product $product)
@@ -84,9 +128,30 @@ class ProductController extends Controller
 
             $product->update($data);
 
-            // Handle category assignments
+            // Handle categories
             if ($request->has('categories')) {
-                $product->categories()->sync($request->input('categories'));
+                $mainCategoryIds = $request->input('categories');
+                // Convert to array if not already
+                if (!is_array($mainCategoryIds)) {
+                    $mainCategoryIds = [$mainCategoryIds];
+                }
+
+                // Add main category to the sync array
+                $categoryIds = $mainCategoryIds;
+
+                // Handle subcategories if present
+                if ($request->has('sub_categories')) {
+                    $subCategoryIds = $request->input('sub_categories');
+                    // Convert to array if not already
+                    if (!is_array($subCategoryIds)) {
+                        $subCategoryIds = [$subCategoryIds];
+                    }
+                    // Merge main categories with subcategories
+                    $categoryIds = array_merge($categoryIds, $subCategoryIds);
+                }
+
+                // Sync all categories (main + sub)
+                $product->categories()->sync($categoryIds);
             }
 
             return redirect()->route('dashboard.product')->with('success', 'Product updated successfully.');
@@ -100,7 +165,8 @@ class ProductController extends Controller
         $product = Product::with(['shops' => function ($query) {
             $query->take(3);
         }, 'categories'])->findOrFail($product);
-        return view('admin.Product.show', compact('product'));
+        $subcategories = Category::where('parent_id', $product->categories->first()->id)->get();
+        return view('admin.Product.show', compact('product', 'subcategories'));
     }
 
     public function delete(DeleteProductRequest $request, $id)

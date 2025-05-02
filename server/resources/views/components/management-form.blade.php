@@ -5,7 +5,8 @@
     'item' => null,
     'fields' => [],
     'errors' => null,
-    'specialties' => [], // Added specialties
+    'specialties' => [],
+    'groupedSubcategories' => collect(),
 ])
 
 <div class="management-form-page">
@@ -28,7 +29,8 @@
                         @if($field['type'] === 'select')
                             <select id="{{ $field['name'] }}" name="{{ $field['name'] }}"
                                     {{ $field['required'] ?? false ? 'required' : '' }}
-                                    {{ $field['multiple'] ?? false ? 'multiple' : '' }}>
+                                    {{ $field['multiple'] ?? false ? 'multiple' : '' }}
+                                    class="{{ $field['multiple'] ?? false ? 'large-multi-select' : 'form-select' }}">
                                 @foreach($field['options'] ?? [] as $value => $label)
                                     <option value="{{ $value }}"
                                             @if($item)
@@ -111,33 +113,31 @@
                     </div>
                 @endforeach
                 @if(!empty($specialties))
-    <div id="specialties-container" class="specialties-container hidden">
-        <label class="specialties-title">Specialties</label>
-        <div class="specialties-list">
-            @foreach($specialties as $specialty)
-                <label class="specialty-item" for="specialty-{{ $specialty->id }}">
-                    <input
-                        class="specialty-checkbox"
-                        type="checkbox"
-                        name="specialties[]"
-                        value="{{ $specialty->id }}"
-                        id="specialty-{{ $specialty->id }}"
-                        @if(isset($item) && $item->specialties->contains($specialty->id)) checked @endif
-                    >
-                    <span>{{ $specialty->name_ar }}</span>
-                </label>
-            @endforeach
-        </div>
-    </div>
-@endif
-
+                    <div id="specialties-container" class="specialties-container hidden">
+                        <label class="specialties-title">Specialties</label>
+                        <div class="specialties-list">
+                            @foreach($specialties as $specialty)
+                                <label class="specialty-item" for="specialty-{{ $specialty->id }}">
+                                    <input
+                                        class="specialty-checkbox"
+                                        type="checkbox"
+                                        name="specialties[]"
+                                        value="{{ $specialty->id }}"
+                                        id="specialty-{{ $specialty->id }}"
+                                        @if(isset($item) && $item->specialties->contains($specialty->id)) checked @endif
+                                    >
+                                    <span>{{ $specialty->name_ar }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
                 <div class="footer">
                     <button type="submit" class="btn btn-primary">
                         {{ $item ? 'Update Item' : 'Create Item' }}
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
@@ -145,9 +145,70 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/customCss/form.css') }}">
+    <style>
+        .large-multi-select {
+            width: 100% !important;
+            min-height: 150px !important;
+            font-size: 16px !important;
+            padding: 10px !important;
+            border-radius: 0.35rem !important;
+            box-sizing: border-box;
+        }
+        .form-select {
+            width: 100% !important;
+            padding: 8px !important;
+            font-size: 14px !important;
+            border-radius: 0.35rem !important;
+        }
+    </style>
 @endsection
 
+@php
+    $hasCategoryField = collect($fields)->pluck('name')->contains('categories[]');
+    $hasSubCategoryField = collect($fields)->pluck('name')->contains('sub_categories[]');
+@endphp
+
 @section('scripts')
+    @if($hasCategoryField && $hasSubCategoryField && $groupedSubcategories->isNotEmpty())
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const subcategoriesMap = {!! $groupedSubcategories->toJson() !!};
+                const categorySelect = document.querySelector('select[name="categories[]"]');
+                const subcategorySelect = document.querySelector('select[name="sub_categories[]"]');
+
+                function updateSubcategories() {
+                    const selectedCategoryId = categorySelect.value;
+                    // Preserve attributes
+                    const isMultiple = subcategorySelect.hasAttribute('multiple');
+                    const isRequired = subcategorySelect.hasAttribute('required');
+                    const className = subcategorySelect.className;
+
+                    // Clear and repopulate options
+                    subcategorySelect.innerHTML = '';
+
+                    if (subcategoriesMap[selectedCategoryId]) {
+                        Object.entries(subcategoriesMap[selectedCategoryId]).forEach(([id, name]) => {
+                            const option = document.createElement('option');
+                            option.value = id;
+                            option.textContent = name;
+                            subcategorySelect.appendChild(option);
+                        });
+                    }
+
+                    // Reapply attributes
+                    if (isMultiple) subcategorySelect.setAttribute('multiple', '');
+                    if (isRequired) subcategorySelect.setAttribute('required', '');
+                    subcategorySelect.className = className;
+                }
+
+                categorySelect?.addEventListener('change', updateSubcategories);
+                if (categorySelect?.value) {
+                    updateSubcategories(); // Populate on page load (for edit forms)
+                }
+            });
+        </script>
+    @endif
+
     <script>
         document.querySelectorAll('.custom-file-input').forEach(input => {
             input.addEventListener('change', function(e) {
@@ -165,7 +226,7 @@
             const specialtiesContainer = document.getElementById('specialties-container');
 
             function toggleSpecialties() {
-                if (roleSelect.value === 'Expert') {
+                if (roleSelect?.value === 'Expert') {
                     specialtiesContainer.style.display = 'block';
                 } else {
                     specialtiesContainer.style.display = 'none';
@@ -173,11 +234,8 @@
                 }
             }
 
-            roleSelect.addEventListener('change', toggleSpecialties);
+            roleSelect?.addEventListener('change', toggleSpecialties);
             toggleSpecialties(); // Initial check
         });
     </script>
-
 @endsection
-
-

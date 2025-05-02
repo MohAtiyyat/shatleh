@@ -5,6 +5,7 @@ namespace App\Http\Requests\Dashboard\Product;
 use App\Traits\FormRequestTrait;
 use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class StoreProductRequest extends FormRequest
@@ -26,16 +27,18 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_ar' => 'required',
-            'name_en' => 'required',
-            'description_ar' => 'required',
-            'description_en' => 'required',
-            'price' => 'required|integer',
-            'images' => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'status' => 'required|integer',
-            'availability' => 'required|integer',
-            'category_id' => 'integer',
+            'name_en' => 'required|string|max:255',
+            'name_ar' => 'required|string|max:255',
+            'description_en' => 'required|string',
+            'description_ar' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'status' => 'required|in:0,1,2',
+            'availability' => 'required|in:0,1,2',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id',
+            'sub_categories' => 'required|array',
+            'sub_categories.*' => 'exists:categories,id',
         ];
     }
 }
