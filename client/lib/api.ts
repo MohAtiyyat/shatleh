@@ -34,10 +34,17 @@ interface RegisterResponse {
     };
 }
 
+interface TopProductsResponse {
+    data: Product[];
+}
+
 interface ApiErrorResponse {
     message?: string;
     error?: string;
 }
+
+// Import Product type
+import type { Product } from './index';
 
 // Helper function to handle fetch responses
 const handleResponse = async <T>(response: Response): Promise<T> => {
@@ -107,4 +114,24 @@ export const logoutApi = async (token: string): Promise<void> => {
     }
 };
 
-
+// Fetch top products
+export const fetchTopProducts = async (): Promise<Product[]> => {
+    try {
+        const response = await fetch(`${API_URL}/api/top_sellers`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        console.log('Response:', response); // Debugging line
+        const data = await handleResponse<TopProductsResponse>(response);
+        console.log('Data:', data); // Debugging line
+        return data.data;
+    } catch (error) {
+        console.error('Error fetching top products:', error); // Debugging line
+        throw new Error(
+            error instanceof Error ? error.message : 'Failed to fetch top products'
+        );
+    }
+};
