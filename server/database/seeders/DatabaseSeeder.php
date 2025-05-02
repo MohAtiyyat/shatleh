@@ -47,7 +47,27 @@ class DatabaseSeeder extends Seeder
                 ]
             ]);
 
-        }
+        };
+        DB::table('payment_info')->insert([
+            [
+                'card_type' => 'visa',
+                'card_number' => '1234567890123456',
+                'cvv' => '123',
+                'card_holder_name' => 'ahmed ali',
+                'customer_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'card_type' => 'mastercard',
+                'card_number' => '9876543210987654',
+                'cvv' => '321',
+                'card_holder_name' => 'ali ahmed',
+                'customer_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        ]);
 
     }
 }

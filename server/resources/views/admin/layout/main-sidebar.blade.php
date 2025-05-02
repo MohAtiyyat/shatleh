@@ -97,7 +97,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link @yield('Orders_Show')">
+                    <a href="{{ route('dashboard.order') }}" class="nav-link @yield('Order_Show')">
                         <ion-icon class="nav-icon" name="bag-handle-outline"></ion-icon>
                         <p>Orders Management</p>
                     </a>

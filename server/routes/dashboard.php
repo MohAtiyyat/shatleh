@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\CartController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\LogController;
+use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
 use App\Http\Controllers\Dashboard\ServiceController;
@@ -131,6 +132,11 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::delete('/{id}', [ServiceController::class, 'delete'])->name('.destroy');
         });
 
+        Route::name('order')->prefix('order')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('');
+            Route::get('/{order}', [OrderController::class, 'show'])->name('.show');
+            Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
+        });
 
     });
 });
