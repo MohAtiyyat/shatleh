@@ -18,7 +18,7 @@ function OrderSummary() {
   const isFooterVisible = useStickyFooter('.footer');
 
   const subtotal = items.reduce((sum, item) => {
-    const price = Number.parseFloat(item.price.replace(/[^\d.]/g, ''));
+    const price =item.price;
     return sum + price * item.quantity;
   }, 0);
   const shipping = 0;
@@ -90,8 +90,8 @@ function OrderSummary() {
             <Link href={`/${currentLocale}/products/${item.id}`} className="gap-4" passHref>
               <div className="w-20 h-20 relative">
                 <Image
-                  src={item.image || '/placeholder.svg'}
-                  alt={currentLocale === 'ar' ? item.name.ar : item.name.en || item.name.ar}
+                  src={item.image[0] || '/placeholder.svg'}
+                  alt={(currentLocale === 'ar' ? item.name_ar : item.name_en) || "Product Image"}
                   fill
                   className="object-cover rounded"
                   loading="lazy"
@@ -100,10 +100,10 @@ function OrderSummary() {
             </Link>
             <div className="flex-1">
               <h3 className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
-                {currentLocale === 'ar' ? item.name.ar : item.name.en || item.name.ar}
+                {currentLocale === 'ar' ? item.name_ar : item.name_en || item.name_ar}
               </h3>
               <p className="text-xs" style={{ color: 'var(--text-gray)' }}>
-                {t('checkout.price')}: {formatPrice(Number.parseFloat(item.price.replace(/[^\d.]/g, '')).toFixed(2), currentLocale)}
+                {t('checkout.price')}: {formatPrice(item.price.toFixed(2), currentLocale)}
               </p>
             </div>
             <div className="flex items-center gap-2 mx-3 my-2">

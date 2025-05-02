@@ -16,7 +16,6 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
     const topSellersRef = useRef(null);
     const topSellersInView = useInView(topSellersRef, { once: true, margin: '-100px' });
     const [products, setProducts] = useState<Product[]>([]);
-    const [error, setError] = useState<string | null>(null);
 
     const topSellersVariants = {
         initial: { opacity: 0, scale: 0.9 },
@@ -26,78 +25,73 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
     const mockData: Product[] = [
         {
             id: 1,
-            name: {
-                en: 'Basil',
-                ar: 'ريحان',
-            },
-            description: {
-                en: 'Fresh basil plant for culinary use.',
-                ar: 'نبات ربيحان طازج للاستخدام في الطهي.',
-            },
+            name_en: 'Basil',
+            name_ar: 'ريحان',
+            price: 3 ,
             image: '/rayhan.webp',
+            description_en: 'Fresh basil plant for culinary use.',
+            description_ar: 'نبات ربيحان طازج للاستخدام في الطهي.',
+            availability: 1,
+            sold_quantity: 0,
+            category_en: 'Supplies',
+            category_ar: 'مستلزمات',
             rating: 4.5,
-            price: '3 JD',
-            inStock: true,
         },
         {
             id: 2,
-            name: {
-                en: 'Lavender',
-                ar: 'لافندر',
-            },
-            description: {
-                en: 'Calming lavender plant for relaxation.',
-                ar: 'نبات لافندر مهدئ للاسترخاء.',
-            },
+            name_en: 'Lavender',
+            name_ar: 'لافندر',
+            price: 5,
             image: '/lavander.webp',
+            description_en: 'Calming lavender plant for relaxation.',
+            description_ar: 'نبات لافندر مهدئ للاسترخاء.',
+            availability: 1,
+            sold_quantity: 0,
+            category_en: 'Supplies',
+            category_ar: 'مستلزمات',
             rating: 4.5,
-            price: '5 JD',
-            inStock: true,
         },
         {
             id: 3,
-            name: {
-                en: 'Carpet',
-                ar: 'سجادة',
-            },
-            description: {
-                en: 'Decorative carpet plant for gardens.',
-                ar: 'نبات سجادة زخرفي للحدائق.',
-            },
+            name_en: 'Carpet',
+            name_ar: 'سجادة',
+            price: 3.5 ,
             image: '/sjadeh.webp',
+            description_en: 'Decorative carpet plant for gardens.',
+            description_ar: 'نبات سجادة زخرفي للحدائق.',
+            availability: 1,
+            sold_quantity: 0,
+            category_en: 'Supplies',
+            category_ar: 'مستلزمات',
             rating: 4.5,
-            price: '3.5 JD',
-            inStock: true,
         },
         {
             id: 4,
-            name: {
-                en: 'Damask Rose',
-                ar: 'ورد دمشقي',
-            },
-            description: {
-                en: 'Fragrant damask rose for beauty.',
-                ar: 'ورد دمشقي عطري للجمال.',
-            },
+            name_en: 'Damask Rose',
+            name_ar: 'ورد دمشقي',
+            price:5 ,
             image: '/jori.jpg',
+            description_en: 'Fragrant damask rose for beauty.',
+            description_ar: 'ورد دمشقي عطري للجمال.',
+            availability: 1,
+            sold_quantity: 0,
+            category_en: 'Supplies',
+            category_ar: 'مستلزمات',
             rating: 4.7,
-            price: '5 JD',
-            inStock: true,
         },
         {
             id: 5,
-            name: {
-                en: 'Mint',
-                ar: 'نعناع',
-            },
-            description: {
-                en: 'Refreshing mint plant for teas.',
-                ar: 'نبات نعناع منعش للشاي.',
-            },
+            name_en: 'Mint',
+            name_ar: 'نعناع',
+            price: 1.5 ,
             image: '/na3nah.jpg',
+            description_en: 'Refreshing mint plant for teas.',
+            description_ar: 'نبات نعناع منعش للشاي.',
+            availability: 1,
+            sold_quantity: 0,
+            category_en: 'Supplies',
+            category_ar: 'مستلزمات',
             rating: 4.3,
-            price: '1.5 JD',
-            inStock: true,
         },
     ];
 
@@ -107,7 +101,6 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
                 const topProducts = await fetchTopProducts();
                 setProducts(topProducts);
             } catch (err) {
-                setError(t('errors.fetchFailed'));
                 setProducts(mockData); // Fallback to mock data
                 console.error('Error fetching top products:', err);
             }
@@ -128,7 +121,6 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
                 {t('home.topSellers')}
             </h2>
 
-            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
             <ProductCarousel products={products} currentLocale={currentLocale} pageName="home" />
         </motion.section>

@@ -1,7 +1,11 @@
 // lib/api.ts
 
-// Base API URL
+// Base API URL from environment variable
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+import { mockProducts } from './mockData';
+
+// Import Product type
+import type { Product } from './index';
 
 // Interfaces for request and response data
 interface LoginRequest {
@@ -34,7 +38,7 @@ interface RegisterResponse {
     };
 }
 
-interface TopProductsResponse {
+interface ProductsResponse {
     data: Product[];
 }
 
@@ -42,9 +46,6 @@ interface ApiErrorResponse {
     message?: string;
     error?: string;
 }
-
-// Import Product type
-import type { Product } from './index';
 
 // Helper function to handle fetch responses
 const handleResponse = async <T>(response: Response): Promise<T> => {
@@ -125,7 +126,7 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
             },
         });
         console.log('Response:', response); // Debugging line
-        const data = await handleResponse<TopProductsResponse>(response);
+        const data = await handleResponse<ProductsResponse>(response);
         console.log('Data:', data); // Debugging line
         return data.data;
     } catch (error) {
@@ -133,5 +134,24 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
         throw new Error(
             error instanceof Error ? error.message : 'Failed to fetch top products'
         );
+    }
+};
+
+// Fetch all products (for ProductsPage)
+export const fetchAllProducts = async (): Promise<Product[]> => {
+    try {
+        const response = await fetch(`${API_URL}/api/all_products`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<ProductsResponse>(response);
+        console.log('Data:', data.data); // Debugging line
+        return data.data;
+    } catch (error) {
+        console.error('Error fetching all products:', error);
+        return mockProducts; // Return mock data on failure
     }
 };

@@ -1,28 +1,23 @@
-export interface Product {
-    id: number
-    name: {
-        en: string
-        ar: string
-    }
-    description: {
-        en: string
-        ar: string
-    }
-    price?: string
-    rating: number
-    image: string
-    category?: string
-    categoryAr?: string
-    inStock?: boolean
-    isTopSelling?: boolean
-}
-
+export type Product = {
+    id: number;
+    name_en: string;
+    name_ar: string;
+    price: number;
+    image: string | string;
+    description_en: string;
+    description_ar: string;
+    availability: number;
+    sold_quantity: number;
+    category_en?: string| null;
+    category_ar?: string | null;
+    rating:  number;
+};
 export interface Category {
     id: number;
     title: {
         en: string;
         ar: string;
-    };
+    };  
     svg: string;
 }
 

@@ -21,13 +21,12 @@ type FilterRating = FilterCategory & {
 };
 
 type FiltersProps = {
-    currentLocale:string;
+    currentLocale: string;
     filters: {
         categories: FilterCategory[];
         availability: FilterCategory[];
         ratings: FilterRating[];
         bestSelling: boolean;
-        
     };
     setFilters: React.Dispatch<
         React.SetStateAction<{
@@ -39,7 +38,7 @@ type FiltersProps = {
     >;
 };
 
-export default function Filterss({ filters, setFilters , currentLocale   }: FiltersProps ) {
+export default function Filters({ filters, setFilters, currentLocale }: FiltersProps) {
     const t = useTranslations('');
 
     // State for dropdown visibility
@@ -87,7 +86,6 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
 
     // Toggle best selling filter
     const toggleBestSelling = () => {
-        
         setFilters((prev) => ({
             ...prev,
             bestSelling: !prev.bestSelling,
@@ -116,7 +114,7 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
 
     // Get selected filters names
     const getSelectedNames = (type: 'categories' | 'availability' | 'ratings') => {
-        return filters[type].filter((item) => item.selected).map((item) => currentLocale === "ar" ? item.name.ar : item.name.en);
+        return filters[type].filter((item) => item.selected).map((item) => currentLocale === 'ar' ? item.name.ar : item.name.en);
     };
 
     // Clear all filters
@@ -142,12 +140,14 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
     return (
         <>
             {/* Filter Dropdowns */}
-            <div className={`flex flex-wrap items-center gap-3 mb-4  justify-center ${currentLocale === "ar" ? "ml-10" : "mr-10"}`}>
+            <div className={`flex flex-wrap items-center gap-3 mb-4 justify-center ${currentLocale === 'ar' ? 'ml-10' : 'mr-10'}`}>
                 {/* Category Dropdown */}
                 <div className="relative" ref={dropdownRefs.category}>
                     <button
                         onClick={() => toggleDropdown('category')}
                         className="flex items-center justify-between gap-2 px-4 py-2 bg-white border border-[#80ce97] rounded-md text-[#0f4229] min-w-[150px]"
+                        aria-expanded={openDropdown === 'category'}
+                        aria-label={t('products.category')}
                     >
                         {getSelectedCount('categories') > 0 ? (
                             <span className="truncate max-w-[100px]">{getSelectedNames('categories').join(', ')}</span>
@@ -162,7 +162,9 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-full left-0 mt-1 container-fluid bg-white border border-[#80ce97] rounded-md shadow-lg z-10"
+                            className="absolute top-full left-0 mt-1 bg-white border border-[#80ce97] rounded-md shadow-lg z-10 min-w-[150px]"
+                            role="menu"
+                            aria-label={t('products.categoryOptions')}
                         >
                             <div className="p-2 space-y-2">
                                 {filters.categories.map((category) => (
@@ -172,6 +174,7 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                                             checked={category.selected}
                                             onChange={() => toggleFilter('categories', category.id)}
                                             className="rounded border-[#80ce97]"
+                                            aria-label={currentLocale === 'ar' ? category.name.ar : category.name.en}
                                         />
                                         <span className="text-[#414141] whitespace-nowrap">{currentLocale === 'ar' ? category.name.ar : category.name.en}</span>
                                     </label>
@@ -181,13 +184,14 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                     )}
                 </div>
 
-                {/* Best selling Button */}
+                {/* Best Selling Button */}
                 <button
-                    onClick={toggleBestSelling} 
+                    onClick={toggleBestSelling}
                     className={`flex items-center justify-center px-4 py-2 border rounded-md min-w-[150px] ${filters.bestSelling
                             ? 'bg-[#80ce97] text-white border-[#80ce97]'
                             : 'bg-white text-[#0f4229] border-[#80ce97]'
                         }`}
+                    aria-label={t('products.bestSelling')}
                 >
                     <span>{t('products.bestSelling')}</span>
                 </button>
@@ -197,6 +201,8 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                     <button
                         onClick={() => toggleDropdown('availability')}
                         className="flex items-center justify-between gap-2 px-4 py-2 bg-white border border-[#80ce97] rounded-md text-[#0f4229] min-w-[150px]"
+                        aria-expanded={openDropdown === 'availability'}
+                        aria-label={t('products.availability')}
                     >
                         {getSelectedCount('availability') > 0 ? (
                             <span className="truncate max-w-[100px]">{getSelectedNames('availability').join(', ')}</span>
@@ -211,7 +217,9 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-full left-0 mt-1 w-48 bg-white border border-[#80ce97] rounded-md shadow-lg z-10"
+                            className="absolute top-full left-0 mt-1 bg-white border border-[#80ce97] rounded-md shadow-lg z-10 min-w-[150px]"
+                            role="menu"
+                            aria-label={t('products.availabilityOptions')}
                         >
                             <div className="p-2 space-y-2">
                                 {filters.availability.map((item) => (
@@ -221,6 +229,7 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                                             checked={item.selected}
                                             onChange={() => toggleFilter('availability', item.id)}
                                             className="rounded border-[#80ce97]"
+                                            aria-label={currentLocale === 'ar' ? item.name.ar : item.name.en}
                                         />
                                         <span className="text-[#414141]">{currentLocale === 'ar' ? item.name.ar : item.name.en}</span>
                                     </label>
@@ -235,6 +244,8 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                     <button
                         onClick={() => toggleDropdown('rating')}
                         className="flex items-center justify-between gap-2 px-4 py-2 bg-white border border-[#80ce97] rounded-md text-[#0f4229] min-w-[150px]"
+                        aria-expanded={openDropdown === 'rating'}
+                        aria-label={t('products.rating')}
                     >
                         {getSelectedCount('ratings') > 0 ? (
                             <span className="truncate max-w-[100px]">{getSelectedNames('ratings').join(', ')}</span>
@@ -249,7 +260,9 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-full left-0 mt-1 w-64 bg-white border border-[#80ce97] rounded-md shadow-lg z-10"
+                            className="absolute top-full left-0 mt-1 bg-white border border-[#80ce97] rounded-md shadow-lg z-10 min-w-[200px]"
+                            role="menu"
+                            aria-label={t('products.ratingOptions')}
                         >
                             <div className="p-2 space-y-2">
                                 {filters.ratings.map((rating) => (
@@ -263,13 +276,13 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                                                 checked={rating.selected}
                                                 onChange={() => toggleFilter('ratings', rating.id)}
                                                 className="rounded border-[#80ce97]"
+                                                aria-label={currentLocale === 'ar' ? rating.name.ar : rating.name.en}
                                             />
                                             <div className="flex">
                                                 {Array.from({ length: 5 }).map((_, i) => (
                                                     <Star
                                                         key={i}
-                                                        className={`h-4 w-4 ${i < rating.stars ? 'text-[#e75313] fill-[#e75313]' : 'text-[#e5e5e5]'
-                                                            }`}
+                                                        className={`h-4 w-4 ${i < rating.stars ? 'text-[#e75313] fill-[#e75313]' : 'text-[#e5e5e5]'}`}
                                                     />
                                                 ))}
                                             </div>
@@ -281,17 +294,6 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                         </motion.div>
                     )}
                 </div>
-
-                {/* Filter Button */}
-                {/* <button
-                    className="flex items-center gap-2 px-4 py-2 bg-[#43bb67] text-white rounded-md"
-                    onClick={() => {
-                        setOpenDropdown(null);
-                    }}
-                >
-                    <Filter className="h-4 w-4" />
-                    <span>{t('products.filter')}</span>
-                </button> */}
             </div>
 
             {/* Selected Filters */}
@@ -317,6 +319,7 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                                     <button
                                         onClick={() => clearFilter('categories', item.id)}
                                         className="text-[#0f4229] hover:text-[#e75313]"
+                                        aria-label={t('products.removeFilter', { name: currentLocale === 'ar' ? item.name.ar : item.name.en })}
                                     >
                                         <X className="h-3 w-3" />
                                     </button>
@@ -338,6 +341,7 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                                     <button
                                         onClick={() => clearFilter('availability', item.id)}
                                         className="text-[#0f4229] hover:text-[#e75313]"
+                                        aria-label={t('products.removeFilter', { name: currentLocale === 'ar' ? item.name.ar : item.name.en })}
                                     >
                                         <X className="h-3 w-3" />
                                     </button>
@@ -359,6 +363,7 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                                     <button
                                         onClick={() => clearFilter('ratings', item.id)}
                                         className="text-[#0f4229] hover:text-[#e75313]"
+                                        aria-label={t('products.removeFilter', { name: currentLocale === 'ar' ? item.name.ar : item.name.en })}
                                     >
                                         <X className="h-3 w-3" />
                                     </button>
@@ -377,13 +382,20 @@ export default function Filterss({ filters, setFilters , currentLocale   }: Filt
                                 <button
                                     onClick={() => clearFilter('bestSelling')}
                                     className="text-[#0f4229] hover:text-[#e75313]"
+                                    aria-label={t('products.removeFilter', { name: t('products.bestSelling') })}
                                 >
                                     <X className="h-3 w-3" />
                                 </button>
                             </motion.div>
                         )}
+                        
+                        
                     </div>
-                    <button onClick={clearAllFilters} className="text-sm text-[#e75313] hover:underline">
+                    <button
+                        onClick={clearAllFilters}
+                        className="text-sm text-[#e75313] hover:underline"
+                        aria-label={t('products.clearAll')}
+                    >
                         {t('products.clearAll')}
                     </button>
                 </motion.div>
