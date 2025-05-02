@@ -41,9 +41,7 @@ class DatabaseSeeder extends Seeder
                     'description_en' => 'test',
                     'created_at' => now(),
                     'updated_at' => now(),
-                    'parent_id' => $i,
-
-
+                    'parent_id' => null,
                 ]
             ]);
 

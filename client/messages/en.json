@@ -12,6 +12,12 @@
     "title": "Shatleh",
     "description": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts."
   },
+    "error": {
+      "title": "Oops, Something Went Wrong",
+      "message": "We encountered an issue while loading the products. Please try again.",
+      "retry": "Try Again"
+    },
+  
   "footer": {
     "aboutUs": "About Us",
     "aboutUsDescription": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts.",
@@ -100,7 +106,14 @@
   },
   "products": {
     "title": "Our Products",
+    "categoryOptions": "Category Options",
+    "availabilityOptions": "Availability Options",
+    "ratingOptions": "Rating Options",
+    "removeFilter": "Remove filter: {name}",
     "loading": "Loading products...",
+    "increaseQuantity": "Increase quantity",
+    "decreaseQuantity": "Decrease quantity",
+    "quantityControl": "Quantity",
     "addToCart": "Add to Cart",
     "noProducts": "No products available yet.",
     "addedToCart": "{name} has been added to your cart!",

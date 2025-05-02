@@ -11,25 +11,8 @@ import 'swiper/css';
 import 'swiper/css/autoplay';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { Product } from "../../lib";
 
-type Product = {
-    id: number;
-    name: {
-        en: string;
-        ar: string;
-    };
-    description: {
-        en: string;
-        ar: string;
-    };
-    price?: string;
-    rating: number;
-    image: string;
-    category?: string;
-    categoryAr?: string;
-    inStock?: boolean;
-    isTopSelling?: boolean;
-};
 
 interface ProductCarouselProps {
     products: Product[];
@@ -73,7 +56,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
     return (
         <div className="product-carousel-container w-full relative top-5">
             {/* Custom navigation elements - will be styled by Swiper */}
-            
+
 
             <Swiper
                 modules={[Navigation, Pagination, Autoplay, A11y]}
@@ -86,8 +69,8 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
                 pagination={{
                     clickable: true,
                     el: '.swiper-pagination',
-                    
-                    
+
+
                 }}
                 autoplay={{
                     delay: 400,
@@ -185,18 +168,21 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
                     justify-content: center;
                     align-items: center;
                     height: auto;
-                }
-                
-                /* Make pagination more visible */
-                .swiper-pagination-bullet {
-                    width: 8px;
-                    height: 8px;
-                    margin: 0 4px;
-                }
-                
-                .swiper-pagination-bullet-active {
-                    width: 16px;
-                    border-radius: 4px;
+                    }
+                    
+                    /* Make pagination more visible */
+                    .swiper-pagination-bullet {
+                        width: 8px;
+                        height: 8px;
+                        background-color: #68f16c;
+                        }
+                        
+                        .swiper-pagination-bullet-active {
+                            margin-top: 7px;
+                            width: 16px;
+                            border-radius: 4px;
+                            background-color: #337A5B;
+                            
 
                 }
             `}</style>

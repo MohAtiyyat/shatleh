@@ -4,16 +4,12 @@ import { persist } from "zustand/middleware";
 export type CartItem = {
   id: number;
   product_id?: number;
-  name: {
-    en: string;
-    ar: string;
-  };
-  description?: {
-    en: string;
-    ar: string;
-  };
-  price: string;
-  image: string;
+  name_en: string;
+  name_ar: string;
+  description_en: string;
+  description_ar: string;
+  price: number;
+  image: string | string[];
   quantity: number;
 };
 
@@ -159,7 +155,10 @@ export const useCartStore = create<CartState>()(
             const mappedItems = data.map((item) => ({
               id: item.id,
               product_id: item.product_id,
-              name: item.name,
+              name_en: item.name_en,
+              name_ar: item.name_ar,
+              description_en: item.description_en,
+              description_ar: item.description_ar,
               price: item.price,
               image: item.image,
               quantity: item.quantity,
@@ -178,7 +177,7 @@ export const useCartStore = create<CartState>()(
 
       total: () =>
         get().items.reduce((sum, item) => {
-          const price = Number.parseFloat(item.price.replace(/[^\d.]/g, ""));
+          const price = item.price;
           return sum + price * item.quantity;
         }, 0),
 
@@ -281,7 +280,10 @@ if (typeof window !== "undefined") {
           const mappedItems = data.map((item) => ({
             id: item.id,
             product_id: item.product_id,
-            name: item.name,
+            name_en: item.name_en,
+            name_ar: item.name_ar,
+            description_en: item.description_en,
+            description_ar: item.description_ar,
             price: item.price,
             image: item.image,
             quantity: item.quantity,

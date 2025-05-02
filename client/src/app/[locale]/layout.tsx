@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import { AuthProvider } from "../../../lib/AuthContext";
+import { ProductProvider } from "../../../lib/ProductContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -70,9 +71,11 @@ export default async function RootLayout({
             <html lang={localee} dir={direction} bbai-tooltip-injected="true">
                 <body className={inter.className}>
                     <AuthProvider>
-                        <Header />
-                        <main>{children}</main>
-                        <Footer />
+                        <ProductProvider>
+                            <Header />
+                            <main>{children}</main>
+                            <Footer />
+                        </ProductProvider>
                     </AuthProvider>
                 </body>
             </html>
