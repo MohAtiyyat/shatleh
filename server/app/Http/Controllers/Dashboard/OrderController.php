@@ -14,15 +14,21 @@ class OrderController extends Controller
         return view('admin.Order.index' , compact('order'));
     }
 
-    public function updateStatus(Request $request, Order $id){
+    public function updateStatus(Request $request, Order $order){
         $validated = $request->validate([
             'status' => 'required|string|in:pending,processing,shipped,delivered,cancelled',
         ]);
 
-        $id->status = $validated['status'];
-        $id->employee_id = Auth::user()->id; // Marks the current user as the one managing it
-        $id->save();
+        $order->status = $validated['status'];
+        $order->employee_id = Auth::user()->id; // Marks the current user as the one managing it
+        $order->save();
 
         return redirect()->back()->with('success', 'Order status updated successfully.');
+    }
+
+    public function show(Order $order){
+        $order = Order::with('customer' , 'employee' , 'address' , 'payment')->find($order->id);
+        dd($order);
+        return view('admin.Order.show' , compact('order'));
     }
 }

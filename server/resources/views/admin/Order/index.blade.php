@@ -54,7 +54,6 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ route($Route . '.show', $record->id) }}"><i class="fas fa-eye"></i> View</a></li>
-                                {{-- <li><a class="dropdown-item" href="{{ route($Route . '.edit', $record->id) }}"><i class="fas fa-edit"></i> Edit</a></li> --}}
                             </ul>
                         </div>
                     </td>

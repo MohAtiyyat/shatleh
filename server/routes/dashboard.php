@@ -134,8 +134,8 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
 
         Route::name('order')->prefix('order')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('');
-            Route::get('/{id}', [OrderController::class, 'show'])->name('.show');
-            Route::put('/{id}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
+            Route::get('/{order}', [OrderController::class, 'show'])->name('.show');
+            Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
         });
 
     });
