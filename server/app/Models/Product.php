@@ -18,7 +18,7 @@ class Product extends Model
         'image',
         'description_en',
         'description_ar',
-        '`status`',
+        'status',
         'availability',
         'sold_quantity',
     ];
