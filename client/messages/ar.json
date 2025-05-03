@@ -103,7 +103,6 @@
     }
   },
   "products": {
-
     "title": "منتجاتنا",
     "categoryOptions": "خيارات الفئة",
     "availabilityOptions": "خيارات التوفر",
@@ -350,7 +349,6 @@
   },
   "pages": {
     "home": "الرئيسية",
-    
     "products": "المنتجات",
     "blog": "المقالات",
     "services": "الخدمات",
@@ -370,53 +368,56 @@
     "about": "معلومات عنا"
   },
   "serviceRequest": {
-    "title": "طلب الخدمة",
-    "serviceName": "اسم الخدمة",
+    "loading": "جار التحميل...",
     "selectService": "اختر خدمة",
-    "location": "الموقع",
-    "selectLocation": "اختر موقعًا",
-    "uploadImage": "رفع صورة",
-    "imageInstructions": "يرجى رفع صورة مربعة بحجم أقل من 100 كيلوبايت",
+    "selectAddress": "اختر عنوانًا",
+    "serviceName": "الخدمة",
+    "address": "العنوان",
+    "imageInstructions": "رفع صورة (اختياري، الحد الأقصى 100 كيلوبايت)",
+    "uploadImage": "رفع الصورة",
     "tellUsMore": "أخبرنا المزيد",
-    "descriptionPlaceholder": "أدخل الوصف",
+    "descriptionPlaceholder": "صف طلبك...",
+    "manageAddresses": "إدارة العناوين",
     "errors": {
-      "serviceRequired": "يرجى اختيار خدمة",
-      "locationRequired": "يرجى اختيار موقع",
-      "descriptionRequired": "يرجى تقديم وصف",
-      "submitFailed": "فشل إرسال الطلب. يرجى المحاولة مرة أخرى."
+      "serviceRequired": "الخدمة مطلوبة",
+      "addressRequired": "العنوان مطلوب",
+      "descriptionRequired": "الوصف مطلوب",
+      "fileSize": "يجب أن تكون الصورة أقل من 100 كيلوبايت",
+      "fetchFailed": "فشل في تحميل البيانات",
+      "submitFailed": "فشل في إرسال الطلب"
     }
   },
   "profile": {
-    "title": "الملف الشخصي",
+    "title": "ملفك الشخصي",
     "firstName": "الاسم الأول",
     "lastName": "الاسم الأخير",
-    "userName": "اسم المستخدم",
     "email": "البريد الإلكتروني",
     "phoneNumber": "رقم الهاتف",
-    "location": "الموقع",
-    "selectLocation": "اختر موقعًا",
-    "timeZone": "المنطقة الزمنية",
-    "selectTimeZone": "اختر منطقة زمنية",
+    "address": "العنوان الافتراضي",
+    "selectAddress": "اختر عنوانًا",
+    "manageAddresses": "إدارة العناوين",
     "currentPassword": "كلمة المرور الحالية",
     "newPassword": "كلمة المرور الجديدة",
-    "uploadPhoto": "رفع صورة جديدة",
+    "uploadPhoto": "رفع صورة",
     "deletePhoto": "حذف الصورة",
     "cancel": "إلغاء",
     "saveChanges": "حفظ التغييرات",
     "successMessage": "تم تحديث الملف الشخصي بنجاح",
+    "addressUpdated": "تم تحديث العنوان الافتراضي بنجاح",
+    "loading": "جارٍ التحميل...",
     "errors": {
       "firstNameRequired": "الاسم الأول مطلوب",
       "lastNameRequired": "الاسم الأخير مطلوب",
-      "userNameRequired": "اسم المستخدم مطلوب",
       "emailRequired": "البريد الإلكتروني مطلوب",
-      "emailInvalid": "البريد الإلكتروني غير صالح",
+      "emailInvalid": "صيغة البريد الإلكتروني غير صالحة",
       "phoneNumberRequired": "رقم الهاتف مطلوب",
-      "locationRequired": "الموقع مطلوب",
-      "timeZoneRequired": "المنطقة الزمنية مطلوبة",
       "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
       "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
       "newPasswordLength": "يجب أن تكون كلمة المرور الجديدة 8 أحرف على الأقل",
-      "submitFailed": "فشل تحديث الملف الشخصي. يرجى المحاولة مرة أخرى."
+      "photoSize": "يجب أن تكون الصورة أقل من 100 كيلوبايت",
+      "submitFailed": "فشل في تحديث الملف الشخصي",
+      "fetchFailed": "فشل في جلب بيانات الملف الشخصي",
+      "addressChangeFailed": "فشل في تغيير العنوان الافتراضي"
     }
   },
   "orders": {
@@ -438,32 +439,35 @@
     }
   },
   "addresses": {
-    "title": "عناويني",
-    "edit": "تعديل",
-    "delete": "حذف",
-    "addAddress": "إضافة عنوان",
-    "defaultSet": "تم تحديث العنوان الافتراضي",
-    "addressAdded": "تمت إضافة العنوان بنجاح",
+    "title": "عناوينك",
+    "addAddress": "إضافة عنوان جديد",
+    "editAddress": "تعديل العنوان",
+    "noAddresses": "ليس لديك عناوين بعد.",
+    "defaultSet": "تم تعيين العنوان الافتراضي بنجاح",
+    "defaultSetError": "فشل في تعيين العنوان الافتراضي",
+    "addressAdded": "تم إضافة العنوان بنجاح",
     "addressUpdated": "تم تحديث العنوان بنجاح",
     "addressDeleted": "تم حذف العنوان بنجاح",
-    "cannotDeleteDefault": "لا يمكن حذف العنوان الافتراضي",
-    "form": {
-      "city": "المدينة",
-      "floor": "الطابق",
-      "street": "الشارع",
-      "aptNo": "رقم الشقة",
-      "buildingNo": "رقم المبنى",
-      "zipCode": "الرمز البريدي",
-      "confirm": "تأكيد",
-      "cancel": "إلغاء",
-      "switchToAdd": "التبديل إلى الإضافة"
-    },
-    "errors": {
-      "nameRequired": "الاسم مطلوب",
-      "streetRequired": "الشارع مطلوب",
-      "cityRequired": "المدينة مطلوبة",
-      "stateRequired": "الولاية مطلوبة",
-      "zipCodeRequired": "الرمز البريدي مطلوب"
-    }
+    "fetchError": "فشل في جلب العناوين",
+    "saveError": "فشل في حفظ العنوان",
+    "deleteError": "فشل في حذف العنوان",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "titleLabel": "العنوان",
+    "titlePlaceholder": "مثال: المنزل، العمل",
+    "titleRequired": "العنوان مطلوب",
+    "country": "الدولة",
+    "selectCountry": "اختر دولة",
+    "countryRequired": "الدولة مطلوبة",
+    "city": "المدينة",
+    "cityPlaceholder": "أدخل المدينة",
+    "cityRequired": "المدينة مطلوبة",
+    "addressLine": "سطر العنوان",
+    "addressLinePlaceholder": "أدخل سطر العنوان",
+    "addressLineRequired": "سطر العنوان مطلوب",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "update": "تحديث",
+    "loading": "جارٍ التحميل..."
   }
 }

@@ -5,9 +5,7 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['localhost' , 'images.pexels.com'], // Allow images from localhost (port 5000 is inferred)
-    
-    
+    domains: ['localhost', 'images.pexels.com', '127.0.0.1'], // Add '127.0.0.1' here
   },
 };
 

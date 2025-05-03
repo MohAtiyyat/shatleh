@@ -32,6 +32,7 @@ class User extends Authenticatable
         'time_zone',
         'is_banned',
         'bio',
+        "photo",
         'address_id',
     ];
 
