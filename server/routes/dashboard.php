@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\AddressController;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CartController;
 use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\CouponController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\LogController;
 use App\Http\Controllers\Dashboard\OrderController;
@@ -139,8 +140,9 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
         });
 
-        Route::resource('specialties', SpecialtiesController::class);
+        Route::resource('specialties', SpecialtiesController::class)->except('show');
 
+        Route::resource('coupon', CouponController::class)->except('show');
     });
 });
 

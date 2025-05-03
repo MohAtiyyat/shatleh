@@ -79,7 +79,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.coupon.index') }}" class="nav-link @yield('Coupon_Show')">
                         <ion-icon class="nav-icon" name="pricetag-outline"></ion-icon>
                         <p>Coupons Management</p>
                     </a>
