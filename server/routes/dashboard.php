@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\CouponController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\LogController;
 use App\Http\Controllers\Dashboard\OrderController;
+use App\Http\Controllers\Dashboard\PaymentController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
 use App\Http\Controllers\Dashboard\ServiceController;
@@ -143,6 +144,8 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::resource('specialties', SpecialtiesController::class)->except('show');
 
         Route::resource('coupon', CouponController::class)->except('show');
+
+        Route::resource('payments', PaymentController::class)->only('index');
     });
 });
 
