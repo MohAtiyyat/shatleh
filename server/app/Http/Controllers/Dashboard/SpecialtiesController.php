@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Specialty\StoreSpecialtyRequest;
 use App\Http\Requests\Dashboard\Specialty\UpdateSpecialtyRequest;
 use App\Models\Specialty;
-use Illuminate\Http\Request;
 
 class SpecialtiesController extends Controller
 {
