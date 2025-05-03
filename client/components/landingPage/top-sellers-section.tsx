@@ -96,6 +96,7 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
     ];
 
     useEffect(() => {
+
         const loadProducts = async () => {
             try {
                 const topProducts = await fetchTopProducts();

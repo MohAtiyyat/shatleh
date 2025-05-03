@@ -112,12 +112,7 @@ export default function ProductDetailsPage() {
                 <ExpandableDescription
                     shortDescription={product && currentLocale === 'en' ? product.description_en : product?.description_ar || ''}
                     fullDescription={
-                        (currentLocale === 'en' ? product?.description_en : product?.description_ar || '') +
-                        '. ' +
-                        (currentLocale === 'en'
-                            ? 'This plant is perfect for indoor spaces, offering lush greenery and easy maintenance.'
-                            : 'هذا النبات مثالي للمساحات الداخلية، يوفر خضرة مورقة وصيانة سهلة.')
-                    }
+                        (currentLocale === 'en' ? product?.description_en : product?.description_ar || '') +'. '}
                     moreText={t('products.readMore', { defaultMessage: currentLocale === 'en' ? 'More ...' : 'المزيد ...' })}
                     lessText={t('products.readLess', { defaultMessage: currentLocale === 'en' ? 'Less' : 'أقل' })}
                 />
@@ -200,7 +195,7 @@ export default function ProductDetailsPage() {
             </div>
         );
     }
-
+    console.log('Product Image:', product.image[0]);
     return (
         <div className={`min-h-screen bg-[#e8f5e9] overflow-hidden ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
             <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
@@ -211,11 +206,11 @@ export default function ProductDetailsPage() {
                         <Breadcrumb pageName={'products'} product={currentLocale === 'en' ? product.name_en : product.name_ar} />
                         <div className="rounded-lg overflow-hidden">
                             <Image
-                                src={'/placeholder.svg?height=400&width=400'}
+                                src={product.image[0] ? `http://127.0.0.1:8000${product.image[0]}` : '/default.jpg'}
                                 alt={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
                                 width={400}
                                 height={400}
-                                className="w-full h-auto object-cover rounded-lg"
+                                className="w-[700px] h-[400px] object-cover rounded-lg"
                             />
                         </div>
                     </div>

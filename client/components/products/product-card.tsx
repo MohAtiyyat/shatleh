@@ -32,9 +32,9 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
             ? t('products.topSellingLabel')
             : null;
 
-    const imagePath = product.image ? JSON.parse(product.image)[0] : '/placeholder.svg';
+    // const imagePath = product.image ? JSON.parse(product.image)[0] : '/placeholder.svg';
 
-    console.log('Product Image Path:', imagePath);
+    // console.log('Product Image Path:', imagePath);
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -97,7 +97,7 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
                         </span>
                     )}
                     <Image
-                        src={ '/placeholder.svg'}
+                        src={ `http://127.0.0.1:8000${product.image}` }
                         alt={currentLocale === 'ar' ? product.name_ar : product.name_en}
                         width={300}
                         height={270}
