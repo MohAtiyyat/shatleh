@@ -61,7 +61,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.payments.index') }}" class="nav-link @yield('Payments_Show')">
                         <ion-icon class="nav-icon" name="card-outline"></ion-icon>
                         <p>Payments Management</p>
                     </a>
