@@ -12,6 +12,7 @@ use App\Http\Controllers\Dashboard\ProductShopController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\ServiceRequestController;
 use App\Http\Controllers\Dashboard\ShopController;
+use App\Http\Controllers\Dashboard\SpecialtiesController;
 use App\Http\Controllers\Dashboard\StaffController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -137,6 +138,8 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::get('/{order}', [OrderController::class, 'show'])->name('.show');
             Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
         });
+
+        Route::resource('specialties', SpecialtiesController::class);
 
     });
 });

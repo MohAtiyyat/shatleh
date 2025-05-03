@@ -10,8 +10,10 @@ class Specialty extends Model
 
     protected $fillable = ['name_en', 'name_ar'];
 
-    public function user()
+    public function expert()
     {
-        return $this->belongsToMany(User::class, 'expert_specialty', 'specialty_id', 'user_id')->as('specialty_experts')->withTimestamps();
+        return $this->belongsToMany(User::class, 'expert_specialty', 'specialty_id', 'expert_id')
+            ->withPivot('created_at', 'updated_at')
+            ->withTimestamps();
     }
 }

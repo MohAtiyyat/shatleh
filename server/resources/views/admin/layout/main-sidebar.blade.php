@@ -55,7 +55,7 @@
                     </a>
                 </li> -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.specialties.index') }}" class="nav-link @yield('Specialties_Show')">
                         <ion-icon class="nav-icon" name="star-outline"></ion-icon>
                         <p>Specialties Management</p>
                     </a>
