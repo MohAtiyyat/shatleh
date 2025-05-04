@@ -145,7 +145,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
 
         Route::resource('coupon', CouponController::class)->except('show');
 
-        Route::resource('payments', PaymentController::class)->only('index');
+        Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
     });
 });
 
