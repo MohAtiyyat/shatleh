@@ -76,22 +76,29 @@
                                             </ul>
                                         @endif
                                     </div>
-                                    <div class="col-3 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">default Address</h5>
-
+                                    <!-- Default Address Section -->
+                                    <div class="col-2 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Default Address</h5>
                                         @if ($defaultAddress)
-                                            @include('/components/address-popout', [
-                                                  'addresses' => [$defaultAddress],
+                                            @include('components.address-popout', [
+                                                'addresses' => [$defaultAddress],
+                                                'prefix' => 'default-'
                                             ])
+                                        @else
+                                            <p>No default address set.</p>
                                         @endif
-
                                     </div>
+
+                                    <!-- All Addresses Section -->
                                     <div class="col-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Addresses</h5>
-                                        @if ($addresses)
-                                            @include('/components/address-popout', [
-                                                  'addresses' => $addresses,
+                                        @if ($addresses && count($addresses))
+                                            @include('components.address-popout', [
+                                                'addresses' => $addresses,
+                                                'prefix' => 'all-'
                                             ])
+                                        @else
+                                            <p>No addresses available.</p>
                                         @endif
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
