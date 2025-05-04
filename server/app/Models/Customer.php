@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Customer extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = 'customers';
 
     protected $fillable = [
@@ -36,16 +36,6 @@ class Customer extends Model
     {
         return $this->hasOne(Cart::class);
     }
-
-    public function address()
-    {
-        return $this->hasMany(Address::class);
-    }
-
-    public function defaultAddress(){
-        return $this->belongsTo(Address::class, 'address_id');
-    }
-
     public function paymentInfo(){
         return $this->hasMany(PaymentInfo::class);
     }
