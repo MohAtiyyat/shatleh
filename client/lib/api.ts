@@ -90,17 +90,20 @@ interface ServicesResponse {
 interface ServiceRequestRequest {
     service_id: number;
     address_id: number;
-    description: string;
+    customer_id: string; // Add customer_id
+    details: string;
     image?: File;
 }
 
+// Update the ServiceRequestResponse interface (align with backend response)
 interface ServiceRequestResponse {
     data: {
         id: number;
         user_id: number;
+        customer_id: string; // Add customer_id
         service_id: number;
         address_id: number;
-        description: string;
+        details: string;
         image: string | null;
         status: string;
     };
@@ -422,7 +425,8 @@ export const createServiceRequest = async (data: ServiceRequestRequest): Promise
         const formData = new FormData();
         formData.append('service_id', data.service_id.toString());
         formData.append('address_id', data.address_id.toString());
-        formData.append('description', data.description);
+        formData.append('customer_id', data.customer_id); // Add customer_id
+        formData.append('details', data.details);
         if (data.image) {
             formData.append('image', data.image);
         }

@@ -370,24 +370,25 @@
     "products": "Products",
     "about": "About"
   },
- "serviceRequest": {
-    "loading": "Loading...",
+"serviceRequest": {
+    "serviceName": "Service Name",
+    "address": "Address",
     "selectService": "Select a service",
     "selectAddress": "Select an address",
-    "serviceName": "Service",
-    "address": "Address",
-    "imageInstructions": "Upload an image (optional, max 100KB)",
-    "uploadImage": "Upload Image",
     "tellUsMore": "Tell us more",
-    "descriptionPlaceholder": "Describe your request...",
+    "detailsPlaceholder": "Please provide details about your request",
+    "imageInstructions": "Upload an image to help us understand your request better (max 2MB).",
+    "uploadImage": "Upload Image",
     "manageAddresses": "Manage Addresses",
+    "successMessage": "Request submitted successfully",
     "errors": {
-      "serviceRequired": "Service is required",
-      "addressRequired": "Address is required",
-      "descriptionRequired": "Description is required",
-      "fileSize": "Image must be less than 100KB",
-      "fetchFailed": "Failed to load data",
-      "submitFailed": "Failed to submit request"
+      "fetchFailed": "Failed to load data. Please try again.",
+      "serviceRequired": "Please select a service.",
+      "addressRequired": "Please select an address.",
+      "detailsRequired": "Please provide details about your request.",
+      "fileSize": "Image size must be less than 2MB.",
+      "customerRequired": "User authentication is required. Please log in again.",
+      "submitFailed": "Failed to submit request. Please try again."
     }
   },
   "profile": {
@@ -464,13 +465,17 @@
     "countryRequired": "Country is required",
     "city": "City",
     "cityPlaceholder": "Enter city",
-    "cityRequired": "City is requaired",
+    "cityRequired": "City is required",
     "addressLine": "Address Line",
     "addressLinePlaceholder": "Enter address line",
     "addressLineRequired": "Address line is required",
     "cancel": "Cancel",
     "save": "Save",
     "update": "Update",
-    "loading": "Loading..."
-    }
+    "loading": "Loading...",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this address?",
+    "confirmDeleteConfirm": "Delete",
+    "confirmDeleteCancel": "Cancel"
+  }
   }

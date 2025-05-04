@@ -110,7 +110,7 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
                             transition={{ duration: 0.3 }}
                         >
                             <Image
-                                src={service.image && service.image.length > 0 ? service.image[0] : '/placeholder.svg'}
+                                src={service.image && service.image.length > 0 ? `http://127.0.0.1:8000${service.image[0]}` : '/placeholder.svg'}
                                 alt={currentLocale === 'ar' ? service.name_ar : service.name_en}
                                 width={400}
                                 height={300}
