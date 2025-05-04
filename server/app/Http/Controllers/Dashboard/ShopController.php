@@ -39,6 +39,7 @@ class ShopController extends Controller
     {
 
         $data = $request->validated();
+        $data['employee_id'] = auth()->user()->id; 
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('shops', 'public');

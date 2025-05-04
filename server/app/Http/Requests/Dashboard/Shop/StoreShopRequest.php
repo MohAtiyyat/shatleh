@@ -5,6 +5,7 @@ namespace App\Http\Requests\Dashboard\Shop;
 use App\Traits\FormRequestTrait;
 use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class StoreShopRequest extends FormRequest
@@ -25,6 +26,7 @@ class StoreShopRequest extends FormRequest
      */
     public function rules(): array
     {
+        // dd(Request::all());
         return [
            'name' => 'required|string|max:255',
             'address_id' => 'required|exists:addresses,id',
@@ -32,7 +34,6 @@ class StoreShopRequest extends FormRequest
             'owner_phone_number' => 'required|string|max:20',
             'owner_name' => 'required|string|max:255',
             'is_partner' => 'required|boolean',
-            'employee_id' => 'required|exists:users,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
     }
