@@ -206,7 +206,7 @@ export default function ProductDetailsPage() {
                         <Breadcrumb pageName={'products'} product={currentLocale === 'en' ? product.name_en : product.name_ar} />
                         <div className="rounded-lg overflow-hidden">
                             <Image
-                                src={product.image[0] ? `http://127.0.0.1:8000${product.image[0]}` : '/default.jpg'}
+                                src={product.image[0] ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}` : '/default.jpg'}
                                 alt={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
                                 width={400}
                                 height={400}

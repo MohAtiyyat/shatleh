@@ -97,7 +97,7 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
                         </span>
                     )}
                     <Image
-                        src={ `http://127.0.0.1:8000${product.image}` }
+                        src={ `${process.env.NEXT_PUBLIC_API_URL}${product.image}` }
                         alt={currentLocale === 'ar' ? product.name_ar : product.name_en}
                         width={300}
                         height={270}
