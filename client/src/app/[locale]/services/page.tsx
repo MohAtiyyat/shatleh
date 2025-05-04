@@ -7,8 +7,10 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp, ChevronDown, Settings } from 'lucide-react';
 import Link from 'next/link';
-import Toast from '../../../../components/Toast';
+import ServicePageSkeleton from '../../../../components/service/ServicePageSkeleton';
+import SuccessPopup from '../../../../components/service/SuccessPopup';
 import { fetchServices, createServiceRequest, fetchAddresses } from '../../../../lib/api';
+import { useAuth } from '../../../../lib/AuthContext';
 
 interface Service {
     id: number;
@@ -32,8 +34,10 @@ interface Address {
 interface Errors {
     service?: string;
     address?: string;
-    description?: string;
+    details?: string;
     file?: string;
+    customer_id?: string;
+    submit?: string;
 }
 
 export default function ServiceRequestForm() {
@@ -41,6 +45,7 @@ export default function ServiceRequestForm() {
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { userId } = useAuth();
     const currentLocale: 'en' | 'ar' = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
     const [services, setServices] = useState<Service[]>([]);
     const [addresses, setAddresses] = useState<Address[]>([]);
@@ -49,10 +54,10 @@ export default function ServiceRequestForm() {
     const [selectedAddress, setSelectedAddress] = useState<number | ''>('');
     const [addressDropdownOpen, setAddressDropdownOpen] = useState(false);
     const [file, setFile] = useState<File | null>(null);
-    const [description, setDescription] = useState('');
+    const [details, setDetails] = useState('');
     const [errors, setErrors] = useState<Errors>({});
-    const [showToast, setShowToast] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
     const mockServicesData: Service[] = [
         {
@@ -83,8 +88,8 @@ export default function ServiceRequestForm() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        const userId = localStorage.getItem('userId');
-        if (!token || !userId) {
+        const storedUserId = localStorage.getItem('userId');
+        if (!token || !storedUserId) {
             router.push(`/${currentLocale}/login?redirect=/services`);
             return;
         }
@@ -97,7 +102,6 @@ export default function ServiceRequestForm() {
                     fetchAddresses(),
                 ]);
 
-                // Use mock data if no services are returned
                 if (servicesData.length === 0) {
                     setServices(mockServicesData);
                 } else {
@@ -105,7 +109,6 @@ export default function ServiceRequestForm() {
                 }
                 setAddresses(addressesData);
 
-                // Prefill service from query parameter or first service
                 const serviceId = searchParams.get('service_id');
                 if (serviceId && servicesData.some((s) => s.id === parseInt(serviceId))) {
                     setSelectedService(parseInt(serviceId));
@@ -115,16 +118,14 @@ export default function ServiceRequestForm() {
                     setSelectedService(mockServicesData[0].id);
                 }
 
-                // Prefill default address
                 const defaultAddress = addressesData.find((addr) => addr.is_default);
                 if (defaultAddress) {
                     setSelectedAddress(defaultAddress.id);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
-                setServices(mockServicesData); // Fallback to mock data
-                setErrors({ service: t('errors.fetchFailed') });
-                setShowToast(true);
+                setServices(mockServicesData);
+                setErrors((prev) => ({ ...prev, submit: t('errors.fetchFailed') }));
             } finally {
                 setLoading(false);
             }
@@ -136,7 +137,7 @@ export default function ServiceRequestForm() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            if (file.size > 100 * 1024) {
+            if (file.size > 2 * 1024 * 1024) {
                 setErrors((prev) => ({ ...prev, file: t('errors.fileSize') }));
                 return;
             }
@@ -149,38 +150,111 @@ export default function ServiceRequestForm() {
         const newErrors: Errors = {};
         if (!selectedService) newErrors.service = t('errors.serviceRequired');
         if (!selectedAddress) newErrors.address = t('errors.addressRequired');
-        if (!description.trim()) newErrors.description = t('errors.descriptionRequired');
+        if (!details.trim()) newErrors.details = t('errors.detailsRequired');
+        if (!userId) newErrors.customer_id = t('errors.customerRequired');
         setErrors((prev) => ({ ...prev, ...newErrors }));
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrors({}); // Clear previous errors
         if (!validateForm()) return;
 
         try {
             await createServiceRequest({
                 service_id: selectedService as number,
                 address_id: selectedAddress as number,
-                description,
+                customer_id: userId!,
+                details,
                 image: file || undefined,
             });
 
-            // Reset form
+            // Clear form fields
             setSelectedService(services.length > 0 ? services[0].id : '');
             setSelectedAddress(addresses.find((addr) => addr.is_default)?.id || '');
             setFile(null);
-            setDescription('');
+            setDetails('');
             setErrors({});
-            setShowToast(true);
+            setShowSuccessPopup(true); // Show success popup
         } catch (error) {
-            const message = error instanceof Error ? error.message : t('errors.submitFailed');
-            try {
-                const parsedErrors = JSON.parse(message);
-                setErrors(parsedErrors);
-            } catch {
-                setErrors({ service: message });
-                setShowToast(true);
+            if (error instanceof Error) {
+                try {
+                    const parsedErrors = JSON.parse(error.message);
+                    if (parsedErrors.errors && parsedErrors.errors.details) {
+                        setErrors((prev) => ({
+                            ...prev,
+                            details: parsedErrors.errors.details[0],
+                        }));
+                        return;
+                    }
+                    if (parsedErrors.errors) {
+                        const errorFields = Object.keys(parsedErrors.errors);
+                        if (errorFields.includes('service_id')) {
+                            setErrors((prev) => ({
+                                ...prev,
+                                service: t('errors.serviceRequired'),
+                            }));
+                            return;
+                        } else if (errorFields.includes('address_id')) {
+                            setErrors((prev) => ({
+                                ...prev,
+                                address: t('errors.addressRequired'),
+                            }));
+                            return;
+                        } else if (errorFields.includes('customer_id')) {
+                            setErrors((prev) => ({
+                                ...prev,
+                                customer_id: t('errors.customerRequired'),
+                            }));
+                            return;
+                        } else if (errorFields.includes('image')) {
+                            setErrors((prev) => ({
+                                ...prev,
+                                file: t('errors.fileSize'),
+                            }));
+                            return;
+                        } else {
+                            setErrors((prev) => ({
+                                ...prev,
+                                submit: parsedErrors.errors[errorFields[0]][0],
+                            }));
+                            return;
+                        }
+                    } else if (parsedErrors.message.includes('customer_id')) {
+                        setErrors((prev) => ({
+                            ...prev,
+                            customer_id: t('errors.customerRequired'),
+                        }));
+                        return;
+                    }
+                    setErrors((prev) => ({
+                        ...prev,
+                        submit: parsedErrors.message || error.message,
+                    }));
+                } catch {
+                    if (error.message.includes('details')) {
+                        setErrors((prev) => ({
+                            ...prev,
+                            details: t('errors.detailsRequired'),
+                        }));
+                    } else if (error.message.includes('customer_id')) {
+                        setErrors((prev) => ({
+                            ...prev,
+                            customer_id: t('errors.customerRequired'),
+                        }));
+                    } else {
+                        setErrors((prev) => ({
+                            ...prev,
+                            submit: error.message || t('errors.submitFailed'),
+                        }));
+                    }
+                }
+            } else {
+                setErrors((prev) => ({
+                    ...prev,
+                    submit: t('errors.submitFailed'),
+                }));
             }
         }
     };
@@ -200,7 +274,7 @@ export default function ServiceRequestForm() {
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">{t('loading')}</div>;
+        return <ServicePageSkeleton />;
     }
 
     return (
@@ -245,11 +319,10 @@ export default function ServiceRequestForm() {
                                                 initial={{ opacity: 0, y: -10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ delay: index * 0.05 }}
-                                                className={`px-4 py-3 cursor-pointer hover:bg-[var(--secondary-bg)] hover:text-[var(--text-white)] ${
-                                                    service.id === selectedService
+                                                className={`px-4 py-3 cursor-pointer hover:bg-[var(--secondary-bg)] hover:text-[var(--text-white)] ${service.id === selectedService
                                                         ? 'bg-[var(--accent-color)] text-[var(--text-white)]'
                                                         : ''
-                                                }`}
+                                                    }`}
                                                 onClick={() => {
                                                     setSelectedService(service.id);
                                                     setServiceDropdownOpen(false);
@@ -290,28 +363,28 @@ export default function ServiceRequestForm() {
                                             exit={{ opacity: 0, height: 0 }}
                                             transition={{ duration: 0.2 }}
                                             className="absolute z-10 w-full mt-1 border border-[var(--secondary-bg)] rounded-lg overflow-hidden bg-[var(--primary-bg)]"
-                                    >
-                                        {addresses.map((address, index) => (
-                                            <motion.div
-                                                key={address.id}
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: index * 0.05 }}
-                                                className={`px-4 py-3 cursor-pointer hover:bg-[var(--secondary-bg)] hover:text-[var(--text-white)] ${
-                                                    address.id === selectedAddress
-                                                        ? 'bg-[var(--accent-color)] text-[var(--text-white)]'
-                                                        : ''
-                                                }`}
-                                                onClick={() => {
-                                                    setSelectedAddress(address.id);
-                                                    setAddressDropdownOpen(false);
-                                                    setErrors((prev) => ({ ...prev, address: undefined }));
-                                                }}
-                                            >
-                                                {address.title} - {address.city}, {address.country_name || address.country_id}
-                                            </motion.div>
-                                        ))}
-                                    </motion.div>
+                                        >
+                                            {addresses.map((address, index) => (
+                                                <motion.div
+                                                    key={address.id}
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: index * 0.05 }}
+                                                    className={`px-4 py-3 cursor-pointer hover:bg-[var(--secondary-bg)] hover:text-[var(--text-white)] ${address.id === selectedAddress
+                                                            ? 'bg-[var(--accent-color)] text-[var(--text-white)]'
+                                                            : ''
+                                                        }`}
+                                                    onClick={() => {
+                                                        setSelectedAddress(address.id);
+                                                        setAddressDropdownOpen(false);
+                                                        setErrors((prev) => ({ ...prev, address: undefined }));
+                                                    }}
+                                                >
+                                                    {address.title} - {address.city},{' '}
+                                                    {address.country_name || address.country_id}
+                                                </motion.div>
+                                            ))}
+                                        </motion.div>
                                     )}
                                 </AnimatePresence>
                             </div>
@@ -378,8 +451,8 @@ export default function ServiceRequestForm() {
                                         {file
                                             ? file.name
                                             : currentLocale === 'ar'
-                                            ? 'لم يتم اختيار صورة'
-                                            : 'No image selected'}
+                                                ? 'لم يتم اختيار صورة'
+                                                : 'No image selected'}
                                     </span>
                                 </div>
                                 {errors.file && <p className="text-red-500 text-sm mt-1">{errors.file}</p>}
@@ -401,15 +474,22 @@ export default function ServiceRequestForm() {
                             className="w-full"
                         >
                             <textarea
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                placeholder={t('descriptionPlaceholder')}
+                                value={details}
+                                onChange={(e) => {
+                                    setDetails(e.target.value);
+                                    setErrors((prev) => ({ ...prev, details: undefined }));
+                                }}
+                                placeholder={t('detailsPlaceholder')}
                                 className="w-full min-h-[200px] resize-none border border-[var(--secondary-bg)] text-[var(--text-primary)] rounded-lg p-3 focus:ring-[var(--focus-ring)] focus:ring-2 outline-none"
+                                required
                             />
                         </motion.div>
-                        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+                        {errors.details && <p className="text-red-500 text-sm mt-1">{errors.details}</p>}
                     </motion.div>
 
+                    {errors.submit && (
+                        <p className="text-red-500 text-sm mb-4 text-center">{errors.submit}</p>
+                    )}
                     <div className="flex justify-center">
                         <motion.button
                             whileHover={{ scale: 1.05 }}
@@ -422,11 +502,15 @@ export default function ServiceRequestForm() {
                     </div>
                 </form>
             </motion.div>
-            <Toast
-                message={currentLocale === 'ar' ? 'تم إرسال الطلب بنجاح' : 'Request submitted successfully'}
-                isVisible={showToast}
-                onClose={() => setShowToast(false)}
-            />
+
+            <AnimatePresence>
+                {showSuccessPopup && (
+                    <SuccessPopup
+                        onClose={() => setShowSuccessPopup(false)}
+                        currentLocale={currentLocale}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }

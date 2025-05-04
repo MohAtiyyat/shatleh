@@ -38,10 +38,10 @@ class ServiceController extends Controller
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
             'address_id' => 'required|exists:addresses,id',
-            'description' => 'required|string|min:10',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:100', // 100KB
+            'customer_id' => 'required|exists:users,id', // Validate customer_id
+            'details' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors(),
@@ -61,10 +61,10 @@ class ServiceController extends Controller
         }
 
         $serviceRequest = ServiceRequest::create([
-            'user_id' => $user->id,
+            'customer_id' => $data['customer_id'], // Use customer_id
             'service_id' => $data['service_id'],
             'address_id' => $data['address_id'],
-            'description' => $data['description'],
+            'details' => $data['details'],
             'image' => $imagePath,
             'status' => 'pending',
         ]);

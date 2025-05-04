@@ -34,7 +34,7 @@ class ServiceController extends Controller
                 $imagePath = $image->store('service_images', 'public');
                 $imagePaths[] = Storage::url($imagePath);
             }
-            $data['image'] = json_encode($imagePaths);
+            $data['image'] = $imagePaths;
         }
 
         Service::create($data);
@@ -65,7 +65,7 @@ class ServiceController extends Controller
                     $imagePath = $image->store('service_images', 'public');
                     $imagePaths[] = Storage::url($imagePath);
                 }
-                $data['image'] = json_encode($imagePaths);
+                $data['image'] = $imagePaths;
             }
 
             $service->update($data);

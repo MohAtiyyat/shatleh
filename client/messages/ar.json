@@ -367,26 +367,28 @@
     "products": "المنتجات",
     "about": "معلومات عنا"
   },
-  "serviceRequest": {
-    "loading": "جار التحميل...",
+"serviceRequest": {
+    "serviceName": "اسم الخدمة",
+    "address": "العنوان",
     "selectService": "اختر خدمة",
     "selectAddress": "اختر عنوانًا",
-    "serviceName": "الخدمة",
-    "address": "العنوان",
-    "imageInstructions": "رفع صورة (اختياري، الحد الأقصى 100 كيلوبايت)",
-    "uploadImage": "رفع الصورة",
     "tellUsMore": "أخبرنا المزيد",
-    "descriptionPlaceholder": "صف طلبك...",
+    "detailsPlaceholder": "يرجى تقديم تفاصيل حول طلبك",
+    "imageInstructions": "قم برفع صورة لمساعدتنا في فهم طلبك بشكل أفضل (الحد الأقصى 2 ميغابايت).",
+    "uploadImage": "رفع الصورة",
     "manageAddresses": "إدارة العناوين",
+    "successMessage": "تم إرسال الطلب بنجاح",
     "errors": {
-      "serviceRequired": "الخدمة مطلوبة",
-      "addressRequired": "العنوان مطلوب",
-      "descriptionRequired": "الوصف مطلوب",
-      "fileSize": "يجب أن تكون الصورة أقل من 100 كيلوبايت",
-      "fetchFailed": "فشل في تحميل البيانات",
-      "submitFailed": "فشل في إرسال الطلب"
+      "fetchFailed": "فشل في تحميل البيانات. يرجى المحاولة مرة أخرى.",
+      "serviceRequired": "يرجى اختيار خدمة.",
+      "addressRequired": "يرجى اختيار عنوان.",
+      "detailsRequired": "يرجى تقديم تفاصيل حول طلبك.",
+      "fileSize": "يجب أن يكون حجم الصورة أقل من 2 ميغابايت.",
+      "customerRequired": "تسجيل الدخول مطلوب. يرجى تسجيل الدخول مرة أخرى.",
+      "submitFailed": "فشل في إرسال الطلب. يرجى المحاولة مرة أخرى."
     }
   },
+
   "profile": {
     "title": "ملفك الشخصي",
     "firstName": "الاسم الأول",
@@ -468,6 +470,10 @@
     "cancel": "إلغاء",
     "save": "حفظ",
     "update": "تحديث",
-    "loading": "جارٍ التحميل..."
+    "loading": "جارٍ التحميل...",
+    "confirmDeleteTitle": "تأكيد الحذف",
+    "confirmDeleteMessage": "هل أنت متأكد من حذف هذا العنوان؟",
+    "confirmDeleteConfirm": "حذف",
+    "confirmDeleteCancel": "إلغاء"
   }
 }

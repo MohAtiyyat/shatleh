@@ -6,6 +6,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit, Plus, Trash2 } from 'lucide-react';
 import AddressForm from '../../../../components/address/address-form';
+import AddressSkeleton from '../../../../components/address/AddressSkeleton';
+import ConfirmDialog from '../../../../components/ConfirmDialog';
 import Toast from '../../../../components/Toast';
 import { fetchAddresses, addAddress, updateAddress, setDefaultAddress, deleteAddress } from '../../../../lib/api';
 
@@ -31,6 +33,8 @@ export default function AddressesPage() {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [loading, setLoading] = useState(true);
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const [addressToDelete, setAddressToDelete] = useState<number | null>(null);
 
     let isAuthenticated;
     useEffect(() => {
@@ -41,8 +45,6 @@ export default function AddressesPage() {
             router.push(`/${currentLocale}/login?redirect=/address`);
             return;
         }
-
-
 
         const loadAddresses = async () => {
             try {
@@ -103,6 +105,24 @@ export default function AddressesPage() {
         }
     };
 
+    const handleShowConfirmDelete = (id: number) => {
+        setAddressToDelete(id);
+        setShowConfirmDialog(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (addressToDelete !== null) {
+            await handleDeleteAddress(addressToDelete);
+            setShowConfirmDialog(false);
+            setAddressToDelete(null);
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setShowConfirmDialog(false);
+        setAddressToDelete(null);
+    };
+
     const handleSaveAddress = async (address: Omit<Address, 'id' | 'is_default' | 'country_name'>, mode: 'add' | 'edit') => {
         try {
             if (mode === 'add') {
@@ -129,7 +149,14 @@ export default function AddressesPage() {
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">{t('loading')}</div>;
+        return (
+            <div className="min-h-screen bg-[var(--primary-bg)] flex flex-col">
+                <div className="max-w-3xl mx-auto w-full px-4 md:px-8 py-[7vh]">
+                    <div className="h-8 w-48 bg-gray-300 rounded animate-pulse mb-6" />
+                    <AddressSkeleton />
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -215,7 +242,7 @@ export default function AddressesPage() {
                                                 </motion.button>
                                                 <motion.button
                                                     className="text-red-700 hover:text-red-800 hover:bg-red-200 px-3 py-1 rounded-md flex flex-row items-center whitespace-nowrap"
-                                                    onClick={() => handleDeleteAddress(address.id)}
+                                                    onClick={() => handleShowConfirmDelete(address.id)}
                                                     whileHover={{ scale: 1.05, y: -2 }}
                                                     whileTap={{ scale: 0.95 }}
                                                     transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
@@ -259,6 +286,11 @@ export default function AddressesPage() {
                 message={toastMessage}
                 isVisible={showToast}
                 onClose={() => setShowToast(false)}
+            />
+            <ConfirmDialog
+                isOpen={showConfirmDialog}
+                onConfirm={handleConfirmDelete}
+                onCancel={handleCancelDelete}
             />
         </div>
     );

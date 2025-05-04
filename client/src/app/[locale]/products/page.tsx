@@ -80,7 +80,7 @@ export default function ProductsPage() {
 
     // Pre-select category from localStorage
     useEffect(() => {
-        const category = localStorage.getItem('selectedCategory');
+        const category = localStorage.getItem('selectedCategory')?.toLocaleLowerCase();
         if (category) {
             setFilters((prev) => ({
                 ...prev,
