@@ -132,10 +132,10 @@
                                         @if($product->shops->isNotEmpty())
                                             <ul class="list-group mb-3">
                                                 @foreach($product->shops as $shop)
-                                                    <li class="list-group-item">{{ $shop->name_en ?? 'N/A' }}</li>
+                                                    <li class="list-group-item">{{ $shop->name ?? 'N/A' }}</li>
                                                 @endforeach
                                             </ul>
-                                            <a href="{{ route('dashboard.product.shops', $product->id) }}"
+                                            <a href="{{ route('dashboard.productShop', ['search' => $product->name_en]) }}"
                                                class="btn btn-outline-primary btn-sm rounded-pill px-3">
                                                 View More
                                             </a>

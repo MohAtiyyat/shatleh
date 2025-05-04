@@ -82,9 +82,9 @@
                                     <div class="col-12 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
                                         <a href="{{ route('dashboard.address.show', $shop->address->id) }}">
-                                            <p>
-                                                {{ $shop->address ? ($shop->address->address_line . ', ' . $shop->address->city . ', ' . $shop->address->state . ', ' . $shop->address->country ->name_en) : 'N/A' }}
-                                            </p>
+                                            @include('/components/address-popout', [
+                                                'addresses' => [$shop->address]
+                                            ])
                                         </a>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">

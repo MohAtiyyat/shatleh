@@ -16,8 +16,8 @@
         @foreach ($records as $record)
             <tr>
                 <td>{{ $record->id }}</td>
-                <td><a href="{{ route('dashboard.product.show', $record->id) }}">{{ $record->product_name ?? 'N/A' }}</a></td>
-                <td><a href="{{ route('dashboard.shop.show', $record->id) }}">{{ $record->shop_name ?? 'N/A' }}</a></td>
+                <td><a href="{{ route('dashboard.product.show', $record->product_id) }}">{{ $record->product_name ?? 'N/A' }}</a></td>
+                <td><a href="{{ route('dashboard.shop.show', $record->shop_id) }}">{{ $record->shop_name ?? 'N/A' }}</a></td>
                 <td>JOD{{ number_format($record->cost, 2) }}</td>
                 <td>{{ $record->employee_name ?? 'N/A' }}</td>
                 <td>{{ \Carbon\Carbon::parse($record->created_at)->toDateString() }}</td>

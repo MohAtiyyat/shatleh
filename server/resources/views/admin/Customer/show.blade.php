@@ -58,8 +58,7 @@
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Orders Count</h5>
-                                        {{--change the route to order.index when its done--}}
-                                        <a href="{{ route('dashboard.customer.index', ['search' => $customer->user->email]) }}"
+                                        <a href="{{ route('dashboard.order', ['search' => $customer->user->first_name . ' ' . $customer->user->last_name]) }}"
                                             class="text-dark">{{ $ordersCount ?? '0' }} <input type="button" value="view orders" class="btn btn-sm btn-success ml-2 px-3"></a>
                                     </div>
                                     <div class="col-12 mb-4">
@@ -72,26 +71,34 @@
                                                     <li class="list-group-item">{{ $item->product->name_en ?? 'N/A' }}
                                                         (Qty: {{ $item->quantity }})</li>
                                                 @endforeach
-                                                {{--change the route to cart.index when its done--}}
-                                                <li class="list-group-item bg-success text-white text-center font-weight-bold"><a href="{{ route('dashboard.customer.index', ['search' => $customer->user->email]) }}"
+                                                <li class="list-group-item bg-success text-white text-center font-weight-bold"><a href="{{ route('dashboard.cart.index', ['search' => $customer->user->first_name . ' ' . $customer->user->last_name]) }}"
                                             class="text-dark">view cart</a></li>
                                             </ul>
                                         @endif
                                     </div>
-                                    <div class="col-12 mb-4">
-                                        <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
-                                        @if ($addresses->isNotEmpty())
-                                            <p class="text-dark">
-                                                {{ $addresses->first()->address_line ?? 'N/A' }}, {{ $addresses->first()->city ?? 'N/A' }}, {{ $addresses->first()->country->name_en ?? 'N/A' }}
-                                            </p>
-                                            @if ($addresses->count() > 1)
-                                            {{--not tested yet--}}
-                                                @include('/components/address-popout', [
-                                                    'addresses' => [$addresses->address]
-                                                ])
-                                            @endif
+                                    <!-- Default Address Section -->
+                                    <div class="col-2 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Default Address</h5>
+                                        @if ($defaultAddress)
+                                            @include('components.address-popout', [
+                                                'addresses' => [$defaultAddress],
+                                                'prefix' => 'default-'
+                                            ])
                                         @else
-                                            <p class="text-dark">No address available</p>
+                                            <p>No default address set.</p>
+                                        @endif
+                                    </div>
+
+                                    <!-- All Addresses Section -->
+                                    <div class="col-6 mb-4">
+                                        <h5 class="text-muted font-weight-semibold mb-2">Addresses</h5>
+                                        @if ($addresses && count($addresses))
+                                            @include('components.address-popout', [
+                                                'addresses' => $addresses,
+                                                'prefix' => 'all-'
+                                            ])
+                                        @else
+                                            <p>No addresses available.</p>
                                         @endif
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
@@ -131,34 +138,6 @@
         </div>
     </div>
 
-    <!-- Modal for All Addresses -->
-    @if ($addresses->count() > 1)
-        <div class="modal fade" id="addressesModal" tabindex="-1" role="dialog" aria-labelledby="addressesModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addressesModalLabel">All Addresses</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <ul class="list-group">
-                            @foreach ($addresses as $address)
-                                <li class="list-group-item">
-                                    {{ $address->street . ', ' . $address->city . ', ' . $address->state . ', ' . $address->country . ' ' . $address->postal_code }}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
 
     <style>
         .bg-gradient-success {

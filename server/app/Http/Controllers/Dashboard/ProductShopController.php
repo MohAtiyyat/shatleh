@@ -43,7 +43,7 @@ class ProductShopController extends Controller
         DB::table('product_shops')->insert([
             'product_id' => $request->product_id,
             'shop_id' => $request->shop_id,
-            'employee_id' => $request->employee_id??1,
+            'employee_id' => auth()->user()->id,
             'cost' => $request->cost,
             'created_at' => now(),
             'updated_at' => now(),

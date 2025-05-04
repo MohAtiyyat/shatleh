@@ -13,7 +13,7 @@
             ['name' => 'product_id', 'label' => 'Product', 'type' => 'select', 'options' => $products->pluck('name_en', 'id')->toArray(), 'required' => true, 'aria-required' => 'true'],
             ['name' => 'shop_id', 'label' => 'Shop', 'type' => 'select', 'options' => $shops->pluck('name', 'id')->toArray(), 'required' => true, 'aria-required' => 'true'],
             ['name' => 'cost', 'label' => 'Cost', 'type' => 'number', 'placeholder' => 'Enter cost (e.g., 99.99)', 'step' => '0.01', 'min' => '0', 'required' => true, 'aria-required' => 'true'],
-            ['name' => 'employee_display', 'label' => 'Added By', 'type' => 'text', 'value' => auth()->user()->first_name . ' ' . auth()->user()->last_name ?? 'N/A']
+            ['name' => 'employee_display', 'label' => 'Added By', 'type' => 'text', 'value' => auth()->user()->first_name  . ' ' . auth()->user()->last_name ?? 'N/A', 'disabled' => true, 'aria-disabled' => 'true']
         ]"
         :errors="$errors ?? []"
     />

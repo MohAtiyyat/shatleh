@@ -47,8 +47,9 @@ class CustomerController extends Controller
         $customer->load('user');
         $ordersCount = $customer->orders->count();
         $cartItems = $customer->cart()->with('product')->paginate(5);
-        $addresses = $customer->user->addresses()->paginate(5);
-        return view('admin.Customer.show', compact('customer', 'ordersCount', 'cartItems', 'addresses'));
+        $defaultAddress = $customer->user->defaultAddress;
+        $addresses = $customer->user->addresses;
+        return view('admin.Customer.show', compact('customer', 'ordersCount', 'cartItems', 'addresses' , 'defaultAddress'));
     }
 
     public function edit(Customer $customer)
