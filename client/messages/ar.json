@@ -406,6 +406,7 @@
     "saveChanges": "حفظ التغييرات",
     "successMessage": "تم تحديث الملف الشخصي بنجاح",
     "addressUpdated": "تم تحديث العنوان الافتراضي بنجاح",
+    "photoUpdated": "تم رفع الصورة بنجاح",
     "loading": "جارٍ التحميل...",
     "errors": {
       "firstNameRequired": "الاسم الأول مطلوب",
@@ -416,10 +417,11 @@
       "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
       "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
       "newPasswordLength": "يجب أن تكون كلمة المرور الجديدة 8 أحرف على الأقل",
-      "photoSize": "يجب أن تكون الصورة أقل من 100 كيلوبايت",
+      "photoSize": "يجب أن تكون الصورة أقل من 2 ميغابايت",
       "submitFailed": "فشل في تحديث الملف الشخصي",
       "fetchFailed": "فشل في جلب بيانات الملف الشخصي",
-      "addressChangeFailed": "فشل في تغيير العنوان الافتراضي"
+      "addressChangeFailed": "فشل في تغيير العنوان الافتراضي",
+      "addressRequired": "العنوان مطلوب"
     }
   },
   "orders": {

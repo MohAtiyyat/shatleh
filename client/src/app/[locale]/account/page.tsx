@@ -11,6 +11,7 @@ import 'react-phone-input-2/lib/style.css';
 import Toast from '../../../../components/Toast';
 import Image from 'next/image';
 import { fetchProfile, updateProfile, fetchAddresses, setDefaultAddress } from '../../../../lib/api';
+import UserSkeleton from '../../../../components/profile/UserSkeleton';
 
 interface Address {
     id: number;
@@ -29,7 +30,7 @@ interface FormData {
     phone_number: string;
     current_password: string;
     new_password: string;
-    photo: File | string | null; // Support File for uploads, string for saved URL, null for no photo
+    photo: File | string | null;
     remove_photo: boolean;
 }
 
@@ -41,6 +42,7 @@ interface FormErrors {
     current_password?: string;
     new_password?: string;
     photo?: string;
+    address?: string;
 }
 
 export default function ProfilePage() {
@@ -68,11 +70,9 @@ export default function ProfilePage() {
     const phoneRef = useRef<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    let isAuthenticated;
     useEffect(() => {
         const token = localStorage.getItem('token');
         const storedUserId = localStorage.getItem('userId');
-        isAuthenticated = token && storedUserId;
         if (!token || !storedUserId) {
             router.push(`/${currentLocale}/login?redirect=/address`);
             return;
@@ -85,7 +85,6 @@ export default function ProfilePage() {
                     fetchProfile(),
                     fetchAddresses(),
                 ]);
-                console.log(profile);
                 setFormData({
                     first_name: profile.first_name,
                     last_name: profile.last_name,
@@ -93,7 +92,7 @@ export default function ProfilePage() {
                     phone_number: profile.phone_number,
                     current_password: '',
                     new_password: '',
-                    photo: profile.photo, // String URL from API
+                    photo: profile.photo,
                     remove_photo: false,
                 });
                 phoneRef.current = profile.phone_number;
@@ -110,7 +109,7 @@ export default function ProfilePage() {
         };
 
         loadData();
-    }, [currentLocale, router,isAuthenticated, t]);
+    }, [currentLocale, router, t]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -127,10 +126,6 @@ export default function ProfilePage() {
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            if (file.size > 100 * 1024) {
-                setFormErrors((prev) => ({ ...prev, photo: t('errors.photoSize') }));
-                return;
-            }
             setFormData((prev) => ({ ...prev, photo: file, remove_photo: false }));
             setFormErrors((prev) => ({ ...prev, photo: undefined }));
         }
@@ -138,6 +133,10 @@ export default function ProfilePage() {
 
     const handleAddressChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const addressId = parseInt(e.target.value);
+        if (!addressId) {
+            setFormErrors((prev) => ({ ...prev, address: t('errors.addressRequired') }));
+            return;
+        }
         try {
             await setDefaultAddress(addressId);
             setAddresses(
@@ -149,10 +148,10 @@ export default function ProfilePage() {
             setDefaultAddressId(addressId);
             setToastMessage(t('addressUpdated'));
             setShowToast(true);
+            setFormErrors((prev) => ({ ...prev, address: undefined }));
         } catch (error: unknown) {
             console.error('Error setting default address:', error);
-            setToastMessage(t('errors.addressChangeFailed'));
-            setShowToast(true);
+            setFormErrors((prev) => ({ ...prev, address: t('errors.addressChangeFailed') }));
         }
     };
 
@@ -171,6 +170,10 @@ export default function ProfilePage() {
             if (!formData.new_password) newErrors.new_password = t('errors.newPasswordRequired');
             else if (formData.new_password.length < 8) newErrors.new_password = t('errors.newPasswordLength');
         }
+        if (!defaultAddressId) newErrors.address = t('errors.addressRequired');
+        if (formData.photo instanceof File && formData.photo.size > 2 * 1024 * 1024) {
+            newErrors.photo = t('errors.photoSize');
+        }
         setFormErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -186,8 +189,8 @@ export default function ProfilePage() {
         submitData.append('phone_number', formData.phone_number);
         if (formData.current_password) submitData.append('current_password', formData.current_password);
         if (formData.new_password) submitData.append('new_password', formData.new_password);
-        if (formData.photo instanceof File) submitData.append('photo', formData.photo);
         if (formData.remove_photo) submitData.append('remove_photo', 'true');
+        if (formData.photo instanceof File) submitData.append('photo', formData.photo);
 
         try {
             const updatedProfile = await updateProfile(submitData);
@@ -198,12 +201,13 @@ export default function ProfilePage() {
                 phone_number: updatedProfile.phone_number,
                 current_password: '',
                 new_password: '',
-                photo: updatedProfile.photo, // Update to string URL from API
+                photo: updatedProfile.photo,
                 remove_photo: false,
             });
             phoneRef.current = updatedProfile.phone_number;
             setToastMessage(t('successMessage'));
             setShowToast(true);
+            setFormErrors({});
         } catch (error) {
             const message = error instanceof Error ? error.message : t('errors.submitFailed');
             try {
@@ -217,9 +221,8 @@ export default function ProfilePage() {
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">{t('loading')}</div>;
+        return <UserSkeleton />;
     }
-    console.log("photo", formData.photo);
 
     return (
         <div
@@ -248,10 +251,10 @@ export default function ProfilePage() {
                                     height={128}
                                     src={
                                         formData.photo instanceof File
-                                            ? URL.createObjectURL(formData.photo) // Local preview for new upload
+                                            ? URL.createObjectURL(formData.photo)
                                             : formData.photo
-                                            ? `${process.env.NEXT_PUBLIC_API_URL}${formData.photo}` // API URL for saved photo
-                                            : '/placeholder.svg?height=128&width=128' // Placeholder
+                                            ? `${process.env.NEXT_PUBLIC_API_URL}${formData.photo}`
+                                            : '/placeholder.svg?height=128&width=128'
                                     }
                                     alt="Profile"
                                     className="w-full h-full object-cover"
@@ -553,6 +556,7 @@ export default function ProfilePage() {
                                         remove_photo: false,
                                     });
                                     phoneRef.current = profile.phone_number;
+                                    setFormErrors({});
                                 } catch (error: unknown) {
                                     console.error('Error fetching profile:', error);
                                     setToastMessage(t('errors.fetchFailed'));
