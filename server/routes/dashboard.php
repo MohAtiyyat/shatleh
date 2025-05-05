@@ -38,7 +38,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
     Route::get('/logout', [AuthController::class, 'Logout'])->name('logout');
     Route::post('/logout', [AuthController::class, 'Logout'])->name('logout');
 
-    Route::middleware(['auth:web', 'role:Admin|super-admin'])->group(function () {
+    Route::middleware(['auth:web', 'role:Admin|Expert|Employee'])->group(function () {
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('product');
             Route::get('/create', [ProductController::class, 'create'])->name('product.create');

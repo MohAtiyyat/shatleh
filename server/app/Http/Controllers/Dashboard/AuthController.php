@@ -17,11 +17,17 @@ class AuthController extends Controller
     public function Login(LoginRequest $request)
     {
         $attributes = $request->validated();
+        $user = User::where("email", $attributes["email"])->first();
+        if($user->is_banned){
+            return response()->json([
+                'message' => 'Your account has been banned.',
+            ], 403);
+        }
 
         if (! Auth::attempt($attributes)) {
-            throw ValidationException::withMessages([
+            return response()->json([
                 'email' => 'Sorry, those credentials do not match.',
-            ]);
+                ], 422);
         }
 
         request()->session()->regenerate();

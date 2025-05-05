@@ -8,6 +8,6 @@ trait UserRoleTrait
 {
     public function admin(): bool
     {
-        return Auth::check() && Auth::user()->hasAnyRole('Admin', 'super-admin');
+        return Auth::check() && Auth::user()->hasAnyRole('Admin', 'Expert', 'Employee');
     }
 }
