@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
 {
     Schema::table('carts', function (Blueprint $table) {
-        // Schema::dropIfExists('carts');
+        Schema::dropIfExists('carts');
         Schema::create('carts', function (Blueprint $table) {
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('product_id');
