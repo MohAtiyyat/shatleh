@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Employee</h5>
-                                        <p class="text-dark">{{ $shop->employee->first_name ?? 'N/A' }}</p>
+                                        <p class="text-dark">{{ $shop->employee->first_name . ' ' . $shop->employee->last_name ?? 'N/A' }}</p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Shop ID</h5>

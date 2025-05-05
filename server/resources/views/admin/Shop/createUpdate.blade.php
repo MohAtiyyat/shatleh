@@ -18,7 +18,7 @@
             ['name' => 'address_id', 'label' => 'Address', 'type' => 'select', 'options' => $addresses ?? [], 'required' => true, 'aria-required' => 'true'],
             ['name' => 'is_partner', 'label' => 'Partner Status', 'type' => 'select', 'options' => [1 => 'Partner', 0 => 'Not Partner'], 'required' => true, 'aria-required' => 'true'],
             ['name' => 'details', 'label' => 'Details', 'type' => 'textarea', 'placeholder' => 'Enter shop details', 'required' => true, 'aria-required' => 'true', 'maxlength' => 500],
-            ['name' => 'employee_display', 'label' => 'Added By', 'type' => 'text', 'value' => auth()->user()->first_name  . ' ' . auth()->user()->last_name ?? 'N/A', 'disabled' => true, 'aria-disabled' => 'true']
+            ['name' => 'employee_display', 'label' => 'Added By', 'type' => 'text', 'value' => isset($shop) ? $shop->employee->first_name . ' ' . $shop->employee->last_name : auth()->user()->first_name  . ' ' . auth()->user()->last_name ?? 'N/A', 'disabled' => true, 'aria-disabled' => 'true']
         ]"
         :errors="$errors"
     />
