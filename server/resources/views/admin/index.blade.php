@@ -1,24 +1,7 @@
 @extends('admin.layout.master')
 
-@section('title')
-Dashboard
-@endsection
-
-@section('css')
-<link rel="stylesheet" href="{{ asset('assets/customCss/table.css') }}">
-@endsection
-
-@section('Dashboard')
-active
-@endsection
-
-@section('title_page1')
-Dashboard
-@endsection
-
-@section('title_page2')
-Control Panel
-@endsection
+@section('title', 'Dashboard')
+@section('dashboard_show', 'active')
 
 @section('content')
 <section class="content">

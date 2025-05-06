@@ -13,7 +13,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{route('dashboard.home')}}" class="nav-link @yield('dashboard_show')">
                         <ion-icon class="nav-icon" name="home-outline"></ion-icon>
                         <p>Dashboard Home</p>
                     </a>
