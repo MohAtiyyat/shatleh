@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(function () {
+    Route::get('/', function () {return view('admin.index');});
     // logging test route
     Route::get('/test-log', function () {
         \Log::channel('mysql')->info('Test log entry', [
