@@ -33,7 +33,6 @@ class UpdateShopRequest extends FormRequest
             'owner_phone_number' => 'required|string|max:20',
             'owner_name' => 'required|string|max:255',
             'is_partner' => 'required|boolean',
-            'employee_id' => 'required|exists:users,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
          ];
     }
