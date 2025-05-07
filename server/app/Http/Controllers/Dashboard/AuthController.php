@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use function PHPUnit\Framework\isEmpty;
 
 
 class AuthController extends Controller
@@ -16,9 +17,13 @@ class AuthController extends Controller
 {
     public function Login(LoginRequest $request)
     {
+        if(Auth::check()){
+            Auth::logout();
+        }
         $attributes = $request->validated();
         $user = User::where("email", $attributes["email"])->first();
-        if($user->is_banned){
+        
+        if(!isEmpty($user)&&$user->is_banned==1){
             return response()->json([
                 'message' => 'Your account has been banned.',
             ], 403);

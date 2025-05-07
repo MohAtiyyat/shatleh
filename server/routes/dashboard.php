@@ -33,12 +33,12 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::get('/customer', [LogController::class, 'CustomerLog'])->name('customer');//the customer logs page
         Route::get('/staff', [LogController::class, 'StaffLog'])->name('staff');//the staff logs page
     });
-    Route::get('/login', function () {return view('admin.login.login');});
+    Route::get('/login', function () {return view('admin.login.login');})->name('login');
     Route::post('/login', [AuthController::class, 'Login'])->name('login');
     Route::get('/logout', [AuthController::class, 'Logout'])->name('logout');
     Route::post('/logout', [AuthController::class, 'Logout'])->name('logout');
 
-    Route::middleware(['auth:web', 'role:Admin|Expert|Employee'])->group(function () {
+    Route::middleware(['auth:web', 'check-banned','role:Admin|Expert|Employee'])->group(function () {
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('product');
             Route::get('/create', [ProductController::class, 'create'])->name('product.create');
