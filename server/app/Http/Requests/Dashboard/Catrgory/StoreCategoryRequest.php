@@ -30,7 +30,7 @@ class StoreCategoryRequest extends FormRequest
             'description_ar' => $this->description(),
             'description_en' => $this->description(),
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_main' => 'nullable|boolean',
+            'parent_id' => 'nullable|exists:categories,id',
         ];
     }
 }

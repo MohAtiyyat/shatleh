@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Catrgory\StoreCategoryRequest;
 use App\Http\Requests\Dashboard\Catrgory\UpdateCategoryRequest;
+use App\Jobs\MainToSubCategoryJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,15 +38,9 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
 {
     $data = $request->validated();
-
     if ($request->hasFile('image')) {
         $data['image'] = $request->file('image')->store('categories', 'public');
     }
-
-    if (isset($data['category_type']) && $data['category_type'] === 'main') {
-        $data['parent_id'] = null;
-    }
-
     Category::create($data);
 
     return redirect()->route('dashboard.category')->with('success', 'Category created successfully.');
@@ -63,14 +58,9 @@ class CategoryController extends Controller
     $category = Category::findOrFail($id);
     $data = $request->validated();
 
-    if (isset($data['category_type'])) {
-        if ($data['category_type'] === 'main') {
-            $data['parent_id'] = null;
-        }
-        unset($data['category_type']);
+    if ($category->parent_id == null && $data['parent_id'] != null) {
+        MainToSubCategoryJob::dispatch($category->id, $data['parent_id'])->onQueue('default');
     }
-
-
     if ($request->hasFile('image')) {
 
         if ($category->image) {
