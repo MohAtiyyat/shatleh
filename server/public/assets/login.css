@@ -1,0 +1,128 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  background: url(../images/LOGIN.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  /* width: 100vh; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+  
+  
+form {
+  /* position: absolute; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50% , -50%); */
+  width: 30rem;
+  height: 71vh;
+  background: rgba(0, 0, 0, 0.763);
+  border-radius: 1em;
+  box-sizing: border-box;
+  display: grid;
+  justify-items: center;
+  align-content: stretch;
+  /* max-width: 34rem; */
+  margin: 0px 10px;
+  backdrop-filter:blur(7px);
+
+}
+  
+  h2{
+  
+    color: #fff;
+    text-align: center;
+    margin-top: 1.8em;
+    font-size: 3em;
+  
+  }
+
+  
+input[type="email"], [type="password"] {
+  /* position: absolute; */
+  /* outline: none; */
+  border: none;
+  width: 99%;
+  height: 2em;
+  border-bottom: 0.1em solid#0094ff;
+  background: none;
+  padding: 0.6em;
+  color: #fff;
+}
+  
+#p1 {
+  /* position: absolute; */
+  /* outline: none; */
+  /* border: none; */
+  /* width: 25em; */
+  /* height: 2em; */
+  /* top: 14em; */
+  /* left: 9em; */
+  /* background: none; */
+  /* padding: 0.6em; */
+  color: #fff;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+#p2 {
+  /* position: absolute; */
+  /* outline: none; */
+  /* border: none; */
+  /* width: 25em; */
+  height: 2em;
+  /* top: 20em; */
+  /* left: 8em; */
+  background: none;
+  padding: 0.6em;
+  color: #fff;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+  /* #inputLoginText{
+  top: 15em;
+  left: 5em;
+  }
+  
+  #inputLoginPassword{
+    top: 22em;
+    left: 5em;
+  
+  } */
+  #logoLogin {
+    position: fixed;
+    top: 12px;
+    left: 10px;
+    width: 13em;
+    height: 4.7em;
+}
+  
+  
+  
+  .qqq{
+    width: 75%;
+  }
+  
+#inputButtonLogin {
+  /* position: absolute; */
+  /* top: 28.3em; */
+  /* left: 11.5em; */
+  width: 10.1em;
+  height: 3.18em;
+  background: #0077ff;
+  border: none;
+  /* outline: none; */
+  color: #fff;
+  border-radius: 0.9em;
+  font-size: .9em;
+}
+  
+  #inputButtonLogin:hover{
+  background: #fff;
+  color: #0077ff;
+  cursor: pointer;
+
+  }
+  

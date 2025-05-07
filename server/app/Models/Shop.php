@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
 {
-    protected $table = 'shop';
+    protected $table = 'shops';
 
     protected $fillable = [
         'address_id',
@@ -20,7 +20,7 @@ class Shop extends Model
     ];
 
     public function products(){
-        return $this->belongsToMany(Shop::class, 'product_shops', 'product_id', 'shop_id')
+        return $this->belongsToMany(Product::class, 'product_shops', 'shop_id','product_id')
         ->withPivot('cost', 'employee_id')
         ->withTimestamps();
     }
@@ -32,7 +32,7 @@ class Shop extends Model
 
     public function employee()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'employee_id');
     }
 
 }

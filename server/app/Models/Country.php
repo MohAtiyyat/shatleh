@@ -28,7 +28,7 @@ class Country extends Model
 
     public function coupons()
     {
-        return $this->hasMany(Coupons::class);
+        return $this->hasMany(Coupon::class);
     }
 
 }

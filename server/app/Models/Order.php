@@ -13,13 +13,13 @@ class Order extends Model
         'order_code',
         'address_id',
         'total_price',
-        'customer_id', 
+        'customer_id',
         'employee_id',
         'coupon_id',
         'payment_id',
         'status',
-        'cart_id', 
-        'status', 
+        'cart_id',
+        'status',
         'delivery_cost',
         'delivery_date'
         ];
@@ -39,11 +39,19 @@ class Order extends Model
     }
 
     public function coupon(){
-        return $this->belongsTo(Coupons::class);
+        return $this->belongsTo(Coupon::class);
     }
 
     public function payment(){
         return $this->belongsTo(PaymentInfo::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_details', 'order_id', 'product_id')
+                    ->withPivot('price', 'quantity')
+                    ->withTimestamps()
+                    ->withTrashed();
     }
 
 }

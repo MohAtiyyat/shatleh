@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     protected $table = 'carts';
+    protected $keyType = 'array';
+    protected $primaryKeys = ['customer_id', 'product_id'];
 
     protected $fillable = [
         'customer_id',
@@ -24,5 +26,5 @@ class Cart extends Model
     {
         return $this->belongsTo(Customer::class);
     }
-    
+
 }

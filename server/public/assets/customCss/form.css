@@ -1,0 +1,184 @@
+.product-create-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.product-create-page body {
+    background: #f5f7fa;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.product-create-page .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.product-create-page .header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.product-create-page .header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.product-create-page .form-container {
+    padding: 30px;
+}
+
+.product-create-page .form-group {
+    margin-bottom: 20px;
+}
+
+.product-create-page label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.product-create-page input[type="text"],
+.product-create-page input[type="file"],
+.product-create-page select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.product-create-page input[type="text"]:focus,
+.product-create-page select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.product-create-page .input-group {
+    position: relative;
+}
+
+.product-create-page .custom-file {
+    position: relative;
+}
+
+.product-create-page .custom-file-input {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.product-create-page .custom-file-label {
+    display: block;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: #666;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.product-create-page .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.product-create-page .footer {
+    padding: 20px;
+    background: #f8f9fa;
+    text-align: right;
+}
+
+.product-create-page .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product-create-page .btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+.product-create-page .btn-primary:hover {
+    background: #2980b9;
+}
+
+@media (max-width: 600px) {
+    .product-create-page .form-row {
+        grid-template-columns: 1fr;
+    }
+    .product-create-page .container {
+        margin: 0 10px;
+    }
+}
+.big{
+    width: 100%;
+}
+.management-form-page { padding: 20px; }
+.container { max-width: 1200px; margin: 0 auto; }
+.header { margin-bottom: 20px; }
+.header h1 { font-size: 24px; font-weight: 600; color: #5a5c69; }
+.form-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 500; color: #5a5c69; }
+.form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+.form-group select { height: 38px; }
+.custom-file { position: relative; overflow: hidden; }
+.custom-file-input { width: 100%; height: 38px; opacity: 0; position: absolute; top: 0; left: 0; cursor: pointer; }
+.custom-file-label { display: block; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #fff; color: #858796; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.footer { margin-top: 20px; text-align: right; }
+.btn-primary { background-color: #4e73df; border: none; padding: 10px 20px; color: #fff; border-radius: 4px; cursor: pointer; }
+.btn-primary:hover { background-color: #375ec8; }
+.specialties-container.hidden {
+    display: none;
+}
+.specialties-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+.specialty-item {
+    display: flex;
+    align-items: center;
+    background: #d6f9e0;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #bde7ce;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.specialty-item:hover {
+    background: #82ea83;
+    box-shadow: 0 2px 6px rgba(22, 239, 94, 0.271);
+}
+
+/* Checkbox */
+.specialty-checkbox {
+    margin-right: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    accent-color: #078e48;
+}
+
+

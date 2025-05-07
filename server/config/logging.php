@@ -93,6 +93,13 @@ return [
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],
+        'mysql' => [
+            'driver' => 'monolog',
+            'handler' => \App\Logging\MySQLHandler::class,
+            'connection' => 'mysql',
+            'table' => 'logs',
+            'level' => 'info',
+        ],
 
         'stderr' => [
             'driver' => 'monolog',

@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes , HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +32,7 @@ class User extends Authenticatable
         'time_zone',
         'is_banned',
         'bio',
+        "photo",
         'address_id',
     ];
 
@@ -41,6 +44,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $attributes = [
+        'email_verified_at' => null, // Default role for new users
     ];
 
     /**
@@ -77,7 +84,7 @@ class User extends Authenticatable
      */
     public function paymentInfos()
     {
-        return $this->hasMany(Payment_info::class);
+        return $this->hasMany(PaymentInfo::class);
     }
 
     /**
@@ -87,7 +94,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
-    
+
     /**
      * Get the reviews submitted by the user.
      */
@@ -115,10 +122,25 @@ class User extends Authenticatable
     Public function expert_specialty(){
         return $this->belongsToMany(Specialty::class , 'expert_specialty' , 'user_id' , 'specialty_id')->as('expert_specialties')->withTimestamps();
     }
-    
-    
+
+
     public function shops()
     {
         return $this->hasMany(Shop::class, 'employee_id');
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function specialties()
+    {
+        return $this->belongsToMany(Specialty::class, 'expert_specialty', 'expert_id', 'specialty_id')
+                    ->withTimestamps();
+    }
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, 'customer_id');
     }
 }
