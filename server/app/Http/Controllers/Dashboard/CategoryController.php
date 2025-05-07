@@ -59,7 +59,7 @@ class CategoryController extends Controller
     $data = $request->validated();
 
     if ($category->parent_id == null && $data['parent_id'] != null) {
-        MainToSubCategoryJob::dispatch($category->id, $data['parent_id'])->onQueue('default');
+        MainToSubCategoryJob::dispatch($category->id, $data['parent_id'])->onQueue('MainToSubCategoryJob');
     }
     if ($request->hasFile('image')) {
 
