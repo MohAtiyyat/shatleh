@@ -26,8 +26,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CountrySeeder::class);
         $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
+        $this->call(CustomerSeeder::class);
+        $this->call(AddressSeeder::class);
+        $this->call(ServiceSeeder::class);
         $this->call(ProductSeeder::class);
-        $this->call(CartSeeder::class);
+        $this->call(CartsTableSeeder::class);
         $this->call(OrderSeeder::class);
         $this->call(OrderDetailSeeder::class);
         for ($i = 1; $i <= 2; $i++) {
