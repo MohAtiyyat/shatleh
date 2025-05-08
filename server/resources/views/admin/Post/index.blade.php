@@ -114,7 +114,7 @@
                                 </a>
                             </th>
                             <th>Category</th>
-                            <th>User</th>
+                            <th>Author</th>
                             <th>Product</th>
                             <th>
                                 <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => request('sort') === 'created_at' && request('direction') === 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">

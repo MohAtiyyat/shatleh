@@ -33,7 +33,7 @@ class PostController extends Controller
             });
         }
 
-        $posts = $query->orderBy($sort, $direction)->paginate(5);
+        $posts = $query->orderBy($sort, $direction)->paginate(10);
 
         return view('admin.Post.index', compact('posts'));
     }
