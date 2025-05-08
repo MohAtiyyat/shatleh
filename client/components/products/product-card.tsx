@@ -9,21 +9,35 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { formatPrice } from '../../lib/utils';
-import type { Product } from '../../lib/index';
+import { useAuth } from '../../lib/AuthContext';
 
-type ProductCardProps = {
+interface Product {
+    id: number;
+    name_en: string;
+    name_ar: string;
+    description_en: string;
+    description_ar: string;
+    price: number;
+    image: string;
+    availability: number;
+    sold_quantity: number;
+    rating: number;
+}
+
+interface ProductCardProps {
     product: Product;
     index: number;
     pageName: string;
-};
+}
 
 export default function ProductCard({ product, index, pageName }: ProductCardProps) {
     const t = useTranslations('');
     const pathname = usePathname();
     const currentLocale = pathname.split('/')[1] || 'ar';
+    const { userId } = useAuth();
     const { items, addItem, updateQuantity, isLoading } = useCartStore();
     const [isAdding, setIsAdding] = useState(false);
-    const cartItem = items.find((item) => item.id === product.id);
+    const cartItem = items.find((item) => item.product_id === product.id);
     const quantity = cartItem?.quantity || 0;
 
     const label = product.availability === 0
@@ -32,9 +46,9 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
             ? t('products.topSellingLabel')
             : null;
 
-    // const imagePath = product.image ? JSON.parse(product.image)[0] : '/placeholder.svg';
-
-    // console.log('Product Image Path:', imagePath);
+    const imagePath = product.image
+        ? `${process.env.NEXT_PUBLIC_API_URL}${product.image}`
+        : '/placeholder.svg';
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -43,14 +57,15 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
         try {
             await addItem(
                 {
-                    id: product.id,
-                    name_ar: product.name_ar,
+                    product_id: product.id,
                     name_en: product.name_en,
-                    description_ar: product.description_ar,
+                    name_ar: product.name_ar,
                     description_en: product.description_en,
-                    price: product.price,
-                    image: product.image,
+                    description_ar: product.description_ar,
+                    price: product.price.toFixed(2),
+                    image: imagePath,
                 },
+                userId,
                 currentLocale
             );
         } finally {
@@ -63,7 +78,7 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
         e.stopPropagation();
         setIsAdding(true);
         try {
-            await updateQuantity(product.id, newQuantity, currentLocale);
+            await updateQuantity(product.id, newQuantity, userId, currentLocale);
         } finally {
             setIsAdding(false);
         }
@@ -97,7 +112,7 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
                         </span>
                     )}
                     <Image
-                        src={ `${process.env.NEXT_PUBLIC_API_URL}${product.image}` }
+                        src={imagePath}
                         alt={currentLocale === 'ar' ? product.name_ar : product.name_en}
                         width={300}
                         height={270}

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ServiceController;
@@ -29,5 +30,10 @@ Route::prefix('api')->group(function () {
         Route::put('/addresses/{id}', [ProfileController::class, 'updateAddress'])->name('api.addresses.update');
         Route::post('/addresses/{id}/set-default', [ProfileController::class, 'setDefaultAddress'])->name('api.addresses.set-default');
         Route::delete('/addresses/{id}', [ProfileController::class, 'deleteAddress'])->name('api.addresses.destroy');
+
+        // Cart routes
+        Route::post('/cart', [CartController::class, 'index'])->name('api.cart.index');
+        Route::post('/cart/update', [CartController::class, 'update'])->name('api.cart.update');
+        Route::post('/cart/clear', [CartController::class, 'clear'])->name('api.cart.clear');
     });
 });
