@@ -22,7 +22,7 @@ class AuthController extends Controller
         }
         $attributes = $request->validated();
         $user = User::where("email", $attributes["email"])->first();
-        
+
         if(!isEmpty($user)&&$user->is_banned==1){
             return response()->json([
                 'message' => 'Your account has been banned.',
@@ -38,7 +38,7 @@ class AuthController extends Controller
         request()->session()->regenerate();
 
 
-        return redirect('/dashboard/product');
+        return redirect('/dashboard/home')->with('success', 'Login successful');
     }
 
 
