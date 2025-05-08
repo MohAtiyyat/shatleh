@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useCartStore } from '../../../../lib/store';
+import { useAuth } from '../../../../lib/AuthContext';
 import OrderSummary from '../../../../components/payment/OrderSummary';
 import PaymentDetails from '../../../../components/payment/PaymentDetails';
 import Breadcrumb from '../../../../components/breadcrumb';
@@ -14,10 +15,13 @@ export default function CheckoutPage() {
     const pathname = usePathname();
     const currentLocale: 'en' | 'ar' = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
     const { items, syncWithBackend, isLoading, error } = useCartStore();
+    const { userId } = useAuth();
 
     useEffect(() => {
-        syncWithBackend(currentLocale);
-    }, [currentLocale, syncWithBackend ]);
+        if (userId) {
+            syncWithBackend(userId, currentLocale);
+        }
+    }, [userId, currentLocale, syncWithBackend]);
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--primary-bg)' }}>
@@ -43,7 +47,7 @@ export default function CheckoutPage() {
                     <div className="text-center py-10">
                         <p className="text-lg" style={{ color: 'var(--text-primary)' }}>{t('cart.empty')}</p>
                         <Link
-                            href="/products"
+                            href={`/${currentLocale}/products`}
                             className="mt-4 inline-block px-4 py-2 text-white rounded-md"
                             style={{ backgroundColor: 'var(--accent-color)' }}
                         >
@@ -53,14 +57,13 @@ export default function CheckoutPage() {
                 )}
                 {!isLoading && !error && items.length > 0 && (
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-
                         {/* Order Summary */}
                         <div className="lg:col-span-2 sm:py-6 lg:py-0">
                             <OrderSummary />
                         </div>
                         {/* Payment Details */}
-                        <div className="lg:col-span-3 ">
-                            <PaymentDetails  />
+                        <div className="lg:col-span-3">
+                            <PaymentDetails />
                         </div>
                     </div>
                 )}

@@ -7,24 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     protected $table = 'carts';
-    protected $keyType = 'array';
-    protected $primaryKeys = ['customer_id', 'product_id'];
+
+    protected $primaryKey = 'id'; // Explicitly set the primary key
 
     protected $fillable = [
         'customer_id',
         'product_id',
-        'ordered_at',
         'quantity',
+        'created_at',
+        'updated_at',
     ];
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class, 'customer_id', 'id');
     }
-
 }

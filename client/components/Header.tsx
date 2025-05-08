@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -8,13 +7,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '../lib/store';
-import { useAuth } from '../lib/AuthContext'; 
+import { useAuth } from '../lib/AuthContext';
 
 const Header = () => {
     const t = useTranslations();
     const pathname = usePathname();
     const router = useRouter();
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated, userId, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [language, setLanguage] = useState('');
@@ -25,10 +24,12 @@ const Header = () => {
 
     useEffect(() => {
         setLanguage(currentLocale);
-        syncWithBackend(currentLocale).catch((error) => {
-            console.error('Failed to sync cart on locale change:', error);
-        });
-    }, [currentLocale, syncWithBackend]);
+        if (userId) {
+            syncWithBackend(userId, currentLocale).catch((error) => {
+                console.error('Failed to sync cart on locale change:', error);
+            });
+        }
+    }, [currentLocale, syncWithBackend, userId]);
 
     const toggleMenu = () => setIsOpen(!isOpen);
     const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
@@ -39,9 +40,13 @@ const Header = () => {
         router.push(newPath);
     };
 
-    const handleLogout = () => {
-        logout();
-        toggleUserMenu();
+    const handleLogout = async () => {
+        try {
+            await logout();
+            toggleUserMenu();
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
     };
 
     const navItems = [

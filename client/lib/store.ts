@@ -1,302 +1,266 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { fetchCart, updateCartItem, clearCart } from './api';
 
-export type CartItem = {
-  id: number;
-  product_id?: number;
-  name_en: string;
-  name_ar: string;
-  description_en: string;
-  description_ar: string;
-  price: number;
-  image: string | string[];
-  quantity: number;
-};
+interface CartItem {
+    id: number;
+    product_id: number;
+    customer_id: string;
+    name_en: string;
+    name_ar: string;
+    description_en: string;
+    description_ar: string;
+    price: string;
+    image: string;
+    quantity: number;
+}
 
-type CartState = {
-  items: CartItem[];
-  isLoading: boolean;
-  error: string | null;
-  addItem: (item: Omit<CartItem, "quantity">, locale: string) => Promise<void>;
-  removeItem: (id: number, locale: string) => Promise<void>;
-  updateQuantity: (id: number, quantity: number, locale: string) => Promise<void>;
-  clearCart: (locale: string) => Promise<void>;
-  syncWithBackend: (locale: string) => Promise<void>;
-  total: () => number;
-  totalItems: () => number;
+interface CartState {
+    items: CartItem[];
+    isLoading: boolean;
+    error: string | null;
+    addItem: (item: Omit<CartItem, 'quantity' | 'customer_id' | 'id'>, userId: string | null, locale: string) => Promise<void>;
+    removeItem: (productId: number, userId: string | null, locale: string) => Promise<void>;
+    updateQuantity: (productId: number, quantity: number, userId: string | null, locale: string) => Promise<void>;
+    clearCart: (userId: string | null, locale: string) => Promise<void>;
+    syncWithBackend: (userId: string | null, locale: string) => Promise<void>;
+    logout: () => void;
+    total: () => number;
+    totalItems: () => number;
+}
+
+// Centralized error handling function
+const getErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) {
+        if (error.message.includes('customer_id') || error.message.includes('The selected')) {
+            return 'Invalid user ID. Please log in again or contact support.';
+        }
+        if (error.message.includes('POST method is not supported')) {
+            return 'Cart sync failed due to server configuration. Please try again later.';
+        }
+        return error.message || 'Operation failed. Please try again.';
+    }
+    return 'Operation failed.';
 };
 
 export const useCartStore = create<CartState>()(
-  persist(
-    (set, get) => ({
-      items: [],
-      isLoading: false,
-      error: null,
+    subscribeWithSelector(
+        persist(
+            (set, get) => ({
+                items: [],
+                isLoading: false,
+                error: null,
 
-      addItem: async (item, locale) => {
-        set({ isLoading: true, error: null });
+                addItem: async (item, userId, locale) => {
+                    set({ isLoading: true, error: null });
+                    const previousItems = get().items;
+                    try {
+                        const existingItem = previousItems.find((i) => i.product_id === item.product_id);
+                        const newQuantity = existingItem ? existingItem.quantity + 1 : 1;
 
-        try {
-          const existingItem = get().items.find((i) => i.id === item.id);
-          const newQuantity = existingItem ? existingItem.quantity + 1 : 1;
+                        const newItem: CartItem = {
+                            ...item,
+                            id: existingItem?.id || Date.now(),
+                            customer_id: userId || 'guest',
+                            quantity: newQuantity,
+                        };
 
-          // Update local state first for immediate UI feedback
-          if (existingItem) {
-            set({
-              items: get().items.map((i) => (i.id === item.id ? { ...i, quantity: newQuantity } : i)),
-            });
-          } else {
-            set({ items: [...get().items, { ...item, quantity: 1 }] });
-          }
+                        if (existingItem) {
+                            set({
+                                items: previousItems.map((i) =>
+                                    i.product_id === item.product_id ? newItem : i
+                                ),
+                            });
+                        } else {
+                            set({
+                                items: [...previousItems, newItem],
+                            });
+                        }
 
-          // Then sync with backend
-          await syncCartItem(item.id, newQuantity, locale);
-          await get().syncWithBackend(locale);
-        } catch (error) {
-          console.error("Error adding item to cart:", error);
-          set({ error: "Failed to add item to cart" });
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+                        if (userId) {
+                            await updateCartItem(
+                                { customer_id: userId, product_id: item.product_id, quantity: newQuantity },
+                                locale
+                            );
+                            await get().syncWithBackend(userId, locale);
+                        }
+                    } catch (error) {
+                        console.error('Error adding item to cart:', error);
+                        set({ items: previousItems, error: getErrorMessage(error) });
+                    } finally {
+                        set({ isLoading: false });
+                    }
+                },
 
-      removeItem: async (id, locale) => {
-        set({ isLoading: true, error: null });
+                removeItem: async (productId, userId, locale) => {
+                    set({ isLoading: true, error: null });
+                    const previousItems = get().items;
+                    try {
+                        const item = previousItems.find((i) => i.product_id === productId);
+                        if (!item) return;
 
-        try {
-          // Update local state first
-          set({ items: get().items.filter((item) => item.id !== id) });
+                        set({ items: previousItems.filter((i) => i.product_id !== productId) });
 
-          // Then sync with backend
-          await syncCartItem(id, 0, locale);
-          await get().syncWithBackend(locale);
-        } catch (error) {
-          console.error("Error removing item from cart:", error);
-          set({ error: "Failed to remove item from cart" });
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+                        if (userId) {
+                            await updateCartItem(
+                                { customer_id: userId, product_id: item.product_id, quantity: 0 },
+                                locale
+                            );
+                            await get().syncWithBackend(userId, locale);
+                        }
+                    } catch (error) {
+                        console.error('Error removing item from cart:', error);
+                        set({ items: previousItems, error: getErrorMessage(error) });
+                    } finally {
+                        set({ isLoading: false });
+                    }
+                },
 
-      updateQuantity: async (id, quantity, locale) => {
-        set({ isLoading: true, error: null });
+                updateQuantity: async (productId, quantity, userId, locale) => {
+                    set({ isLoading: true, error: null });
+                    const previousItems = get().items;
+                    try {
+                        const item = previousItems.find((i) => i.product_id === productId);
+                        if (!item) return;
 
-        try {
-          if (quantity <= 0) {
-            // Remove item if quantity is 0 or less
-            set({ items: get().items.filter((item) => item.id !== id) });
-          } else {
-            // Update quantity
-            set({
-              items: get().items.map((item) => (item.id === id ? { ...item, quantity } : item)),
-            });
-          }
+                        if (quantity <= 0) {
+                            set({ items: previousItems.filter((i) => i.product_id !== productId) });
+                        } else {
+                            set({
+                                items: previousItems.map((i) =>
+                                    i.product_id === productId ? { ...i, quantity } : i
+                                ),
+                            });
+                        }
 
-          // Sync with backend
-          await syncCartItem(id, quantity, locale);
-          await get().syncWithBackend(locale);
-        } catch (error) {
-          console.error("Error updating cart item quantity:", error);
-          set({ error: "Failed to update item quantity" });
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+                        if (userId) {
+                            await updateCartItem(
+                                { customer_id: userId, product_id: item.product_id, quantity },
+                                locale
+                            );
+                            await get().syncWithBackend(userId, locale);
+                        }
+                    } catch (error) {
+                        console.error('Error updating cart item quantity:', error);
+                        set({ items: previousItems, error: getErrorMessage(error) });
+                    } finally {
+                        set({ isLoading: false });
+                    }
+                },
 
-      clearCart: async (locale) => {
-        set({ isLoading: true, error: null });
+                clearCart: async (userId, locale) => {
+                    set({ isLoading: true, error: null });
+                    const previousItems = get().items;
+                    try {
+                        set({ items: [] });
+                        if (userId) {
+                            await clearCart(userId, locale);
+                        }
+                        await get().syncWithBackend(userId, locale);
+                    } catch (error) {
+                        console.error('Error clearing cart:', error);
+                        set({ items: previousItems, error: getErrorMessage(error) });
+                    } finally {
+                        set({ isLoading: false });
+                    }
+                },
 
-        try {
-          // Clear local cart
-          set({ items: [] });
+                syncWithBackend: async (userId, locale) => {
+                    if (typeof window === 'undefined' || !userId) {
+                        console.warn('No user authenticated or server-side, skipping cart sync');
+                        return;
+                    }
 
-          // Attempt to clear backend cart
-          try {
-            await clearBackendCart(locale);
-            console.log('Backend cart cleared successfully');
-          } catch (backendError) {
-            console.warn('Failed to clear backend cart, local cart cleared:', backendError);
-          }
-        } catch (error) {
-          console.error("Error clearing cart:", error);
-          set({ error: "Failed to clear cart" });
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        console.warn('No token found, skipping cart sync');
+                        return;
+                    }
 
-      syncWithBackend: async (locale) => {
-        if (typeof window === "undefined") return;
+                    set({ isLoading: true, error: null });
+                    try {
+                        const data = await fetchCart(userId, locale);
+                        const mappedItems: CartItem[] = data.map((item) => ({
+                            id: item.id,
+                            product_id: item.product_id,
+                            customer_id: item.customer_id,
+                            name_en: item.name_en,
+                            name_ar: item.name_ar,
+                            description_en: item.description_en,
+                            description_ar: item.description_ar,
+                            price: item.price,
+                            image: item.image,
+                            quantity: item.quantity,
+                        }));
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.warn('No token found, skipping cart sync');
-          return;
-        }
+                        // Get local items (guest or user-specific)
+                        const localItems = get().items.filter((item) => item.customer_id === 'guest' || item.customer_id === userId);
+                        const mergedItems: CartItem[] = [];
 
-        set({ isLoading: true, error: null });
+                        // Prioritize backend items
+                        for (const backendItem of mappedItems) {
+                            mergedItems.push(backendItem);
+                        }
 
-        try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Accept-Language": locale,
-            },
-          });
+                        // Add local items that don't exist in backend
+                        for (const localItem of localItems) {
+                            if (!mergedItems.some((i) => i.product_id === localItem.product_id)) {
+                                mergedItems.push({ ...localItem, customer_id: userId });
+                            }
+                        }
 
-          if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(`Failed to load cart: ${errorData.message}`);
-          }
+                        set({ items: mergedItems, error: null });
 
-          const data = await res.json();
+                        // Update backend with merged items
+                        for (const item of mergedItems) {
+                            await updateCartItem(
+                                { customer_id: userId, product_id: item.product_id, quantity: item.quantity },
+                                locale
+                            );
+                        }
 
-          if (Array.isArray(data)) {
-            const mappedItems = data.map((item) => ({
-              id: item.id,
-              product_id: item.product_id,
-              name_en: item.name_en,
-              name_ar: item.name_ar,
-              description_en: item.description_en,
-              description_ar: item.description_ar,
-              price: item.price,
-              image: item.image,
-              quantity: item.quantity,
-            }));
+                        console.log('Cart synced successfully:', mergedItems);
+                    } catch (error) {
+                        console.error('Error syncing with backend:', error);
+                        set({ error: getErrorMessage(error) });
+                    } finally {
+                        set({ isLoading: false });
+                    }
+                },
 
-            set({ items: mappedItems });
-            console.log('Cart synced successfully:', mappedItems);
-          }
-        } catch (error) {
-          console.error("Error syncing with backend:", error);
-          set({ error: "Failed to sync cart with server" });
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+                logout: () => {
+                    set({ items: [], error: null });
+                    console.log('Cart cleared on logout');
+                },
 
-      total: () =>
-        get().items.reduce((sum, item) => {
-          const price = item.price;
-          return sum + price * item.quantity;
-        }, 0),
+                total: () =>
+                    get().items.reduce((sum, item) => {
+                        const price = parseFloat(item.price) || 0;
+                        return sum + price * item.quantity;
+                    }, 0),
 
-      totalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
-    }),
-    {
-      name: "cart-storage",
-      partialize: (state) => ({ items: state.items }),
-    }
-  )
+                totalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
+            }),
+            {
+                name: 'cart-storage',
+                partialize: (state) => ({ items: state.items }),
+            }
+        )
+    )
 );
 
-// Helper functions for API calls
-async function syncCartItem(productId: number, quantity: number, locale: string) {
-  if (typeof window === "undefined") return;
-
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.warn('No token found, skipping cart item sync');
-    return;
-  }
-
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart/update`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "Accept-Language": locale,
-      },
-      body: JSON.stringify({ product_id: productId, quantity }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(`Failed to update cart: ${errorData.message}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("API error updating cart:", error);
-    throw error;
-  }
-}
-
-async function clearBackendCart(locale: string) {
-  if (typeof window === "undefined") return;
-
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.warn("No token found, skipping backend cart clear");
-    return;
-  }
-
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart/clear`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Accept-Language": locale,
-      },
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(`Failed to clear cart: ${errorData.message}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("API error clearing cart:", error);
-    throw error;
-  }
-}
-
-// Initialize cart from backend when the store is first created
-if (typeof window !== "undefined") {
-  const initializeCart = async () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        // Get the current locale from localStorage
-        const locale = localStorage.getItem("locale") || "ar";
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Accept-Language": locale,
-          },
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(`Failed to load cart: ${errorData.message}`);
+if (typeof window !== 'undefined') {
+    const initializeCart = async () => {
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        if (token && userId) {
+            try {
+                const locale = localStorage.getItem('locale') || 'ar';
+                await useCartStore.getState().syncWithBackend(userId, locale);
+            } catch (error) {
+                console.error('Initial cart load error:', error);
+            }
         }
-
-        const data = await res.json();
-
-        if (Array.isArray(data)) {
-          const mappedItems = data.map((item) => ({
-            id: item.id,
-            product_id: item.product_id,
-            name_en: item.name_en,
-            name_ar: item.name_ar,
-            description_en: item.description_en,
-            description_ar: item.description_ar,
-            price: item.price,
-            image: item.image,
-            quantity: item.quantity,
-          }));
-
-          useCartStore.setState({ items: mappedItems });
-          console.log('Cart initialized:', mappedItems);
-        }
-      } catch (error) {
-        console.error("Initial cart load error:", error);
-      }
-    }
-  };
-
-  initializeCart();
+    };
+    initializeCart();
 }

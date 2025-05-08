@@ -6,7 +6,20 @@ import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useCartStore } from '../../lib/store';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import type { CartItem } from '../../lib/cart';
+import { useAuth } from '../../lib/AuthContext';
+
+interface CartItem {
+    id: number;
+    product_id: number;
+    customer_id: string;
+    name_en: string;
+    name_ar: string;
+    description_en: string;
+    description_ar: string;
+    price: string;
+    image: string;
+    quantity: number;
+}
 
 interface FormData {
     firstName: string;
@@ -55,6 +68,7 @@ export default function ConfirmButton({
     const t = useTranslations('checkout');
     const router = useRouter();
     const { clearCart } = useCartStore();
+    const { userId } = useAuth();
 
     // Validate form fields
     const validateForm = (): FormErrors => {
@@ -135,7 +149,7 @@ export default function ConfirmButton({
 
             // Calculate total
             const subtotal = items.reduce((sum, item) => {
-                const price = Number.parseFloat(item.price.replace(/[^\d.]/g, ''));
+                const price = parseFloat(item.price) || 0;
                 return sum + price * item.quantity;
             }, 0);
             const tax = subtotal * 0.08;
@@ -159,7 +173,7 @@ export default function ConfirmButton({
             console.log('Stored lastOrder:', lastOrder);
 
             // Clear cart
-            await clearCart(currentLocale);
+            await clearCart(userId, currentLocale);
             console.log('Cart cleared, current items:', useCartStore.getState().items);
 
             // Redirect to success page

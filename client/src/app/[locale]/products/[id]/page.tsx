@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -14,7 +13,10 @@ import { useTranslations } from 'next-intl';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import Breadcrumb from '../../../../../components/breadcrumb';
 import { useProducts } from '../../../../../lib/ProductContext';
+import { useAuth } from '../../../../../lib/AuthContext';
 import { formatPrice } from '../../../../../lib/utils';
+
+
 
 export default function ProductDetailsPage() {
     const t = useTranslations('');
@@ -26,6 +28,7 @@ export default function ProductDetailsPage() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { items, addItem, updateQuantity, isLoading: isCartLoading } = useCartStore();
     const { allProducts, isLoading } = useProducts();
+    const { userId } = useAuth();
     const [isAdding, setIsAdding] = useState(false);
 
     // Find the product
@@ -41,7 +44,7 @@ export default function ProductDetailsPage() {
         if (!product) return;
         setIsAdding(true);
         try {
-            await updateQuantity(product.id, newQuantity, currentLocale);
+            await updateQuantity(product.id, newQuantity, userId, currentLocale);
         } catch (error) {
             console.error('Error updating quantity:', error);
         } finally {
@@ -54,16 +57,20 @@ export default function ProductDetailsPage() {
         if (!product) return;
         setIsAdding(true);
         try {
+            const imagePath = Array.isArray(product.image)
+                ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
+                : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
             await addItem(
                 {
-                    id: product.id,
+                    product_id: product.id,
                     name_en: product.name_en,
                     name_ar: product.name_ar,
                     description_en: product.description_en,
                     description_ar: product.description_ar,
-                    price: product.price,
-                    image: product.image,
+                    price: product.price.toFixed(2),
+                    image: imagePath,
                 },
+                userId,
                 currentLocale
             );
             setIsCartOpen(true);
@@ -79,21 +86,26 @@ export default function ProductDetailsPage() {
         if (!product) return;
         setIsAdding(true);
         try {
-            if (quantity === 0) {
+            const cartItem = items.find((item) => item.product_id === product.id);
+            const imagePath = Array.isArray(product.image)
+                ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
+                : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
+            if (!cartItem) {
                 await addItem(
                     {
-                        id: product.id,
+                        product_id: product.id,
                         name_en: product.name_en,
                         name_ar: product.name_ar,
                         description_en: product.description_en,
                         description_ar: product.description_ar,
-                        price: product.price,
-                        image: product.image,
+                        price: product.price.toFixed(2),
+                        image: imagePath,
                     },
+                    userId,
                     currentLocale
                 );
-            } else if (quantity !== cartItem?.quantity) {
-                await updateQuantity(product.id, quantity, currentLocale);
+            } else if (cartItem.quantity !== quantity) {
+                await updateQuantity(product.id, quantity, userId, currentLocale);
             }
             router.push(`/${currentLocale}/checkout`);
         } catch (error) {
@@ -112,7 +124,8 @@ export default function ProductDetailsPage() {
                 <ExpandableDescription
                     shortDescription={product && currentLocale === 'en' ? product.description_en : product?.description_ar || ''}
                     fullDescription={
-                        (currentLocale === 'en' ? product?.description_en : product?.description_ar || '') +'. '}
+                        (currentLocale === 'en' ? product?.description_en : product?.description_ar || '') + '. '
+                    }
                     moreText={t('products.readMore', { defaultMessage: currentLocale === 'en' ? 'More ...' : 'المزيد ...' })}
                     lessText={t('products.readLess', { defaultMessage: currentLocale === 'en' ? 'Less' : 'أقل' })}
                 />
@@ -183,7 +196,7 @@ export default function ProductDetailsPage() {
     ];
 
     // Get current quantity from cart
-    const cartItem = items.find((item) => item.id === productId);
+    const cartItem = items.find((item) => item.product_id === productId);
     const quantity = cartItem?.quantity || 0;
 
     if (!product) {
@@ -195,7 +208,11 @@ export default function ProductDetailsPage() {
             </div>
         );
     }
-    console.log('Product Image:', product.image[0]);
+
+    const imagePath = Array.isArray(product.image)
+        ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
+        : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
+
     return (
         <div className={`min-h-screen bg-[#e8f5e9] overflow-hidden ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
             <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
@@ -206,9 +223,9 @@ export default function ProductDetailsPage() {
                         <Breadcrumb pageName={'products'} product={currentLocale === 'en' ? product.name_en : product.name_ar} />
                         <div className="rounded-lg overflow-hidden">
                             <Image
-                                src={product.image[0] ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}` : '/default.jpg'}
+                                src={imagePath}
                                 alt={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
-                                width={400}
+                                width={700}
                                 height={400}
                                 className="w-[700px] h-[400px] object-cover rounded-lg"
                             />
@@ -247,8 +264,7 @@ export default function ProductDetailsPage() {
                                 <button
                                     onClick={handleAddToCart}
                                     disabled={isAdding || isCartLoading || !product.availability}
-                                    className={`bg-white text-[#337a5b] px-4 py-2 rounded-md transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-200'
-                                        }`}
+                                    className={`bg-white text-[#337a5b] px-4 py-2 rounded-md transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-200'}`}
                                 >
                                     <ShoppingCart className="w-4 h-4 mr-2" />
                                     {t('products.addToCart')}
@@ -276,8 +292,7 @@ export default function ProductDetailsPage() {
                             <button
                                 onClick={handleBuyNow}
                                 disabled={isAdding || isCartLoading || !product.availability}
-                                className={`bg-[#8dfb9e] text-[#121619] px-6 py-2 rounded-full transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#27eb00]'
-                                    }`}
+                                className={`bg-[#8dfb9e] text-[#121619] px-6 py-2 rounded-full transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#27eb00]'}`}
                                 title={isAdding || isCartLoading ? t('products.processing') : ''}
                             >
                                 {t('products.buyNow')}

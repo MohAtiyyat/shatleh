@@ -1,11 +1,7 @@
-// Base API URL from environment variable
-const API_URL = process.env.NEXT_PUBLIC_API_URL || ' ';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 import { mockProducts } from './mockData';
-
-// Import Product type
 import type { Product } from './index';
 
-// Interfaces for request and response data
 interface LoginRequest {
     email: string;
     password: string;
@@ -90,17 +86,16 @@ interface ServicesResponse {
 interface ServiceRequestRequest {
     service_id: number;
     address_id: number;
-    customer_id: string; // Add customer_id
+    customer_id: string;
     details: string;
     image?: File;
 }
 
-// Update the ServiceRequestResponse interface (align with backend response)
 interface ServiceRequestResponse {
     data: {
         id: number;
         user_id: number;
-        customer_id: string; // Add customer_id
+        customer_id: string;
         service_id: number;
         address_id: number;
         details: string;
@@ -110,18 +105,47 @@ interface ServiceRequestResponse {
     message: string;
 }
 
+interface CartItem {
+    id: number;
+    product_id: number;
+    customer_id: string;
+    name_en: string;
+    name_ar: string;
+    description_en: string;
+    description_ar: string;
+    price: string;
+    image: string;
+    quantity: number;
+}
+
+interface CartResponse {
+    data: CartItem[];
+}
+
+interface CartUpdateRequest {
+    customer_id: string;
+    product_id: number;
+    quantity: number;
+}
+
+interface CartUpdateResponse {
+    message: string;
+}
+
+interface CartClearResponse {
+    message: string;
+}
+
 interface ApiErrorResponse {
     message?: string;
     error?: string;
     errors?: Record<string, string[]>;
 }
 
-// Helper function to get auth token
 const getAuthToken = (): string | null => {
     return localStorage.getItem('token');
 };
 
-// Helper function to handle fetch responses
 const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
         const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
@@ -132,7 +156,6 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     return response.json() as Promise<T>;
 };
 
-// Login API call
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
     try {
         const response = await fetch(`${API_URL}/api/login`, {
@@ -143,15 +166,15 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
             },
             body: JSON.stringify(data),
         });
-        return handleResponse<LoginResponse>(response);
+        const result = await handleResponse<LoginResponse>(response);
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.user.id);
+        return result;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Login failed'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Login failed');
     }
 };
 
-// Register API call
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
     try {
         const response = await fetch(`${API_URL}/api/register`, {
@@ -162,15 +185,15 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
             },
             body: JSON.stringify(data),
         });
-        return handleResponse<RegisterResponse>(response);
+        const result = await handleResponse<RegisterResponse>(response);
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.user.id);
+        return result;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Registration failed'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Registration failed');
     }
 };
 
-// Logout API call
 export const logoutApi = async (token: string): Promise<void> => {
     try {
         const response = await fetch(`${API_URL}/api/logout`, {
@@ -182,14 +205,13 @@ export const logoutApi = async (token: string): Promise<void> => {
             },
         });
         await handleResponse<void>(response);
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Logout failed'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Logout failed');
     }
 };
 
-// Fetch top products
 export const fetchTopProducts = async (): Promise<Product[]> => {
     try {
         const response = await fetch(`${API_URL}/api/top_sellers`, {
@@ -202,13 +224,10 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
         const data = await handleResponse<ProductsResponse>(response);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch top products'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch top products');
     }
 };
 
-// Fetch all products (for ProductsPage)
 export const fetchAllProducts = async (): Promise<Product[]> => {
     try {
         const response = await fetch(`${API_URL}/api/all_products`, {
@@ -222,11 +241,10 @@ export const fetchAllProducts = async (): Promise<Product[]> => {
         return data.data;
     } catch (error) {
         console.error('Error fetching all products:', error);
-        return mockProducts; // Return mock data on failure
+        return mockProducts;
     }
 };
 
-// Fetch user profile
 export const fetchProfile = async (): Promise<Profile> => {
     const token = getAuthToken();
     if (!token) {
@@ -242,16 +260,12 @@ export const fetchProfile = async (): Promise<Profile> => {
             },
         });
         const data = await handleResponse<ProfileResponse>(response);
-        console.log(data);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch profile'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch profile');
     }
 };
 
-// Update user profile
 export const updateProfile = async (formData: FormData): Promise<Profile> => {
     const token = getAuthToken();
     if (!token) {
@@ -269,13 +283,10 @@ export const updateProfile = async (formData: FormData): Promise<Profile> => {
         const data = await handleResponse<ProfileResponse>(response);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to update profile'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to update profile');
     }
 };
 
-// Fetch user addresses
 export const fetchAddresses = async (): Promise<Address[]> => {
     const token = getAuthToken();
     if (!token) {
@@ -293,13 +304,10 @@ export const fetchAddresses = async (): Promise<Address[]> => {
         const data = await handleResponse<AddressesResponse>(response);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch addresses'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch addresses');
     }
 };
 
-// Add new address
 export const addAddress = async (address: Omit<Address, 'id' | 'is_default' | 'country_name'>): Promise<Address> => {
     const token = getAuthToken();
     if (!token) {
@@ -318,13 +326,10 @@ export const addAddress = async (address: Omit<Address, 'id' | 'is_default' | 'c
         const data = await handleResponse<AddressResponse>(response);
         return data.address;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to add address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to add address');
     }
 };
 
-// Update address
 export const updateAddress = async (id: number, address: Omit<Address, 'id' | 'is_default' | 'country_name'>): Promise<Address> => {
     const token = getAuthToken();
     if (!token) {
@@ -343,13 +348,10 @@ export const updateAddress = async (id: number, address: Omit<Address, 'id' | 'i
         const data = await handleResponse<AddressResponse>(response);
         return data.address;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to update address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to update address');
     }
 };
 
-// Set default address
 export const setDefaultAddress = async (id: number): Promise<void> => {
     const token = getAuthToken();
     if (!token) {
@@ -366,13 +368,10 @@ export const setDefaultAddress = async (id: number): Promise<void> => {
         });
         await handleResponse<void>(response);
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to set default address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to set default address');
     }
 };
 
-// Delete address
 export const deleteAddress = async (id: number): Promise<void> => {
     const token = getAuthToken();
     if (!token) {
@@ -389,13 +388,10 @@ export const deleteAddress = async (id: number): Promise<void> => {
         });
         await handleResponse<void>(response);
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to delete address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to delete address');
     }
 };
 
-// Fetch all active services
 export const fetchServices = async (): Promise<Service[]> => {
     try {
         const response = await fetch(`${API_URL}/api/services`, {
@@ -406,16 +402,12 @@ export const fetchServices = async (): Promise<Service[]> => {
             },
         });
         const data = await handleResponse<ServicesResponse>(response);
-        console.log("service",data);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch services'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch services');
     }
 };
 
-// Create a new service request
 export const createServiceRequest = async (data: ServiceRequestRequest): Promise<ServiceRequestResponse> => {
     const token = getAuthToken();
     if (!token) {
@@ -425,7 +417,7 @@ export const createServiceRequest = async (data: ServiceRequestRequest): Promise
         const formData = new FormData();
         formData.append('service_id', data.service_id.toString());
         formData.append('address_id', data.address_id.toString());
-        formData.append('customer_id', data.customer_id); // Add customer_id
+        formData.append('customer_id', data.customer_id);
         formData.append('details', data.details);
         if (data.image) {
             formData.append('image', data.image);
@@ -441,8 +433,76 @@ export const createServiceRequest = async (data: ServiceRequestRequest): Promise
         });
         return handleResponse<ServiceRequestResponse>(response);
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to create service request'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to create service request');
+    }
+};
+
+export const fetchCart = async (customerId: string, locale: string): Promise<CartItem[]> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/cart`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify({ customer_id: customerId }),
+        });
+        const data = await handleResponse<CartResponse>(response);
+        return data.data.map((item) => ({
+            ...item,
+            price: item.price.toString(),
+        }));
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch cart');
+    }
+};
+
+export const updateCartItem = async (data: CartUpdateRequest, locale: string): Promise<CartUpdateResponse> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/cart/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify(data),
+        });
+        return handleResponse<CartUpdateResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to update cart');
+    }
+};
+
+export const clearCart = async (customerId: string, locale: string): Promise<CartClearResponse> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/cart/clear`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify({ customer_id: customerId }),
+        });
+        return handleResponse<CartClearResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to clear cart');
     }
 };
