@@ -33,7 +33,7 @@ class ProductController extends Controller
                 ])
                 ->leftJoin('category_products', 'products.id', '=', 'category_products.product_id')
                 ->leftJoin('categories', 'category_products.category_id', '=', 'categories.id')
-                ->where('products.status', 1)
+                ->where('products.status', "Active")
                 ->groupBy('products.id')
                 ->withCount(['reviews as rating' => function ($query) {
                     $query->select(DB::raw('ROUND(COALESCE(AVG(rating), 0), 1)'));

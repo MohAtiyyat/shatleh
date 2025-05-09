@@ -5,6 +5,7 @@ import { fetchCart, updateCartItem, clearCart } from './api';
 interface CartItem {
     id: number;
     product_id: number;
+    
     customer_id: string;
     name_en: string;
     name_ar: string;
@@ -187,7 +188,7 @@ export const useCartStore = create<CartState>()(
                             name_en: item.name_en,
                             name_ar: item.name_ar,
                             description_en: item.description_en,
-                            description_ar: item.description_ar,
+                            description_ar: item.description_ar,    
                             price: item.price,
                             image: item.image,
                             quantity: item.quantity,

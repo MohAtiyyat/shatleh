@@ -41,7 +41,7 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
             : null;
 
     const imagePath = product.image
-        ? `${process.env.NEXT_PUBLIC_API_URL}${product.image}`
+        ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
         : '/placeholder.svg';
 
     const description = truncateText(
@@ -122,7 +122,7 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
                     <h3 className="font-medium text-center mb-1 text-white">
                         {currentLocale === 'ar' ? product.name_ar : product.name_en}
                     </h3>
-                    <p className="text-xs text-center mb-2 flex-grow text-white">
+                    <p className="text-xs text-center mb-2 flex-grow text-white overflow-hidden overflow-ellipsis whitespace-nowrap">
                         {description}
                     </p>
                     <div className="flex justify-center mb-2">

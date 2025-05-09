@@ -16,8 +16,6 @@ import { useProducts } from '../../../../../lib/ProductContext';
 import { useAuth } from '../../../../../lib/AuthContext';
 import { formatPrice } from '../../../../../lib/utils';
 
-
-
 export default function ProductDetailsPage() {
     const t = useTranslations('');
     const params = useParams();
@@ -57,9 +55,7 @@ export default function ProductDetailsPage() {
         if (!product) return;
         setIsAdding(true);
         try {
-            const imagePath = Array.isArray(product.image)
-                ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
-                : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
+            const imagePath = `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
             await addItem(
                 {
                     product_id: product.id,
@@ -67,7 +63,7 @@ export default function ProductDetailsPage() {
                     name_ar: product.name_ar,
                     description_en: product.description_en,
                     description_ar: product.description_ar,
-                    price: product.price.toFixed(2),
+                    price: product.price, // Already a string
                     image: imagePath,
                 },
                 userId,
@@ -87,9 +83,7 @@ export default function ProductDetailsPage() {
         setIsAdding(true);
         try {
             const cartItem = items.find((item) => item.product_id === product.id);
-            const imagePath = Array.isArray(product.image)
-                ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
-                : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
+            const imagePath = `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
             if (!cartItem) {
                 await addItem(
                     {
@@ -98,7 +92,7 @@ export default function ProductDetailsPage() {
                         name_ar: product.name_ar,
                         description_en: product.description_en,
                         description_ar: product.description_ar,
-                        price: product.price.toFixed(2),
+                        price: product.price, // Already a string
                         image: imagePath,
                     },
                     userId,
@@ -149,7 +143,7 @@ export default function ProductDetailsPage() {
                             </p>
                             <p className="flex gap-x-2">
                                 <span className="font-medium">{t('products.type', { defaultMessage: currentLocale === 'en' ? 'Type' : 'النوع' })}:</span>
-                                <span>{product ? (currentLocale === 'en' ? product.category_en : product.category_ar) : ''}</span>
+                                <span>{product ? (currentLocale === 'en' ? product.category_en : product.category_ar) || 'N/A' : 'N/A'}</span>
                             </p>
                         </div>
                         <div className="space-y-2">
@@ -209,9 +203,7 @@ export default function ProductDetailsPage() {
         );
     }
 
-    const imagePath = Array.isArray(product.image)
-        ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
-        : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
+    const imagePath = `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
 
     return (
         <div className={`min-h-screen bg-[#e8f5e9] overflow-hidden ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
@@ -244,13 +236,20 @@ export default function ProductDetailsPage() {
 
                         <div className="flex mb-4">
                             {Array.from({ length: 5 }).map((_, i) => (
-                                <Star key={i} className={`w-5 h-5 ${i < product.rating ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`} />
+                                <Star
+                                    key={i}
+                                    className={`w-5 h-5 ${i < Math.floor(product.rating || 0) ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`}
+                                />
                             ))}
                         </div>
 
                         <div className="mb-6">
                             <p className="text-[#667085] text-sm">{t('products.price')}</p>
-                            <p className="text-3xl font-semibold text-[#026e78]">{formatPrice(product.price, currentLocale)}</p>
+                            <p className="text-3xl font-semibold text-[#026e78]">
+                                {product.price && !isNaN(parseFloat(product.price))
+                                    ? formatPrice(parseFloat(product.price), currentLocale)
+                                    : t('products.contactForPrice')}
+                            </p>
                         </div>
 
                         {!product.availability && (
