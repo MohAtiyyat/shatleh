@@ -14,6 +14,7 @@ Route::prefix('api')->group(function () {
     Route::get('/top_sellers', [ProductController::class, 'top_sellers'])->name('api.top_sellers');
     Route::get('/all_products', [ProductController::class, 'allProducts'])->name('api.all_products');
     Route::get('/services', [ServiceController::class, 'index'])->name('api.services');
+    Route::get('/categories', [ProductController::class, 'categories'])->name('api.categories');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
