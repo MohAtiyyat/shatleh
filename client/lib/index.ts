@@ -9,11 +9,11 @@ export interface Product {
     id: number;
     name_en: string;
     name_ar: string;
-    price: string; // Backend returns price as string
-    image: string; // Fixed: Removed invalid union type
+    price: string;
+    image: string;
     description_en: string;
     description_ar: string;
-    availability: boolean; // Fixed: Changed from number to boolean to match backend
+    availability: boolean;
     sold_quantity: number;
     category_id?: number | null;
     category_en?: string | null;
@@ -24,7 +24,7 @@ export interface Product {
 export interface Category {
     id: number;
     name: Name;
-    subcategories: Category[]; // Allows nested subcategories
+    subcategories: Category[];
 }
 
 export interface Service {
@@ -64,6 +64,19 @@ export interface CartItem {
     name: Name;
     description: Name;
     price: string;
+    image: string;
+    quantity: number;
+}
+
+export interface BackendCartItem {
+    id: number;
+    product_id: number;
+    customer_id: string;
+    name_en: string;
+    name_ar: string;
+    description_en: string;
+    description_ar: string;
+    price: number | string;
     image: string;
     quantity: number;
 }
