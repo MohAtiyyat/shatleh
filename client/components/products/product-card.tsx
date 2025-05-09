@@ -10,19 +10,13 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { formatPrice } from '../../lib/utils';
 import { useAuth } from '../../lib/AuthContext';
+import { Product } from '../../lib/index';
 
-interface Product {
-    id: number;
-    name_en: string;
-    name_ar: string;
-    description_en: string;
-    description_ar: string;
-    price: number;
-    image: string;
-    availability: number;
-    sold_quantity: number;
-    rating: number;
-}
+// Utility function to truncate text
+const truncateText = (text: string, maxLength: number = 100): string => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength - 3) + '...';
+};
 
 interface ProductCardProps {
     product: Product;
@@ -40,15 +34,20 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
     const cartItem = items.find((item) => item.product_id === product.id);
     const quantity = cartItem?.quantity || 0;
 
-    const label = product.availability === 0
+    const label = !product.availability
         ? t('products.outOfStockLabel')
-        : product.sold_quantity > 0
+        : product.sold_quantity > 10 // Adjusted threshold to match best-selling filter
             ? t('products.topSellingLabel')
             : null;
 
     const imagePath = product.image
         ? `${process.env.NEXT_PUBLIC_API_URL}${product.image}`
         : '/placeholder.svg';
+
+    const description = truncateText(
+        currentLocale === 'ar' ? product.description_ar : product.description_en,
+        100
+    );
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -62,7 +61,7 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
                     name_ar: product.name_ar,
                     description_en: product.description_en,
                     description_ar: product.description_ar,
-                    price: product.price.toFixed(2),
+                    price: product.price, // Already a string from index.ts
                     image: imagePath,
                 },
                 userId,
@@ -124,48 +123,63 @@ export default function ProductCard({ product, index, pageName }: ProductCardPro
                         {currentLocale === 'ar' ? product.name_ar : product.name_en}
                     </h3>
                     <p className="text-xs text-center mb-2 flex-grow text-white">
-                        {currentLocale === 'ar' ? product.description_ar : product.description_en}
+                        {description}
                     </p>
                     <div className="flex justify-center mb-2">
                         {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                                 key={i}
-                                className={`h-4 w-4 ${i < Math.floor(Number(product.rating)) ? 'text-yellow-400 fill-yellow-400' : 'text-[#e5e5e5]'}`}
+                                className={`h-4 w-4 ${i < Math.floor(product.rating || 0)
+                                        ? 'text-yellow-400 fill-yellow-400'
+                                        : 'text-[#e5e5e5]'
+                                    }`}
                             />
                         ))}
                     </div>
                     <div className="flex justify-between items-center">
                         {product.price ? (
-                            <span className="font-medium text-white">{formatPrice(product.price, currentLocale)}</span>
+                            <span className="font-medium text-white">
+                                {formatPrice(parseFloat(product.price), currentLocale)}
+                            </span>
                         ) : (
                             <span className="font-medium text-white">{t('products.contactForPrice')}</span>
                         )}
                         {quantity === 0 ? (
                             <button
                                 onClick={handleAddToCart}
-                                disabled={isAdding || isLoading || product.availability === 0}
-                                className={`h-8 w-8 flex items-center justify-center rounded-md transition-colors bg-white text-[#337a5b] hover:bg-gray-200 ${isAdding || isLoading || product.availability === 0 ? 'cursor-not-allowed' : ''}`}
+                                disabled={isAdding || isLoading || !product.availability}
+                                className={`h-8 w-8 flex items-center justify-center rounded-md transition-colors bg-white text-[#337a5b] hover:bg-gray-200 ${isAdding || isLoading || !product.availability ? 'cursor-not-allowed' : ''
+                                    }`}
                                 aria-label={t('products.addToCart')}
                             >
                                 <ShoppingCart className="h-4 w-4" />
                             </button>
                         ) : (
-                            <div className="flex items-center rounded-md overflow-hidden border border-white" role="group" aria-label={t('products.quantityControl')}>
+                            <div
+                                className="flex items-center rounded-md overflow-hidden border border-white"
+                                role="group"
+                                aria-label={t('products.quantityControl')}
+                            >
                                 <button
                                     onClick={(e) => handleUpdateQuantity(e, quantity - 1)}
                                     disabled={isAdding || isLoading}
-                                    className={`h-8 w-8 flex items-center justify-center transition-colors bg-white text-[#337a5b] hover:bg-gray-200 ${isAdding || isLoading ? 'cursor-wait' : ''}`}
+                                    className={`h-8 w-8 flex items-center justify-center transition-colors bg-white text-[#337a5b] hover:bg-gray-200 ${isAdding || isLoading ? 'cursor-wait' : ''
+                                        }`}
                                     aria-label={t('products.decreaseQuantity')}
                                 >
                                     <Minus className="h-4 w-4" />
                                 </button>
-                                <span className="h-8 w-8 flex items-center justify-center bg-[#337a5b] text-white" aria-live="polite">
+                                <span
+                                    className="h-8 w-8 flex items-center justify-center bg-[#337a5b] text-white"
+                                    aria-live="polite"
+                                >
                                     {quantity}
                                 </span>
                                 <button
                                     onClick={(e) => handleUpdateQuantity(e, quantity + 1)}
-                                    disabled={isAdding || isLoading || product.availability === 0}
-                                    className={`h-8 w-8 flex items-center justify-center transition-colors bg-white text-[#337a5b] hover:bg-gray-200 ${isAdding || isLoading || product.availability === 0 ? 'cursor-not-allowed' : ''}`}
+                                    disabled={isAdding || isLoading || !product.availability}
+                                    className={`h-8 w-8 flex items-center justify-center transition-colors bg-white text-[#337a5b] hover:bg-gray-200 ${isAdding || isLoading || !product.availability ? 'cursor-not-allowed' : ''
+                                        }`}
                                     aria-label={t('products.increaseQuantity')}
                                 >
                                     <Plus className="h-4 w-4" />

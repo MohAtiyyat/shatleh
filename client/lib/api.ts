@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 import { mockProducts } from './mockData';
-import type { Product } from './index';
+import type { Product, Category, CartItem, Service } from './index';
 
 interface LoginRequest {
     email: string;
@@ -36,6 +36,22 @@ interface ProductsResponse {
     data: Product[];
 }
 
+interface RawCategory {
+    id: number;
+    name_en: string;
+    name_ar: string;
+    subcategories: {
+        id: number;
+        name_en: string;
+        name_ar: string;
+        parent_id: number;
+    }[];
+}
+
+interface CategoriesResponse {
+    data: RawCategory[];
+}
+
 interface Address {
     id: number;
     title: string;
@@ -69,15 +85,6 @@ interface ProfileResponse {
     message?: string;
 }
 
-interface Service {
-    id: number;
-    name_en: string;
-    name_ar: string;
-    description_en: string;
-    description_ar: string;
-    image: string[] | null;
-}
-
 interface ServicesResponse {
     data: Service[];
     message: string;
@@ -103,19 +110,6 @@ interface ServiceRequestResponse {
         status: string;
     };
     message: string;
-}
-
-interface CartItem {
-    id: number;
-    product_id: number;
-    customer_id: string;
-    name_en: string;
-    name_ar: string;
-    description_en: string;
-    description_ar: string;
-    price: string;
-    image: string;
-    quantity: number;
 }
 
 interface CartResponse {
@@ -149,6 +143,11 @@ const getAuthToken = (): string | null => {
 const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
         const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
+        console.error('API Error:', {
+            status: response.status,
+            statusText: response.statusText,
+            errorData,
+        });
         throw new Error(
             errorData.message || errorData.error || JSON.stringify(errorData.errors) || `HTTP error ${response.status}`
         );
@@ -212,6 +211,41 @@ export const logoutApi = async (token: string): Promise<void> => {
     }
 };
 
+export const fetchCategories = async (): Promise<Category[]> => {
+    try {
+        console.log('Fetching categories from:', `${API_URL}/api/categories`);
+        const response = await fetch(`${API_URL}/api/categories`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<CategoriesResponse>(response);
+        // Transform backend response to match Category type
+        const transformedCategories: Category[] = data.data.map((category) => ({
+            id: category.id,
+            name: {
+                en: category.name_en,
+                ar: category.name_ar,
+            },
+            subcategories: category.subcategories.map((sub) => ({
+                id: sub.id,
+                name: {
+                    en: sub.name_en,
+                    ar: sub.name_ar,
+                },
+                subcategories: [], // Assuming subcategories are not nested further
+            })),
+        }));
+        console.log('Transformed categories:', transformedCategories);
+        return transformedCategories;
+    } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch categories');
+    }
+};
+
 export const fetchTopProducts = async (): Promise<Product[]> => {
     try {
         const response = await fetch(`${API_URL}/api/top_sellers`, {
@@ -241,7 +275,16 @@ export const fetchAllProducts = async (): Promise<Product[]> => {
         return data.data;
     } catch (error) {
         console.error('Error fetching all products:', error);
-        return mockProducts;
+        // Transform mockProducts to match Product type
+        return mockProducts.map((product) => ({
+            ...product,
+            price: product.price.toString(),
+            availability: !!product.availability,
+            category_id: product.category_id || null,
+            category_en: product.category_en || null,
+            category_ar: product.category_ar || null,
+            rating: product.rating || undefined,
+        }));
     }
 };
 
@@ -462,7 +505,6 @@ export const fetchCart = async (customerId: string, locale: string): Promise<Car
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch cart');
     }
 };
-
 export const updateCartItem = async (data: CartUpdateRequest, locale: string): Promise<CartUpdateResponse> => {
     const token = getAuthToken();
     if (!token) {

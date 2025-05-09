@@ -19,6 +19,13 @@ class Category extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'category_products', 'category_id', 'product_id')->as('category_products')->withTimestamps();
+        return $this->belongsToMany(Product::class, 'category_products', 'category_id', 'product_id')
+            ->as('category_products')
+            ->withTimestamps();
+    }
+
+    public function subcategories()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 }
