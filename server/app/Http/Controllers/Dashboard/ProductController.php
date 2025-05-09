@@ -17,8 +17,7 @@ class ProductController extends Controller
 {
     public function index(AllProductRequest $request)
     {
-        $products = Product::paginate(50);
-
+        $products = Product::all();
         return view('admin.Product.index', compact('products'));
     }
 
@@ -40,6 +39,8 @@ class ProductController extends Controller
                 $imagePaths[] = Storage::url($imagePath);
             }
             $data['image'] = $imagePaths;
+        } else {
+            $data['image'] = [];
         }
 
         $product = Product::create($data);
@@ -54,8 +55,8 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $item = Product::findOrFail($id);
-        $categories = Category::all();
+        $item = Product::with('categories')->findOrFail($id);
+        $categories = Category::where('parent_id', null)->get();
         return view('admin.Product.createUpdate', compact('item', 'categories'));
     }
 
@@ -64,23 +65,30 @@ class ProductController extends Controller
         $data = $request->validated();
 
         try {
-            // Handle multiple image uploads
-            if ($request->hasFile('images')) {
-                // Delete old images if they exist
-                if ($product->image) {
-                    foreach ($product->image as $oldImage) {
-                        $oldImagePath = ltrim(parse_url($oldImage, PHP_URL_PATH), '/storage/');
-                        Storage::disk('public')->delete($oldImagePath);
+            // Handle image updates
+            $imagePaths = $request->input('existing_images', []); // Images to keep
+
+            // Delete images that were removed
+            if ($product->image && is_array($product->image)) {
+                foreach ($product->image as $oldImage) {
+                    if (!in_array($oldImage, $imagePaths)) {
+                        $oldImagePath = ltrim(parse_url($oldImage, PHP_URL_PATH), '/');
+                        if (Storage::disk('public')->exists($oldImagePath)) {
+                            Storage::disk('public')->delete($oldImagePath);
+                        }
                     }
                 }
-                // Store new images
-                $imagePaths = [];
+            }
+
+            // Add new images
+            if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $imagePath = $image->store('product_images', 'public');
                     $imagePaths[] = Storage::url($imagePath);
                 }
-                $data['image'] = $imagePaths;
             }
+
+            $data['image'] = !empty($imagePaths) ? $imagePaths : [];
 
             $product->update($data);
 
@@ -106,10 +114,12 @@ class ProductController extends Controller
     public function delete(DeleteProductRequest $request, $id)
     {
         $product = Product::findOrFail($id);
-        if ($product->image) {
+        if ($product->image && is_array($product->image)) {
             foreach ($product->image as $image) {
-                $imagePath = ltrim(parse_url($image, PHP_URL_PATH), '/storage/');
-                Storage::disk('public')->delete($imagePath);
+                $oldImagePath = ltrim(parse_url($image, PHP_URL_PATH), '/');
+                if (Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
+                }
             }
         }
         $product->delete();

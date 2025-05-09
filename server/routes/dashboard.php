@@ -44,7 +44,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('product');
             Route::get('/create', [ProductController::class, 'create'])->name('product.create');
-            Route::post('/create', [ProductController::class, 'store'])->name('product.create');
+            Route::post('/create', [ProductController::class, 'store'])->name('product.store');
             Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
             Route::get('/{id}', [ProductController::class, 'show'])->name('product.show');
             Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');

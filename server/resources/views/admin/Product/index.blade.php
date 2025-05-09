@@ -21,9 +21,9 @@
                 <!-- Status -->
                 @php
                 $statusClassMap = [
-                    1 => ['label' => 'Active', 'class' => 'status-badge status-active'],
-                    0 => ['label' => 'Unactive', 'class' => 'status-badge status-inactive'],
-                    2 => ['label' => 'Draft', 'class' => 'status-badge status-draft'],
+                    "active" => ['label' => 'Active', 'class' => 'status-badge status-active'],
+                    "inactive" => ['label' => 'Unactive', 'class' => 'status-badge status-inactive'],
+                    "draft" => ['label' => 'Draft', 'class' => 'status-badge status-draft'],
                 ];
                 $status = $statusClassMap[$product->status] ?? ['label' => 'Unknown', 'class' => 'status-badge'];
                 @endphp
