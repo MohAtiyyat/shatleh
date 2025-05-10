@@ -4,96 +4,52 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { FiltersState } from '../../lib/index';
+import { PostFiltersState } from '../../lib/index';
 
 interface FiltersProps {
     currentLocale: 'en' | 'ar';
-    filters: FiltersState;
-    setFilters: React.Dispatch<React.SetStateAction<FiltersState>>;
+    filters: PostFiltersState;
+    setFilters: React.Dispatch<React.SetStateAction<PostFiltersState>>;
 }
 
 export default function Filters({ filters, setFilters, currentLocale }: FiltersProps) {
     const t = useTranslations('');
-
-    // State for dropdown visibility
-    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
-    // Ref for category dropdown
+    const [openDropdown, setOpenDropdown] = useState(false);
     const categoryRef = useRef<HTMLDivElement>(null);
 
     // Handle click outside to close dropdown
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (openDropdown === 'category' && categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
-                setOpenDropdown(null);
+            if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
+                setOpenDropdown(false);
             }
         }
-
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [openDropdown]);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // Toggle dropdown visibility
     const toggleDropdown = () => {
-        setOpenDropdown(openDropdown === 'category' ? null : 'category');
+        setOpenDropdown(!openDropdown);
     };
 
-    // Toggle category or subcategory selection
-    const toggleCategory = (categoryId: number, subcategoryId?: number) => {
+    // Toggle category selection
+    const toggleCategory = (categoryId: number) => {
         setFilters((prev) => ({
             ...prev,
-            categories: prev.categories.map((category) => {
-                if (category.id === categoryId) {
-                    if (subcategoryId) {
-                        // Toggle subcategory
-                        return {
-                            ...category,
-                            subcategories: category.subcategories.map((sub) =>
-                                sub.id === subcategoryId ? { ...sub, selected: !sub.selected } : sub
-                            ),
-                        };
-                    } else {
-                        // Toggle main category and all subcategories
-                        const newSelected = !category.selected;
-                        return {
-                            ...category,
-                            selected: newSelected,
-                            subcategories: category.subcategories.map((sub) => ({
-                                ...sub,
-                                selected: newSelected,
-                            })),
-                        };
-                    }
-                }
-                return category;
-            }),
+            categories: prev.categories.map((category) =>
+                category.id === categoryId ? { ...category, selected: !category.selected } : category
+            ),
         }));
     };
 
-    // Clear filter
-    const clearFilter = (id: number, subcategoryId?: number) => {
+    // Clear category filter
+    const clearFilter = (categoryId: number) => {
         setFilters((prev) => ({
             ...prev,
-            categories: prev.categories.map((category) => {
-                if (category.id === id) {
-                    if (subcategoryId) {
-                        return {
-                            ...category,
-                            subcategories: category.subcategories.map((sub) =>
-                                sub.id === subcategoryId ? { ...sub, selected: false } : sub
-                            ),
-                        };
-                    }
-                    return {
-                        ...category,
-                        selected: false,
-                        subcategories: category.subcategories.map((sub) => ({ ...sub, selected: false })),
-                    };
-                }
-                return category;
-            }),
+            categories: prev.categories.map((category) =>
+                category.id === categoryId ? { ...category, selected: false } : category
+            ),
         }));
     };
 
@@ -101,41 +57,25 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
     const clearAllFilters = () => {
         setFilters((prev) => ({
             ...prev,
-            categories: prev.categories.map((c) => ({
-                ...c,
-                selected: false,
-                subcategories: c.subcategories.map((s) => ({ ...s, selected: false })),
-            })),
+            categories: prev.categories.map((c) => ({ ...c, selected: false })),
         }));
     };
 
     // Get selected filters count
     const getSelectedCount = () => {
-        return filters.categories.reduce((count, category) => {
-            const subCount = category.subcategories.filter((sub) => sub.selected).length;
-            return count + (category.selected ? 1 : 0) + subCount;
-        }, 0);
+        return filters.categories.filter((category) => category.selected).length;
     };
 
     // Get selected filters names
     const getSelectedNames = () => {
-        const names: string[] = [];
-        filters.categories.forEach((category) => {
-            if (category.selected) {
-                names.push(currentLocale === 'ar' ? category.name.ar : category.name.en);
-            }
-            category.subcategories.forEach((sub) => {
-                if (sub.selected) {
-                    names.push(currentLocale === 'ar' ? sub.name.ar : sub.name.en);
-                }
-            });
-        });
-        return names;
+        return filters.categories
+            .filter((category) => category.selected)
+            .map((category) => (currentLocale === 'ar' ? category.name.ar : category.name.en));
     };
 
     // Check if any filters are applied
     const hasActiveFilters = () => {
-        return filters.categories.some((c) => c.selected || c.subcategories.some((s) => s.selected));
+        return filters.categories.some((c) => c.selected);
     };
 
     return (
@@ -146,7 +86,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                     <button
                         onClick={toggleDropdown}
                         className="flex items-center justify-between gap-2 px-4 py-3 bg-white border border-[#80ce97] rounded-md text-[#0f4229] min-w-[150px]"
-                        aria-expanded={openDropdown === 'category'}
+                        aria-expanded={openDropdown}
                         aria-label={t('products.category')}
                     >
                         {getSelectedCount() > 0 ? (
@@ -157,7 +97,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                         <ChevronDown className="h-4 w-4" />
                     </button>
 
-                    {openDropdown === 'category' && (
+                    {openDropdown && (
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -168,38 +108,18 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                         >
                             <div className="p-2 space-y-2">
                                 {filters.categories.map((category) => (
-                                    <div key={category.id}>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                checked={category.selected}
-                                                onChange={() => toggleCategory(category.id)}
-                                                className="rounded border-[#80ce97]"
-                                                aria-label={currentLocale === 'ar' ? category.name.ar : category.name.en}
-                                            />
-                                            <span className="text-[#414141] font-medium">
-                                                {currentLocale === 'ar' ? category.name.ar : category.name.en}
-                                            </span>
-                                        </label>
-                                        {category.subcategories.length > 0 && (
-                                            <div className="mx-6 space-y-1">
-                                                {category.subcategories.map((subcategory) => (
-                                                    <label key={subcategory.id} className="flex items-center space-x-2 cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={subcategory.selected}
-                                                            onChange={() => toggleCategory(category.id, subcategory.id)}
-                                                            className="rounded border-[#80ce97]"
-                                                            aria-label={currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en}
-                                                        />
-                                                        <span className="text-[#414141]">
-                                                            {currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en}
-                                                        </span>
-                                                    </label>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
+                                    <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={category.selected}
+                                            onChange={() => toggleCategory(category.id)}
+                                            className="rounded border-[#80ce97]"
+                                            aria-label={currentLocale === 'ar' ? category.name.ar : category.name.en}
+                                        />
+                                        <span className="text-[#414141]">
+                                            {currentLocale === 'ar' ? category.name.ar : category.name.en}
+                                        </span>
+                                    </label>
                                 ))}
                             </div>
                         </motion.div>
@@ -235,30 +155,6 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                                 </button>
                             </motion.div>
                         ) : null
-                    )}
-                    {filters.categories.map((category) =>
-                        category.subcategories
-                            .filter((sub) => sub.selected)
-                            .map((sub) => (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    key={`subcategory-${sub.id}`}
-                                    className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
-                                >
-                                    <span>{currentLocale === 'ar' ? sub.name.ar : sub.name.en}</span>
-                                    <button
-                                        onClick={() => clearFilter(category.id, sub.id)}
-                                        className="text-[#0f4229] hover:text-[#e75313]"
-                                        aria-label={t('products.removeFilter', {
-                                            name: currentLocale === 'ar' ? sub.name.ar : sub.name.en,
-                                        })}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </motion.div>
-                            ))
                     )}
                     <button
                         onClick={clearAllFilters}

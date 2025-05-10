@@ -9,7 +9,8 @@ import SearchBar from '../../../../components/post/search-bar';
 import Breadcrumb from '../../../../components/breadcrumb';
 import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
-import { BlogPost, FiltersState } from '../../../../lib/index';
+import { BlogPost } from '../../../../lib/index';
+import { PostFiltersState } from '../../../../lib/index';
 
 export default function Home() {
     const t = useTranslations('');
@@ -21,30 +22,34 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true);
     const postsPerPage = 6;
 
-    const [filters, setFilters] = useState<FiltersState>({
+    const [filters, setFilters] = useState<PostFiltersState>({
         categories: [
             {
                 id: 1,
                 name: { en: 'Plants', ar: 'النباتات' },
                 selected: false,
-                subcategories: [
-                    { id: 11, name: { en: 'Indoor Plants', ar: 'نباتات داخلية' }, selected: false },
-                    { id: 12, name: { en: 'Outdoor Plants', ar: 'نباتات خارجية' }, selected: false },
-                ],
             },
             {
                 id: 2,
-                name: { en: 'Category', ar: 'الفئة' },
+                name: { en: 'General', ar: 'عام' },
                 selected: false,
-                subcategories: [
-                    { id: 21, name: { en: 'General', ar: 'عام' }, selected: false },
-                    { id: 22, name: { en: 'Specialized', ar: 'متخصص' }, selected: false },
-                ],
+            },
+            {
+                id: 3,
+                name: { en: 'Indoor Plants', ar: 'نباتات داخلية' },
+                selected: false,
+            },
+            {
+                id: 4,
+                name: { en: 'Outdoor Plants', ar: 'نباتات خارجية' },
+                selected: false,
+            },
+            {
+                id: 5,
+                name: { en: 'Specialized', ar: 'متخصص' },
+                selected: false,
             },
         ],
-        availability: [],
-        ratings: [],
-        bestSelling: false,
     });
 
     // Simulate loading delay
@@ -272,7 +277,7 @@ export default function Home() {
         },
     ];
 
-    // Filter posts based on selected categories and subcategories
+    // Filter posts based on selected categories
     const filteredPosts = posts.filter((post) => {
         const postCategory = currentLocale === 'ar' ? post.category_ar : post.category_en;
 
@@ -281,26 +286,17 @@ export default function Home() {
             return false;
         }
 
-        if (!filters.categories.some((c) => c.selected || c.subcategories.some((s) => s.selected))) {
-            return true; // Show all posts if no filters are applied
+        // If no categories are selected, show all posts
+        if (!filters.categories.some((c) => c.selected)) {
+            return true;
         }
 
-        return filters.categories.some((category) => {
-            const categoryName = currentLocale === 'ar' ? category.name.ar : category.name.en;
-            const subcategoryNames = category.subcategories.map((sub) =>
-                currentLocale === 'ar' ? sub.name.ar : sub.name.en
-            );
-
-            // If the main category is selected, include posts matching the category or its subcategories
-            if (category.selected && (postCategory === categoryName || subcategoryNames.includes(postCategory))) {
-                return true;
-            }
-
-            // If specific subcategories are selected, include posts matching those subcategories
-            return category.subcategories.some(
-                (sub) => sub.selected && (currentLocale === 'ar' ? sub.name.ar : sub.name.en) === postCategory
-            );
-        });
+        // Include posts matching selected categories
+        return filters.categories.some(
+            (category) =>
+                category.selected &&
+                (currentLocale === 'ar' ? category.name.ar : category.name.en) === postCategory
+        );
     });
 
     // Apply search term filtering (case-insensitive)
@@ -414,6 +410,7 @@ export default function Home() {
                             )}
                         </AnimatePresence>
                     )}
+                    
                 </motion.div>
                 {!isLoading && totalPages > 1 && (
                     <div className="mt-8">

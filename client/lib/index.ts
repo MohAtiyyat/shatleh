@@ -50,7 +50,15 @@ export interface BlogPost {
     product_ar?: string;
     image: string;
 }
+export interface PostFilterCategory {
+    id: number;
+    name: Name;
+    selected: boolean;
+}
 
+export interface PostFiltersState {
+    categories: PostFilterCategory[];
+}
 export interface CustomerReview {
     name: string;
     review: string;
