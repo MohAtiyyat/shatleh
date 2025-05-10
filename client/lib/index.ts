@@ -105,3 +105,11 @@ export interface FiltersState {
     ratings: FilterRating[];
     bestSelling: boolean;
 }
+
+export interface Review {
+    id: number;
+    rating: number;
+    text: string;
+    customer_name: string;
+    created_at: string;
+}
