@@ -249,7 +249,7 @@
     "error": "Failed to load requests",
     "submitError": "Failed to submit request"
   },
-  "cart": {
+  "Cart": {
     "title": "Your Cart",
     "empty": "Your cart is empty.",
     "price": "Price",
@@ -268,7 +268,9 @@
     "tax": "Tax",
     "processing": "Processing...",
     "decrement": "Decrement",
-    "increment": "Increment"
+    "increment": "Increment",
+    "updateQuantityError": "An error occurred while updating the quantity",
+    "removeItemError": "An error occurred while removing the item"
   },
   "checkout": {
     "title": "Checkout",

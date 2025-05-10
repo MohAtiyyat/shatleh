@@ -151,15 +151,14 @@ const CartItemCard = memo(function CartItemCard({ item, currentLocale }: CartIte
                         {error}
                     </div>
                 )}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center p-3 sm:p-4">
+                <div className="flex  sm:flex-row items-start sm:items-center p-3 sm:p-4">
                     <div className="flex flex-col items-center sm:items-start mx-1 sm:mx-3 mb-3 sm:mb-0">
-                        <div className="w-50 h-50 sm:w-20 sm:h-20 relative">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 relative">
                             <Image
-                                src={process.env.NEXT_PUBLIC_API_URL + item.image}
+                                src={process.env.NEXT_PUBLIC_API_URL + item.image[0]}
                                 alt={item.name_en || item.name_ar}
-                                height={50}
-                                width={50}
-                                className="object-contain rounded"
+                                fill
+                                className="object-cover rounded"
                                 loading="lazy"
                             />
                         </div>
@@ -170,9 +169,9 @@ const CartItemCard = memo(function CartItemCard({ item, currentLocale }: CartIte
                             {t('price')}: {formatPrice(item.price, currentLocale)}
                         </p>
                     </div>
-                    <div className="flex-1 w-full">
+                    <div className="flex-1 w-[40%]">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                            <div className="mb-3 sm:mb-0">
+                            <div className="mb-3 sm:mb-0 max-w-[40%] sm:max-w-[60%]">
                                 <h3
                                     className="font-medium text-sm sm:text-base"
                                     style={{ color: 'var(--text-white)' }}
@@ -181,8 +180,14 @@ const CartItemCard = memo(function CartItemCard({ item, currentLocale }: CartIte
                                 </h3>
                                 {(item.description_en || item.description_ar) && (
                                     <p
-                                        className="text-xs sm:text-sm"
-                                        style={{ color: 'var(--text-gray)' }}
+                                        className="text-xs sm:text-sm text-[#dbdada] line-clamp-2 overflow-hidden"
+                                        style={{
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflowWrap: 'break-word',
+                                            direction: currentLocale === 'ar' ? 'rtl' : 'ltr',
+                                        }}
                                     >
                                         {currentLocale === 'en' ? item.description_en : item.description_ar}
                                     </p>
@@ -223,7 +228,7 @@ const CartItemCard = memo(function CartItemCard({ item, currentLocale }: CartIte
                                 </div>
                                 <div className="flex flex-col items-end">
                                     <p
-                                        className="font-semibold text-sm hidden sm:block"
+                                        className="font-semibold    text-sm hidden sm:block"
                                         style={{ color: 'var(--text-white)' }}
                                     >
                                         {t('price')}: {formatPrice(item.price, currentLocale)}
