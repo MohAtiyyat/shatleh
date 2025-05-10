@@ -246,7 +246,7 @@
     "error": "فشل تحميل الطلبات",
     "submitError": "فشل إرسال الطلب"
   },
-  "cart": {
+  "Cart": {
     "title": "سلتك",
     "empty": "سلتك فارغة.",
     "price": "السعر",
@@ -265,7 +265,9 @@
     "tax": "الضريبة",
     "processing": "جارٍ المعالجة...",
     "decrement": "إنقاص",
-    "increment": "زيادة"
+    "increment": "زيادة",
+    "updateQuantityError": "حدث خطأ أثناء تحديث الكمية",
+    "removeItemError": "حدث خطأ أثناء إزالة المنتج"
   },
   "checkout": {
     "title": "الدفع",
