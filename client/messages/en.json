@@ -336,6 +336,7 @@
   "education": {
     "title": "Educational Content",
     "newPost": "Create a New Post",
+    "search": "Search Posts",
     "postTitle": "Title",
     "content": "Content",
     "submit": "Submit Post",

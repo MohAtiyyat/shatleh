@@ -38,9 +38,16 @@ export interface Service {
 
 export interface BlogPost {
     id: number;
-    title: Name;
-    description: Name;
-    date: Name;
+    title_en: string;
+    title_ar: string;
+    content_en: string;
+    content_ar: string;
+    category_id?: number;
+    category_en?: string;
+    category_ar?: string;
+    product_id?: number;
+    product_en?: string;
+    product_ar?: string;
     image: string;
 }
 
