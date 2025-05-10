@@ -32,7 +32,7 @@ export default function BlogCard({ post, currentLocale }: BlogCardProps) {
                     alt={title}
                     className="w-full h-56 object-cover"
                 />
-                <div className="p-4 bg-green-50 min-h-full">
+                <div className="p-4 bg-green-50 min-h-[200px] flex flex-col justify-between">
                     <h3 className="text-xl font-medium text-teal-600 mb-2">{title}</h3>
                     <p className="text-sm text-gray-700 mb-4 line-clamp-3">{content}</p>
                     <div className="flex justify-between items-center">

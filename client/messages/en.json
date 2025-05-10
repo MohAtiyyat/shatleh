@@ -362,7 +362,8 @@
     "submitComment": "Submit Comment",
     "error": "Failed to load posts",
     "submitError": "Failed to submit post or comment",
-    "loading": "Loading posts..."
+    "loading": "Loading posts...",
+    "noResults": "No results found for your search."
   },
   "pages": {
     "home": "Home",

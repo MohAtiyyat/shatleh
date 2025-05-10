@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 import { mockProducts } from './mockData';
-import type { Product, Category, CartItem, Service } from './index';
+import type { Product, Category, CartItem, Service, BlogPost, PostFilterCategory } from './index';
 
 interface LoginRequest {
     email: string;
@@ -157,6 +157,14 @@ interface ReviewRequest {
 interface ReviewResponse {
     data: Review;
     message: string;
+}
+interface PostCategoriesResponse {
+    data: {
+        id: number;
+        name_en: string;
+        name_ar: string;
+        subcategories: any[];
+    }[];
 }
 
 interface ApiErrorResponse {
@@ -618,5 +626,50 @@ export const submitProductReview = async (data: ReviewRequest, locale: string): 
         return result.data;
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : 'Failed to submit review');
+    }
+};
+
+export const fetchBlogPosts = async (locale: string): Promise<BlogPost[]> => {
+    try {
+        const response = await fetch(`${API_URL}/api/blog`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<BlogPost[]>(response);
+        console.log('Fetched blog posts:', data);
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch blog posts:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch blog posts');
+    }
+};
+
+export const fetchPostCategories = async (locale: string): Promise<PostFilterCategory[]> => {
+    try {
+        const response = await fetch(`${API_URL}/api/categories`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<PostCategoriesResponse>(response);
+        const transformedCategories: PostFilterCategory[] = data.data.map((category) => ({
+            id: category.id,
+            name: {
+                en: category.name_en,
+                ar: category.name_ar,
+            },
+            selected: false,
+        }));
+        return transformedCategories;
+    } catch (error) {
+        console.error('Failed to fetch post categories:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch post categories');
     }
 };

@@ -11,6 +11,7 @@ import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
 import { BlogPost } from '../../../../lib/index';
 import { PostFiltersState } from '../../../../lib/index';
+import { fetchBlogPosts, fetchPostCategories } from '../../../../lib/api';
 
 export default function Home() {
     const t = useTranslations('');
@@ -20,45 +21,35 @@ export default function Home() {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
+    const [posts, setPosts] = useState<BlogPost[]>([]);
+    const [filters, setFilters] = useState<PostFiltersState>({ categories: [] });
+    const [error, setError] = useState<string | null>(null);
     const postsPerPage = 6;
 
-    const [filters, setFilters] = useState<PostFiltersState>({
-        categories: [
-            {
-                id: 1,
-                name: { en: 'Plants', ar: 'النباتات' },
-                selected: false,
-            },
-            {
-                id: 2,
-                name: { en: 'General', ar: 'عام' },
-                selected: false,
-            },
-            {
-                id: 3,
-                name: { en: 'Indoor Plants', ar: 'نباتات داخلية' },
-                selected: false,
-            },
-            {
-                id: 4,
-                name: { en: 'Outdoor Plants', ar: 'نباتات خارجية' },
-                selected: false,
-            },
-            {
-                id: 5,
-                name: { en: 'Specialized', ar: 'متخصص' },
-                selected: false,
-            },
-        ],
-    });
-
-    // Simulate loading delay
+    // Fetch posts and categories from backend
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, []);
+        const fetchData = async () => {
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                // Fetch posts
+                const postsData = await fetchBlogPosts(currentLocale);
+                setPosts(postsData);
+
+                // Fetch categories
+                const categoriesData = await fetchPostCategories(currentLocale);
+                setFilters({ categories: categoriesData });
+            } catch (err) {
+                setError(t('error.fetchFailed'));
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [currentLocale]);
 
     // Reset currentPage to 1 when searchTerm or filters change
     useEffect(() => {
@@ -68,214 +59,6 @@ export default function Home() {
     const handleSearch = () => {
         console.log('Search submitted:', searchTerm);
     };
-
-    // Sample blog post data
-    const posts: BlogPost[] = [
-        {
-            id: 1,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'Plants',
-            category_ar: 'النباتات',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 2,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 3,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'Indoor Plants',
-            category_ar: 'نباتات داخلية',
-            image: '/best plants.jpg',
-        },
-        {
-            id: 4,
-            title_en: 'nooo',
-            title_ar: 'لا',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'Outdoor Plants',
-            category_ar: 'نباتات خارجية',
-            image: '/me.png',
-        },
-        {
-            id: 5,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'Specialized',
-            category_ar: 'متخصص',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 6,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 7,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 8,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 9,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 10,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 11,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 12,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 13,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 14,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 15,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 16,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-        {
-            id: 17,
-            title_en: 'Post title',
-            title_ar: 'عنوان المنشور',
-            content_en:
-                'At accumsan condimentum donec dictumst eros, tempus in diam. Ornare gravida quis eu blandit lectus.',
-            content_ar:
-                'في accumsan condimentum donec dictumst eros، tempus in diam. Ornare gravida quis eu blandit lectus.',
-            category_en: 'General',
-            category_ar: 'عام',
-            image: '/ariqat.jpeg',
-        },
-    ];
 
     // Filter posts based on selected categories
     const filteredPosts = posts.filter((post) => {
@@ -373,6 +156,16 @@ export default function Home() {
                         <Filters filters={filters} setFilters={setFilters} currentLocale={currentLocale} />
                     </div>
                 </div>
+                {error && (
+                    <motion.p
+                        className="col-span-full text-center text-red-600"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        {error}
+                    </motion.p>
+                )}
                 <motion.div
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                     variants={containerVariants}
@@ -405,12 +198,11 @@ export default function Home() {
                                     animate="visible"
                                     exit="exit"
                                 >
-                                    {t('products.noResults', { defaultMessage: 'No posts found.' })}
+                                    {t('education.noResults')}
                                 </motion.p>
                             )}
                         </AnimatePresence>
                     )}
-                    
                 </motion.div>
                 {!isLoading && totalPages > 1 && (
                     <div className="mt-8">

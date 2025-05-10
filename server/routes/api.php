@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ServiceController;
@@ -17,7 +18,8 @@ Route::prefix('api')->group(function () {
     Route::get('/services', [ServiceController::class, 'index'])->name('api.services');
     Route::get('/categories', [ProductController::class, 'categories'])->name('api.categories');
     Route::get('/products/{productId}/reviews', [ReviewController::class, 'getTopReviews'])->name('api.reviews.index');
-
+    Route::get('/blog', [PostController::class, 'index'])->name('api.blog.index');
+    Route::get('/blog/{id}', [PostController::class, 'show'])->name('api.blog.show');
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
         Route::post('/checkout', [StripeController::class, 'checkout'])->name('api.checkout');
