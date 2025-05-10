@@ -24,7 +24,7 @@ class ReviewController extends Controller
             // Fetch top 4 reviews, ordered by created_at descending
             $reviews = Review::where('product_id', $productId)
                 ->whereNull('deleted_at')
-                ->orderBy('created_at', 'desc')
+                ->orderBy('rating', 'desc')
                 ->take(4)
                 ->with('customer')
                 ->get();
