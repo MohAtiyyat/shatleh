@@ -130,6 +130,35 @@ interface CartClearResponse {
     message: string;
 }
 
+
+interface Review {
+    id: number;
+    rating: number;
+    text: string;
+    customer_name: string;
+    created_at: string;
+}
+
+interface ReviewsResponse {
+    data: {
+        reviews: Review[];
+        average_rating: number;
+    };
+    message: string;
+}
+
+interface ReviewRequest {
+    product_id: number;
+    rating: number;
+    text: string;
+    customer_id: string;
+}
+
+interface ReviewResponse {
+    data: Review;
+    message: string;
+}
+
 interface ApiErrorResponse {
     message?: string;
     error?: string;
@@ -546,5 +575,48 @@ export const clearCart = async (customerId: string, locale: string): Promise<Car
         return handleResponse<CartClearResponse>(response);
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : 'Failed to clear cart');
+    }
+};
+
+
+export const fetchProductReviews = async (productId: number): Promise<{ reviews: Review[]; averageRating: number }> => {
+    try {
+        const response = await fetch(`${API_URL}/api/products/${productId}/reviews`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<ReviewsResponse>(response);
+        return {
+            reviews: data.data.reviews,
+            averageRating: data.data.average_rating,
+        };
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch product reviews');
+    }
+};
+
+export const submitProductReview = async (data: ReviewRequest, locale: string): Promise<Review> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/products/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await handleResponse<ReviewResponse>(response);
+        return result.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to submit review');
     }
 };

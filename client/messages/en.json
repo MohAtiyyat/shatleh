@@ -116,6 +116,7 @@
     "quantityControl": "Quantity",
     "addToCart": "Add to Cart",
     "noProducts": "No products available yet.",
+    "noCategory": "No products in this category.",
     "addedToCart": "{name} has been added to your cart!",
     "viewCart": "View Cart",
     "category": "Category",
@@ -149,7 +150,19 @@
     "sizeValue": "Medium",
     "careValue": "Low",
     "lightValue": "Indirect",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "rateProduct": "Rate Product",
+    "yourRating": "Your Rating",
+    "yourReview": "Your Review",
+    "reviewPlaceholder": "Write your review here...",
+    "ratingRequired": "Please select a rating",
+    "reviewTextRequired": "Review must be at least 3 characters",
+    "submitReview": "Submit Review",
+    "submitting": "Submitting...",
+    "submitReviewFailed": "Failed to submit review",
+    "noReviews": "No reviews yet",
+    "cancel": "Cancel"
+
   },
   "pagination": {
     "prev": "Previous",
