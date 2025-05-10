@@ -55,12 +55,17 @@ export default function Home() {
         return () => clearTimeout(timer);
     }, []);
 
+    // Reset currentPage to 1 when searchTerm or filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filters]);
+
     const handleSearch = () => {
         console.log('Search submitted:', searchTerm);
     };
 
     // Sample blog post data
-        const posts: BlogPost[] = [
+    const posts: BlogPost[] = [
         {
             id: 1,
             title_en: 'Post title',
@@ -169,7 +174,7 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
+        {
             id: 10,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
@@ -181,8 +186,8 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
-            id:  11,
+        {
+            id: 11,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
             content_en:
@@ -193,8 +198,8 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
-            id:  12,
+        {
+            id: 12,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
             content_en:
@@ -205,8 +210,8 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
-            id:  13,
+        {
+            id: 13,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
             content_en:
@@ -217,8 +222,8 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
-            id:      14,
+        {
+            id: 14,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
             content_en:
@@ -229,8 +234,8 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
-            id:  15,
+        {
+            id: 15,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
             content_en:
@@ -241,8 +246,8 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
-            id:  16,
+        {
+            id: 16,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
             content_en:
@@ -253,8 +258,8 @@ export default function Home() {
             category_ar: 'عام',
             image: '/ariqat.jpeg',
         },
-         {
-            id:  17,
+        {
+            id: 17,
             title_en: 'Post title',
             title_ar: 'عنوان المنشور',
             content_en:
