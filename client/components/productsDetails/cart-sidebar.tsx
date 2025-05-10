@@ -91,7 +91,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                         animate={{ x: 0 }}
                         exit={{ x: currentLocale === 'ar' ? '-100%' : '100%' }}
                         transition={{ type: 'tween', ease: 'easeInOut', duration: 0.3 }}
-                        className={`fixed top-20 ${currentLocale === 'ar' ? 'left-0' : 'right-0'} h-[90vh] w-full sm:w-96 bg-white shadow-xl z-50 flex flex-col`}
+                        className={`fixed top-17x  ${currentLocale === 'ar' ? 'left-0 rounded-r-lg' : 'right-0 rounded-l-lg'} h-[90vh] w-full sm:w-96 bg-white shadow-xl z-50 flex flex-col `}
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b">
@@ -126,7 +126,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                     <div key={item.id} className="flex border-b pb-4">
                                         <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 mx-2">
                                             <Image
-                                                src={process.env.NEXT_PUBLIC_API_URL + item.image || '/placeholder.svg'}
+                                                src={process.env.NEXT_PUBLIC_API_URL + item.image[0] || '/placeholder.svg'}
                                                 alt={currentLocale === 'en' ? item.name_en : item.name_ar || 'product'}
                                                 width={80}
                                                 height={80}

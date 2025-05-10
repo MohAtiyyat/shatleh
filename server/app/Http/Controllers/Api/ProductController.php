@@ -69,7 +69,7 @@ class ProductController extends Controller
                 ])
                 ->leftJoin('category_products', 'products.id', '=', 'category_products.product_id')
                 ->leftJoin('categories', 'category_products.category_id', '=', 'categories.id')
-                ->where('products.status', 1)
+                ->where('products.status', "Active")
                 ->where('products.availability',true)
                 ->groupBy('products.id')
                 ->orderBy('sold_quantity', 'desc')

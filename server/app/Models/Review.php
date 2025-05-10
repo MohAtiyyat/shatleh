@@ -12,7 +12,7 @@ class Review extends Model
         'rating',
         'product_id',
         'text',
-        'user_id',
+        'customer_id',
     ];
 
     public function product(){
