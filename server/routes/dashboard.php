@@ -12,6 +12,7 @@ use App\Http\Controllers\Dashboard\PaymentController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
+use App\Http\Controllers\Dashboard\ReviewController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\ServiceRequestController;
 use App\Http\Controllers\Dashboard\ShopController;
@@ -148,6 +149,13 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::resource('coupon', CouponController::class)->except('show');
 
         Route::resource('post', PostController::class);
+
+        Route::name('review.')->prefix('review')->group(function () {
+            Route::get('/', [ReviewController::class, 'index'])->name('index');
+            Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
+            Route::delete('/{id}', [ReviewController::class, 'delete'])->name('delete');
+        });        
+
     });
 });
 
