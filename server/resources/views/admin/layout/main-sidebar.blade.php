@@ -109,7 +109,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.review.index') }}" class="nav-link @yield('Review_Show')">
                         <ion-icon class="nav-icon" name="chatbubble-outline"></ion-icon>
                         <p>Reviews Management</p>
                     </a>
