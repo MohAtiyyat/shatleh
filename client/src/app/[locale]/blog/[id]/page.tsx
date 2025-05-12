@@ -247,12 +247,13 @@ export default function PostPage() {
                             />
                           </div>
                           <div>
+                             <p className="text-sm">
+                              {currentLocale === 'ar' ? post.product_ar : post.product_en}
+                            </p>
                             <p className="text-xs text-[#1a5418] uppercase font-medium">
                               {currentLocale === 'ar' ? post.category_ar : post.category_en}
                             </p>
-                            <p className="text-sm">
-                              {currentLocale === 'ar' ? post.product_ar : post.product_en}
-                            </p>
+                           
                           </div>
                         </div>
                       </Link>
