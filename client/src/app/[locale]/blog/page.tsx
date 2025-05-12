@@ -9,7 +9,7 @@ import SearchBar from '../../../../components/post/search-bar';
 import Breadcrumb from '../../../../components/breadcrumb';
 import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
-import { BlogPost } from '../../../../lib/index';
+import { BlogPost, PostFilterCategory } from '../../../../lib/index';
 import { PostFiltersState } from '../../../../lib/index';
 import { fetchBlogPosts, fetchPostCategories } from '../../../../lib/api';
 
@@ -39,7 +39,19 @@ export default function Home() {
 
                 // Fetch categories
                 const categoriesData = await fetchPostCategories(currentLocale);
-                setFilters({ categories: categoriesData });
+
+                // Filter categories to only those with associated posts
+                const usedCategoryNames = new Set(
+                    postsData
+                        .map((post) => (currentLocale === 'ar' ? post.category_ar : post.category_en))
+                        .filter((category) => category) // Remove null/undefined
+                );
+
+                const filteredCategories = categoriesData.filter((category) =>
+                    usedCategoryNames.has(currentLocale === 'ar' ? category.name.ar : category.name.en)
+                );
+
+                setFilters({ categories: filteredCategories });
             } catch (err) {
                 setError(t('error.fetchFailed'));
                 console.error(err);
@@ -64,14 +76,14 @@ export default function Home() {
     const filteredPosts = posts.filter((post) => {
         const postCategory = currentLocale === 'ar' ? post.category_ar : post.category_en;
 
-        // Skip posts with undefined category
-        if (!postCategory) {
-            return false;
-        }
-
         // If no categories are selected, show all posts
         if (!filters.categories.some((c) => c.selected)) {
             return true;
+        }
+
+        // If the post has no category, exclude it only when specific categories are selected
+        if (!postCategory) {
+            return false;
         }
 
         // Include posts matching selected categories
@@ -198,7 +210,7 @@ export default function Home() {
                                     animate="visible"
                                     exit="exit"
                                 >
-                                    {t('education.noResults')}
+                                    {t ('education.noResults')}
                                 </motion.p>
                             )}
                         </AnimatePresence>

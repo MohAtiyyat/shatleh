@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useParams, usePathname } from 'next/navigation';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import { BlogPost } from '../../../../../lib/index';
 import { fetchBlogPosts } from '../../../../../lib/api';
 import { useProducts } from '../../../../../lib/ProductContext';
 import Link from 'next/link';
-import { useStickyFooter } from '../../../../../lib/useStickyFooter'; 
+import { useStickyFooter } from '../../../../../lib/useStickyFooter';
 import BlogCard from '../../../../../components/post/blog-card';
 import { motion } from 'framer-motion';
 
@@ -24,6 +24,8 @@ export default function PostPage() {
   const [error, setError] = useState<string | null>(null);
 
   const isFooterVisible = useStickyFooter('footer');
+  // Ref to track the main content container height
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -73,24 +75,20 @@ export default function PostPage() {
 
   // Skeleton Loader Component
   const SkeletonLoader = () => (
-    <div className={`min-h-screen bg-[#e8f5e9] ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
+    <div className={`bg-[#e8f5e9] ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
           <div className="h-6 bg-gray-300 rounded w-1/4 animate-pulse"></div>
         </div>
-
         <h1 className="h-10 bg-gray-300 rounded w-3/4 mb-8 animate-pulse"></h1>
-
         <div className="mb-8">
           <div className="relative w-full max-w-4xl aspect-video bg-gray-300 rounded-md animate-pulse"></div>
         </div>
-
         <div className="mb-6">
           <span className="h-6 bg-gray-300 rounded-full w-24 inline-block animate-pulse"></span>
         </div>
-
         <div className="flex flex-col gap-8">
-          <div className="flex flex-col lg:flex-row gap-8 min-h-screen">
+          <div className="flex flex-col lg:flex-row gap-8">
             <div className="lg:w-2/3">
               <div className="space-y-6">
                 {Array.from({ length: 3 }).map((_, index) => (
@@ -98,7 +96,6 @@ export default function PostPage() {
                 ))}
               </div>
             </div>
-
             <div className="lg:w-1/3">
               <div className="space-y-8">
                 <div>
@@ -111,7 +108,6 @@ export default function PostPage() {
                     </div>
                   </div>
                 </div>
-
                 <div>
                   <h3 className="h-5 bg-gray-300 rounded w-32 mb-4 animate-pulse"></h3>
                   <div className="space-y-4">
@@ -129,7 +125,6 @@ export default function PostPage() {
               </div>
             </div>
           </div>
-
           <div className="full-width mx-auto">
             <h3 className="h-5 bg-gray-300 rounded w-48 mb-4 animate-pulse"></h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -168,9 +163,14 @@ export default function PostPage() {
     );
   }
 
+  // Calculate the number of paragraphs for dynamic spacing
+  const paragraphCount = (currentLocale === 'ar' ? post.content_ar : post.content_en)
+    .split('\n')
+    .filter((p) => p.trim()).length;
+
   return (
-    <div className={`min-h-screen bg-[#e8f5e9] ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className={`bg-[#e8f5e9] ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
         <div className="mb-6">
           <Breadcrumb
             pageName="blog"
@@ -203,8 +203,8 @@ export default function PostPage() {
           </div>
         )}
 
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col lg:flex-row gap-8 min-h-screen">
+        <div ref={contentRef} className="flex flex-col gap-8">
+          <div className="flex flex-col lg:flex-row gap-8">
             <div className="lg:w-2/3">
               {(currentLocale === 'ar' ? post.content_ar : post.content_en)
                 .split('\n')
@@ -247,13 +247,12 @@ export default function PostPage() {
                             />
                           </div>
                           <div>
-                             <p className="text-sm">
+                            <p className="text-sm">
                               {currentLocale === 'ar' ? post.product_ar : post.product_en}
                             </p>
                             <p className="text-xs text-[#1a5418] uppercase font-medium">
                               {currentLocale === 'ar' ? post.category_ar : post.category_en}
                             </p>
-                           
                           </div>
                         </div>
                       </Link>
@@ -312,7 +311,12 @@ export default function PostPage() {
             )}
           </div>
 
-          <div className="full-width mx-auto">
+          <div
+            className="full-width mx-auto"
+            style={{
+              marginTop: paragraphCount <= 3 ? '1rem' : '2rem', // Dynamic margin based on content length
+            }}
+          >
             <h3 className="text-[#1a5418] uppercase text-sm font-medium mb-4">
               {t('relatedArticles', {
                 defaultMessage: 'Here are some related articles you may find interesting',
@@ -330,7 +334,7 @@ export default function PostPage() {
               </div>
             ) : (
               <p className="text-sm text-gray-500">
-                {t('noRelatedArticles', { defaultMessage: 'No related articles found' })}
+                {t('noRelatedArticles', { defaultValue: 'No related articles found' })}
               </p>
             )}
           </div>
