@@ -640,7 +640,6 @@ export const fetchBlogPosts = async (locale: string): Promise<BlogPost[]> => {
             },
         });
         const data = await handleResponse<BlogPost[]>(response);
-        console.log('Fetched blog posts:', data);
         return data;
     } catch (error) {
         console.error('Failed to fetch blog posts:', error);

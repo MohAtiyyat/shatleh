@@ -359,7 +359,11 @@
     "submitError": "فشل إرسال المنشور أو التعليق",
     "loading": "جارٍ تحميل المنشورات...",
     "noResults": "لا توجد نتائج",
-    "search": "ابحث عن المقالات..."
+    "search": "ابحث عن المقالات...",
+    "postProduct": "منتج المنشور",
+    "relatedProducts": "المنتجات ذات الصلة",
+    "relatedArticles": "المقالات ذات الصلة",
+    "noRelatedArticles": "لا توجد مقالات ذات صلة"
   },
   "pages": {
     "home": "الرئيسية",

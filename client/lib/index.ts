@@ -48,6 +48,7 @@ export interface BlogPost {
     product_id?: number;
     product_en?: string;
     product_ar?: string;
+    product_image?: string;
     image: string;
 }
 export interface PostFilterCategory {
