@@ -351,6 +351,7 @@
   "education": {
     "title": "Educational Content",
     "newPost": "Create a New Post",
+    "search": "Search Posts",
     "postTitle": "Title",
     "content": "Content",
     "submit": "Submit Post",
@@ -363,7 +364,12 @@
     "submitComment": "Submit Comment",
     "error": "Failed to load posts",
     "submitError": "Failed to submit post or comment",
-    "loading": "Loading posts..."
+    "loading": "Loading posts...",
+    "noResults": "No results found for your search.",
+    "postProduct": "Post Product",
+    "relatedProducts": "Related Products",
+    "relatedArticles": "Related Posts",
+    "noRelatedArticles": "No related posts available."
   },
   "pages": {
     "home": "Home",
