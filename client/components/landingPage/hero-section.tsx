@@ -75,17 +75,17 @@ export default function HeroSection({ currentLocale }: HeroSectionProps) {
                 <p className="text-xl max-w-2xl opacity-90">{heroSlides[currentSlide].description}</p>
 
                 <div className="mt-10 flex gap-4">
-                    <Link href={`/${currentLocale}/coming-soon`}>
+                    <Link href={`/${currentLocale}/products`}>
                         <button className="bg-[#337a5b] hover:bg-[#0f4229] text-white px-8 py-3 rounded-full transition-colors md:flex hidden ">
                             {t("home.shopNow")}
                         </button>
                     </Link>
-                    <Link href={`/${currentLocale}/coming-soon`}>
+                    <Link href={`/${currentLocale}/services`}>
                         <button className="md:flex hidden bg-[#a9f59d] hover:bg-[#8ed67d] text-[#0f4229]  px-8 py-3 rounded-full transition-colors">
                             {t("home.requestService")}
                         </button>
                     </Link>
-                    <Link href={`/${currentLocale}/coming-soon`}>
+                    <Link href={`/${currentLocale}/about-us`}>
                         <button className="md:flex hidden  border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white hover:text-[#0f4229] transition-colors">
                             {t("home.learnMore")}
                         </button>
