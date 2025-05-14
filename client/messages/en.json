@@ -448,22 +448,31 @@
     }
   },
   "orders": {
-    "title": "My Orders",
+    "title": "Your Orders",
     "all": "All",
+    "pending": "Pending",
     "inProgress": "In Progress",
     "delivered": "Delivered",
     "cancelled": "Cancelled",
     "completed": "Completed",
     "order": "Order",
-    "paidWith": "Paid with",
     "items": "Items",
-    "viewDetails": "View Order Details",
-    "hideDetails": "Hide Order Details",
+    "paidWith": "Paid with",
+    "coupon": "Coupon",
+    "unknown": "Unknown",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
     "cancelOrder": "Cancel Order",
     "successMessage": "Order cancelled successfully",
+    "noOrders": "No orders found",
+    "shopNow": "Shop Now",
+    "goToLogin": "Go to Login",
     "errors": {
-      "cancelFailed": "Failed to cancel order. Please try again."
-    }
+      "fetchFailed": "Failed to fetch orders",
+      "cancelFailed": "Failed to cancel order"
+    },
+    "quantity": "Quantity",
+    "shippingAddress": "Shipping Address"
   },
   "addresses": {
     "title": "Your Addresses",

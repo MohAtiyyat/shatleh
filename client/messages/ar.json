@@ -445,22 +445,31 @@
     }
   },
   "orders": {
-    "title": "طلباتي",
+    "title": "طلباتك",
     "all": "الكل",
+    "pending": "قيد الانتظار",
     "inProgress": "قيد التنفيذ",
     "delivered": "تم التوصيل",
-    "cancelled": "ملغاة",
+    "cancelled": "ملغى",
     "completed": "مكتمل",
-    "order": "طلب",
+    "order": "الطلب",
+    "items": "المنتجات",
     "paidWith": "مدفوع بـ",
-    "items": "عناصر",
-    "viewDetails": "عرض تفاصيل الطلب",
-    "hideDetails": "إخفاء تفاصيل الطلب",
+    "coupon": "كوبون",
+    "unknown": "غير معروف",
+    "viewDetails": "عرض التفاصيل",
+    "hideDetails": "إخفاء التفاصيل",
     "cancelOrder": "إلغاء الطلب",
     "successMessage": "تم إلغاء الطلب بنجاح",
+    "noOrders": "لم يتم العثور على طلبات",
+    "shopNow": "تسوق الآن",
+    "goToLogin": "الذهاب إلى تسجيل الدخول",
     "errors": {
-      "cancelFailed": "فشل إلغاء الطلب. يرجى المحاولة مرة أخرى."
-    }
+      "fetchFailed": "فشل في جلب الطلبات",
+      "cancelFailed": "فشل في إلغاء الطلب"
+    },
+    "quantity": "الكمية",
+    "shippingAddress": "عنوان الشحن"
   },
   "addresses": {
     "title": "عناوينك",

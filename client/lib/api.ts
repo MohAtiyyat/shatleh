@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 import { mockProducts } from './mockData';
-import type { Product, Category, CartItem, Service, BlogPost, PostFilterCategory } from './index';
+import type { Product, Category, CartItem, Service, BlogPost, PostFilterCategory, Order } from './index';
 
 interface LoginRequest {
     email: string;
@@ -165,6 +165,10 @@ interface PostCategoriesResponse {
         name_ar: string;
         subcategories: any[];
     }[];
+}
+interface OrdersResponse {
+  data: Order[];
+  message: string;
 }
 
 interface ApiErrorResponse {
@@ -671,4 +675,26 @@ export const fetchPostCategories = async (locale: string): Promise<PostFilterCat
         console.error('Failed to fetch post categories:', error);
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch post categories');
     }
+};
+
+export const fetchOrders = async (locale: string): Promise<Order[]> => {
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  try {
+    const response = await fetch(`${API_URL}/api/orders`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Accept-Language': locale, // Pass locale for language-specific responses
+      },
+    });
+    const data = await handleResponse<OrdersResponse>(response);
+    return data.data;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch orders');
+  }
 };

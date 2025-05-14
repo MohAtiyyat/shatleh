@@ -28,7 +28,7 @@
                             @csrf
                             @method('PUT')
                             <select name="status" class="form-select" onchange="this.form.submit()">
-                                @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
+                                @foreach(['pending', 'inProgress', 'shipped', 'delivered', 'cancelled'] as $status)
                                     <option value="{{ $status }}" {{ $record->status === $status ? 'selected' : '' }}>
                                         {{ ucfirst($status) }}
                                     </option>

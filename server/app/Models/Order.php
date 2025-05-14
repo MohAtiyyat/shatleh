@@ -8,25 +8,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
     use SoftDeletes;
-
+    protected $table = 'orders';
     protected $fillable = [
         'order_code',
         'address_id',
         'total_price',
-        'customer_id',
+        'customer_id',// store the user_id
         'employee_id',
         'coupon_id',
         'payment_id',
         'status',
         'cart_id',
-        'status',
         'delivery_cost',
         'delivery_date'
         ];
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
     }
 
     public function employee()

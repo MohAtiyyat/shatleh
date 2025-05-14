@@ -11,6 +11,7 @@ use App\Http\Controllers\StripeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
+
     Route::post('/register', [AuthController::class, 'register'])->name('api.register');
     Route::post('/login', [AuthController::class, 'login'])->name('api.login');
     Route::get('/top_sellers', [ProductController::class, 'top_sellers'])->name('api.top_sellers');
@@ -41,5 +42,9 @@ Route::prefix('api')->group(function () {
         Route::post('/cart', [CartController::class, 'index'])->name('api.cart.index');
         Route::post('/cart/update', [CartController::class, 'update'])->name('api.cart.update');
         Route::post('/cart/clear', [CartController::class, 'clear'])->name('api.cart.clear');
+
+        // orders routes
+        Route::get('/orders', [ProfileController::class, 'getOrders'])->name('api.orders.index');
+        //Route::get('/orders/{id}', [ProfileController::class, 'cancelOrder'])->name('api.orders.cancel');
     });
 });

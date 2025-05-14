@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+
+use function PHPSTORM_META\map;
 
 class ProfileController extends Controller
 {
@@ -214,5 +217,62 @@ class ProfileController extends Controller
         $address->delete();
 
         return response()->json(['message' => 'Address deleted successfully'], 200);
+    }
+
+    public function getOrders()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $orders = Order::where('customer_id', $user->id)
+            ->with([
+                'products' => function ($query) {
+                    $query->with('categories');
+                },
+                'address',
+                'coupon'
+            ])
+            ->get()
+            ->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'order_code' => $order->order_code,
+                    'total_price' => $order->total_price,
+                    'status' => $order->status,
+                    'delivery_cost' => $order->delivery_cost,
+                    'delivery_date' => $order->delivery_date,
+                    'products' => $order->products->map(function ($product) {
+                        return [
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'price' => $product->pivot->price,
+                            'quantity' => $product->pivot->quantity,
+                            'image' => $product->image[0],
+                            'categories' => $product->categories->map(function ($category) {
+                                return [
+                                    'id' => $category->id,
+                                    'name' => $category->name,
+                                ];
+                            }),
+                        ];
+                    }),
+                    'address' => $order->address ? [
+                        'id' => $order->address->id,
+                        'title' => $order->address->title,
+                        'city' => $order->address->city,
+                        'address_line' => $order->address->address_line,
+                    ] : null,
+                    'coupon' => $order->coupon ? [
+                        'id' => $order->coupon->id,
+                        'code' => $order->coupon->code,
+                    ] : null,
+                ];
+            });
+
+        return response()->json([
+            'data' => $orders,
+            'message' => $orders->isEmpty() ? 'No orders found' : 'Orders retrieved successfully',
+        ], 200);
     }
 }

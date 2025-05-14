@@ -129,3 +129,35 @@ export interface Review {
     customer_name: string;
     created_at: string;
 }
+export interface OrderProduct {
+  id: number;
+  name: Name;
+  price: string;
+  quantity: number;
+  image: string;
+  categories: { id: number; name: string }[];
+}
+
+export interface OrderAddress {
+  id: number;
+  title: string;
+  city: string;
+  address_line: string;
+}
+
+export interface OrderCoupon {
+  id: number;
+  code: string;
+}
+
+export interface Order {
+  id: number;
+  order_code: string;
+  total_price: number;
+  status: string;
+  delivery_cost: number;
+  delivery_date: string;
+  products: OrderProduct[];
+  address: OrderAddress | null;
+  coupon: OrderCoupon | null;
+}
