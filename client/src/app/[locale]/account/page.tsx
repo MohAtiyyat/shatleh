@@ -74,7 +74,7 @@ export default function ProfilePage() {
         const token = localStorage.getItem('token');
         const storedUserId = localStorage.getItem('userId');
         if (!token || !storedUserId) {
-            router.push(`/${currentLocale}/login?redirect=/address`);
+            router.push(`/${currentLocale}/login?redirect=/account`);
             return;
         }
 

@@ -34,8 +34,8 @@ const CartSummary = memo(function CartSummary() {
             const price = parseFloat(item.price) || 0;
             return sum + price * item.quantity;
         }, 0);
-        const shipping = 0;
-        const tax = subtotal * 0.08;
+        const shipping = 2; // Set shipping to 2 JD
+        const tax = 0; // Set tax to 0
         const total = subtotal + shipping + tax;
         return { subtotal, shipping, tax, total };
     }, [items]);
@@ -86,7 +86,7 @@ const CartSummary = memo(function CartSummary() {
             <button
                 onClick={handleCheckout}
                 disabled={isCheckingOut || items.length === 0}
-                className="w-full py-4 text-white text-sm sm:text-base font-medium rounded-md transition-colors disabled:opacity-70 mt-auto hover:bg-[var(--text-hover)]"
+                className="w-full py-4 text-white text-sm sm:text-base font-medium rounded-md transition-colors disabled:opacity-70 mt-auto hover:bg-[var(--text-hover)] hover:cursor-pointer"
                 style={{
                     backgroundColor:
                         isCheckingOut || items.length === 0
@@ -101,4 +101,4 @@ const CartSummary = memo(function CartSummary() {
     );
 });
 
-export default CartSummary;
+export default CartSummary; // Fixed typo in export

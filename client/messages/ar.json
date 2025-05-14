@@ -267,7 +267,9 @@
     "decrement": "إنقاص",
     "increment": "زيادة",
     "updateQuantityError": "حدث خطأ أثناء تحديث الكمية",
-    "removeItemError": "حدث خطأ أثناء إزالة المنتج"
+    "removeItemError": "حدث خطأ أثناء إزالة المنتج",
+    "originalTotal": "الإجمالي الأصلي",
+    "discountedTotal": "الإجمالي بعد الخصم"
   },
   "checkout": {
     "title": "الدفع",
@@ -296,12 +298,30 @@
     "noOrder": "لا توجد تفاصيل الطلب متاحة.",
     "thankYou": "شكرًا لطلبك!",
     "illustrationAlt": "رسم توضيحي لتأكيد الطلب",
-    "quantity": "الكمية: {qty}",
+    "quantity": "الكمية",
     "continueShopping": "متابعة التسوق",
     "support": "هل تحتاج إلى مساعدة؟ اتصل بـ",
     "contactSupport": "فريق الدعم",
     "exportPDF": "تنزيل الفاتورة",
     "noOrderTitle": "لا توجد تفاصيل الطلب",
+    "billingDetails": "تفاصيل الفوترة",
+    "name": "الاسم",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "incompleteAddress": "عنوانك غير مكتمل",
+    "updateProfile": "تحديث ملفك الشخصي",
+    "isGift": "هذا هدية",
+    "giftFirstName": "اسم المستلم الأول",
+    "giftLastName": "اسم المستلم الأخير",
+    "coupon": "كوبون",
+    "applyCoupon": "تطبيق الكوبون",
+    "originalTotal": "الإجمالي الأصلي",
+    "discountedTotal": "الإجمالي بعد الخصم",
+    "selectAddress": "اختر عنوانًا",
+    "manageAddresses": "إدارة العناوين",
+    "couponCode": "كود الخصم",
+    "enterCoupon": "ادخل كود الخصم الخاص بك",
+    
     "errors": {
       "invalidCardNumber": "يرجى إدخال رقم بطاقة مكون من 16 رقمًا",
       "cardHolderRequired": "يرجى إدخال اسم حامل البطاقة",
@@ -314,7 +334,11 @@
       "cityRequired": "يرجى إدخال المدينة",
       "countryRequired": "يرجى اختيار الدولة",
       "invalidPhone": "يرجى إدخال رقم هاتف صالح",
-      "checkoutFailed": "فشل الدفع. يرجى المحاولة مرة أخرى."
+      "checkoutFailed": "فشل الدفع. يرجى المحاولة مرة أخرى.",
+      "addressIncomplete": "يرجى تقديم عنوان كامل",
+      "giftFirstNameRequired": "اسم المستلم للهدية مطلوب",
+      "giftLastNameRequired": "اسم العائلة للمستلم للهدية مطلوب",
+      "invalidGiftPhone": "رقم هاتف المستلم للهدية غير صالح"
     }
   },
   "payments": {

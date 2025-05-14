@@ -127,7 +127,6 @@ export default function ProductDetailsPage() {
         if (!product) return;
         setIsAdding(true);
         try {
-            const imagePath = Array.isArray(product.image) ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}` : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
             await addItem(
                 {
                     product_id: product.id,
@@ -136,7 +135,7 @@ export default function ProductDetailsPage() {
                     description_en: product.description_en,
                     description_ar: product.description_ar,
                     price: product.price,
-                    image: imagePath,
+                    image: product.image,
                 },
                 userId,
                 currentLocale
@@ -155,7 +154,6 @@ export default function ProductDetailsPage() {
         setIsAdding(true);
         try {
             const cartItem = items.find((item) => item.product_id === product.id);
-            const imagePath = Array.isArray(product.image) ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}` : `${process.env.NEXT_PUBLIC_API_URL}${product.image}`;
             if (!cartItem) {
                 await addItem(
                     {
@@ -165,7 +163,7 @@ export default function ProductDetailsPage() {
                         description_en: product.description_en,
                         description_ar: product.description_ar,
                         price: product.price,
-                        image: imagePath,
+                        image: product.image,
                     },
                     userId,
                     currentLocale
