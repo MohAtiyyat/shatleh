@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
-import {useAuth } from '../../../../lib/AuthContext';
+import {  useAuth } from '../../../../lib/AuthContext';
 import { register } from '../../../../lib/api';   // Import register function
 
 export default function SignUp() {

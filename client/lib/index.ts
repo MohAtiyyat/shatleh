@@ -1,41 +1,4 @@
 export type Locale = "en" | "ar";
-
-export interface Name {
-    en: string;
-    ar: string;
-}
-
-export interface Product {
-    id: number;
-    name_en: string;
-    name_ar: string;
-    price: string;
-    image: string;
-    description_en: string;
-    description_ar: string;
-    availability: boolean;
-    sold_quantity: number;
-    category_id?: number | null;
-    category_en?: string | null;
-    category_ar?: string | null;
-    rating?: number;
-}
-
-export interface Category {
-    id: number;
-    name: Name;
-    subcategories: Category[];
-}
-
-export interface Service {
-    id: number;
-    title_en: string;
-    title_ar: string;
-    description_en: string;
-    description_ar: string;
-    svg: string;
-}
-
 export interface BlogPost {
     id: number;
     title_en: string;
@@ -77,7 +40,8 @@ export interface HeroSlide {
 export interface CartItem {
     id: number;
     product_id?: number;
-    name: Name;
+    name_en: string;
+    name_ar: string;
     description: Name;
     price: string;
     image: string;
@@ -129,6 +93,123 @@ export interface Review {
     customer_name: string;
     created_at: string;
 }
+
+
+export interface Name {
+    en: string;
+    ar: string;
+}
+
+export interface Product {
+    id: number;
+    name_en: string;
+    name_ar: string;
+    price: string;
+    image: string;
+    description_en: string;
+    description_ar: string;
+    availability: boolean;
+    sold_quantity: number;
+    category_id?: number | null;
+    category_en?: string | null;
+    category_ar?: string | null;
+    rating?: number;
+}
+
+export interface Category {
+    id: number;
+    name: Name;
+    subcategories: Category[];
+}
+
+export interface Service {
+    id: number;
+    title_en: string;
+    title_ar: string;
+    description_en: string;
+    description_ar: string;
+    svg: string;
+}
+
+
+export interface FilterCategory {
+    id: number;
+    name: Name;
+    selected: boolean;
+    subcategories: {
+        id: number;
+        name: Name;
+        selected: boolean;
+    }[];
+}
+
+export interface FilterRating {
+    id: number;
+    name: Name;
+    stars: number;
+    selected: boolean;
+}
+
+export interface FiltersState {
+    categories: FilterCategory[];
+    availability: FilterRating[];
+    ratings: FilterRating[];
+    bestSelling: boolean;
+}
+
+
+export interface FormErrors {
+    cardNumber?: string;
+    cardHolder?: string;
+    expiryDate?: string;
+    cvv?: string;
+    giftFirstName?: string;
+    giftLastName?: string;
+    giftPhoneNumber?: string;
+}
+
+export interface UserData {
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+}
+
+export interface Address {
+    id: number;
+    title: string;
+    country_id: number;
+    country_name: string | null;
+    city: string;
+    address_line: string;
+    is_default: boolean;
+}
+
+export interface FormData {
+    cardNumber: string;
+    cardHolder: string;
+    expiryDate: string;
+    cvv: string;
+    paymentMethod: 'credit-card' | 'cash';
+    isGift: boolean;
+    giftFirstName: string;
+    giftLastName: string;
+    giftPhoneNumber: string;
+}
+
+export interface FormErrors {
+    giftFirstName?: string;
+    giftLastName?: string;
+    giftPhoneNumber?: string;
+    cardNumber?: string;
+    cardHolder?: string;
+    expiryDate?: string;
+    cvv?: string;
+    address?: string;
+    general?: string;
+}
+
+
+
 export interface OrderProduct {
   id: number;
   name: Name;

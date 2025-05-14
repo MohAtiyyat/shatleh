@@ -6,9 +6,10 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import Breadcrumb from '../../../../components/breadcrumb';
+import SuccessSkeleton from '../../../../components/checkout/SuccessSkeleton';
 import { formatPrice } from '../../../../lib/utils';
 import html2canvas from 'html2canvas';
-import type { CartItem } from '../../../../lib/cart';
+import type { CartItem } from '../../../../lib';
 
 interface LastOrder {
     orderId: string;
@@ -22,6 +23,7 @@ export default function SuccessPage() {
     const pathname = usePathname();
     const currentLocale: 'en' | 'ar' = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
     const [orderData, setOrderData] = useState<LastOrder | null>(null);
+    const [loading, setLoading] = useState(true);
 
     // Load order data from localStorage
     useEffect(() => {
@@ -36,6 +38,7 @@ export default function SuccessPage() {
                     console.error('Error parsing lastOrder:', err);
                 }
             }
+            setLoading(false);
         }
     }, []);
 
@@ -56,15 +59,15 @@ export default function SuccessPage() {
                 const originalBackgroundColor = captureSection.style.backgroundColor;
 
                 // Apply temporary styles for capture
-                captureSection.style.padding = '20px'; // Add margin effect
-                captureSection.style.backgroundColor = '#e8f5e9'; // Match html2canvas background
+                captureSection.style.padding = '20px';
+                captureSection.style.backgroundColor = '#e8f5e9';
 
                 const canvas = await html2canvas(captureSection, {
-                    scale: 2, // Increase resolution
-                    useCORS: true, // Handle cross-origin images
-                    backgroundColor: '#e8f5e9', // Match background
-                    height: captureSection.scrollHeight + 40, // Account for added padding
-                    width: captureSection.scrollWidth + 40, // Account for added padding
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#e8f5e9',
+                    height: captureSection.scrollHeight + 40,
+                    width: captureSection.scrollWidth + 40,
                 });
 
                 // Restore original styles
@@ -78,7 +81,7 @@ export default function SuccessPage() {
                 link.click();
             } catch (err) {
                 console.error('Error generating image:', err);
-                alert(t('errors.checkoutFailed')); // Notify user of failure
+                alert(t('errors.checkoutFailed'));
             }
         }
     };
@@ -90,38 +93,24 @@ export default function SuccessPage() {
         }
     };
 
-    // Fallback UI if no order data
-    if (!orderData) {
-        return (
-            <div className="min-h-screen" style={{ backgroundColor: 'var(--primary-bg)' }} dir={currentLocale === 'ar' ? 'rtl' : 'ltr'}>
-                <main className="container mx-auto max-w-full sm:max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="mb-8">
-                        <Breadcrumb pageName="success" />
-                        <h1 className="text-4xl font-bold text-center mt-4" style={{ color: 'var(--text-primary)', fontSize: '36px' }}>
-                            {t('noOrderTitle')}
-                        </h1>
-                    </div>
-                    <div className="text-center py-10" style={{ color: 'var(--text-primary)' }}>
-                        <Link
-                            href={`/${currentLocale}/products`}
-                            onClick={handleContinueShopping}
-                            className="mt-4 inline-block px-4 py-2 rounded-md"
-                            style={{ backgroundColor: 'var(--accent-color)', color: 'var(--text-white)' }}
-                        >
-                            {t('continueShopping')}
-                        </Link>
-                    </div>
-                </main>
-            </div>
-        );
+    // Show skeleton during loading or if no order data
+    if (loading || !orderData) {
+        return <SuccessSkeleton currentLocale={currentLocale} />;
     }
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: 'var(--primary-bg)' }} dir={currentLocale === 'ar' ? 'rtl' : 'ltr'}>
+        <div
+            className="min-h-screen"
+            style={{ backgroundColor: 'var(--primary-bg)' }}
+            dir={currentLocale === 'ar' ? 'rtl' : 'ltr'}
+        >
             <main className="container mx-auto max-w-full sm:max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
                 <div className="mb-8">
                     <Breadcrumb pageName="success" />
-                    <h1 className="text-4xl font-bold text-center mt-4" style={{ color: 'var(--text-primary)', fontSize: '36px' }}>
+                    <h1
+                        className="text-4xl font-bold text-center mt-4"
+                        style={{ color: 'var(--text-primary)', fontSize: '36px' }}
+                    >
                         {t('success')}
                     </h1>
                 </div>
@@ -144,7 +133,13 @@ export default function SuccessPage() {
                                 {t('thankYou')}
                             </h3>
                             <div className="flex justify-center">
-                                <Image src="/success.svg" alt={t('illustrationAlt')} width={180} height={180} className="mb-4" />
+                                <Image
+                                    src="/success.svg"
+                                    alt={t('illustrationAlt')}
+                                    width={180}
+                                    height={180}
+                                    className="mb-4"
+                                />
                             </div>
                         </div>
 
@@ -160,16 +155,23 @@ export default function SuccessPage() {
                                         style={{ borderColor: 'var(--secondary-bg)' }}
                                     >
                                         <span style={{ color: 'var(--text-primary)' }}>
-                                            {currentLocale === 'ar' ? item.name.ar : item.name.en || item.name.ar}
+                                            {currentLocale === 'ar' ? item.name_ar : item.name_en || item.name_en}
                                         </span>
-                                        <span style={{ color: 'var(--text-gray)' }}>{t('quantity', { qty: item.quantity })}</span>
+                                        <span style={{ color: 'var(--text-gray)' }}>
+                                            {t('quantity') + ' : '}{item.quantity}
+                                        </span>
                                         <span className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                                            {formatPrice(Number.parseFloat(item.price.replace(/[^\d.]/g, '')).toFixed(2), currentLocale)}
+                                            {formatPrice(
+                                                Number.parseFloat(item.price.replace(/[^\d.]/g, '')).toFixed(2),
+                                                currentLocale
+                                            )}
                                         </span>
                                     </div>
                                 ))}
                                 <div className="flex items-center justify-between pt-2">
-                                    <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{t('total')}</span>
+                                    <span className="font-medium" style={{ color: 'var(--text-primary)' }}>
+                                        {t('total')}
+                                    </span>
                                     <span></span>
                                     <span className="font-medium" style={{ color: 'var(--text-primary)' }}>
                                         {formatPrice(orderData.total, currentLocale)}
@@ -199,7 +201,11 @@ export default function SuccessPage() {
 
                     <div className="text-center text-sm" style={{ color: 'var(--text-gray)' }}>
                         {t('support')}{' '}
-                        <Link href={`/${currentLocale}/contact`} className="underline" style={{ color: 'var(--accent-color)' }}>
+                        <Link
+                            href={`/${currentLocale}/contact`}
+                            className="underline"
+                            style={{ color: 'var(--accent-color)' }}
+                        >
                             {t('contactSupport')}
                         </Link>
                     </div>
