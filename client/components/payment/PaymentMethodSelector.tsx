@@ -29,7 +29,7 @@ export default function PaymentMethodSelector({
                 onClick={() => handlePaymentMethodChange('cash')}
                 aria-pressed={paymentMethod === 'cash'}
             >
-                <span className="text-lg">💵</span>
+                <span className="text-lg">$</span>
                 {t('cashOnDelivery')}
             </button>
         </div>
