@@ -157,14 +157,20 @@ interface ReviewResponse {
     data: Review;
     message: string;
 }
+interface subcategories {
+    id: number;
+    name_en: string;
+    name_ar: string;
+}
 interface PostCategoriesResponse {
     data: {
         id: number;
         name_en: string;
         name_ar: string;
-        subcategories: any[];
+        subcategories: subcategories[];
     }[];
 }
+
 
 interface Coupon {
     id: number;
