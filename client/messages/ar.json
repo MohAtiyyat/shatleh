@@ -381,7 +381,8 @@
     "service": "طلبات الخدمة",
     "education": "المحتوى التعليمي",
     "itemName": "{itemName}",
-    "success": "نجاح"
+    "success": "نجاح",
+    "orders": "الطلبات"
   },
   "nav": {
     "products": "المنتجات",
@@ -469,7 +470,12 @@
       "cancelFailed": "فشل في إلغاء الطلب"
     },
     "quantity": "الكمية",
-    "shippingAddress": "عنوان الشحن"
+    "shippingAddress": "عنوان الشحن",
+    "cancelSuccess": "تم إلغاء الطلب بنجاح",
+    "confirmCancelTitle": "تأكيد إلغاء الطلب",
+    "confirmCancelMessage": "هل أنت متأكد من إلغاء الطلب #{orderCode}؟",
+    "cancelButton": "إلغاء",
+    "confirmButton": "تأكيد"
   },
   "addresses": {
     "title": "عناوينك",

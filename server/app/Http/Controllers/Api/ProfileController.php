@@ -275,4 +275,17 @@ class ProfileController extends Controller
             'message' => $orders->isEmpty() ? 'No orders found' : 'Orders retrieved successfully',
         ], 200);
     }
+
+    public function cancelOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->customer_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $order->status = 'cancelled';
+        $order->save();
+
+        return response()->json(['message' => 'Order cancelled successfully'], 200);
+    }
 }

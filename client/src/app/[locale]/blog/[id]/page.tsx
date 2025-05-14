@@ -10,7 +10,6 @@ import { useProducts } from '../../../../../lib/ProductContext';
 import Link from 'next/link';
 import { useStickyFooter } from '../../../../../lib/useStickyFooter';
 import BlogCard from '../../../../../components/post/blog-card';
-import { motion } from 'framer-motion';
 
 export default function PostPage() {
   const t = useTranslations('education');

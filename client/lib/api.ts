@@ -698,3 +698,28 @@ export const fetchOrders = async (locale: string): Promise<Order[]> => {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch orders');
   }
 };
+export const cancelOrder = async (orderId: string, locale: string): Promise<void> => {
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/${orderId}/cancel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Accept-Language': locale,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to cancel order');
+    }
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to cancel order');
+  }
+};

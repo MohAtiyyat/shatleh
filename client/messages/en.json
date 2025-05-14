@@ -385,7 +385,8 @@
     "service": "Service Requests",
     "education": "Educational Content",
     "itemName": "{itemName}",
-    "success": "Success"
+    "success": "Success",
+    "orders": "Orders"
   },
   "nav": {
     "products": "Products",
@@ -472,7 +473,12 @@
       "cancelFailed": "Failed to cancel order"
     },
     "quantity": "Quantity",
-    "shippingAddress": "Shipping Address"
+    "shippingAddress": "Shipping Address",
+    "cancelSuccess": "Order cancelled successfully",
+    "confirmCancelTitle": "Confirm Order Cancellation",
+    "confirmCancelMessage": "Are you sure you want to cancel order #{orderCode}?",
+    "cancelButton": "Cancel",
+    "confirmButton": "Confirm"
   },
   "addresses": {
     "title": "Your Addresses",

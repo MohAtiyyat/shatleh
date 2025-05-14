@@ -9,7 +9,7 @@ import SearchBar from '../../../../components/post/search-bar';
 import Breadcrumb from '../../../../components/breadcrumb';
 import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
-import { BlogPost, PostFilterCategory } from '../../../../lib/index';
+import { BlogPost} from '../../../../lib/index';
 import { PostFiltersState } from '../../../../lib/index';
 import { fetchBlogPosts, fetchPostCategories } from '../../../../lib/api';
 
