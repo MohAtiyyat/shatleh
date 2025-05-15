@@ -91,7 +91,7 @@ class ProductSeeder extends Seeder
                 'description_en' => $descriptions_en[$index],
                 'description_ar' => $descriptions_ar[$index],
                 'status' => $faker->randomElement(['active', 'inactive']),
-                'availability' => $faker->randomElement(['in_stock', 'out_of_stock']), 
+                'availability' => $faker->randomElement([1,0]), 
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
