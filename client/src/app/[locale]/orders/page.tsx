@@ -312,7 +312,7 @@ export default function OrdersPage() {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-medium">${order.total_price.toFixed(2)}</p>
+                        <p className="font-medium">${order.total_price}</p>
                       </div>
                     </div>
 
@@ -421,7 +421,7 @@ export default function OrdersPage() {
               <Image
                 src={
                   item.image
-                    ? `${process.env.NEXT_PUBLIC_API_URL}${item.image}`
+                    ? `${process.env.NEXT_PUBLIC_API_URL + "/"}${item.image}`
                     : '/placeholder.svg'
                 }
                 alt={item.name[currentLocale]}
@@ -439,7 +439,7 @@ export default function OrdersPage() {
             </div>
           </div>
           <p className="font-medium">
-            ${parseFloat(item.price).toFixed(2).replace(/\.00$/, '')}
+            ${item.price}
           </p>
         </motion.div>
       ))}

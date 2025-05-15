@@ -233,7 +233,7 @@ export default function PostPage() {
                             <Image
                               src={
                                 (postProduct &&
-                                  process.env.NEXT_PUBLIC_API_URL + postProduct.image[0]) ||
+                                  process.env.NEXT_PUBLIC_API_URL + "/" + postProduct.image[0]) ||
                                 '/placeholder.svg'
                               }
                               alt={
