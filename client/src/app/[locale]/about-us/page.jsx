@@ -1,14 +1,10 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import 'react-phone-input-2/lib/style.css';
 
 export default function AboutUs() {
     const t = useTranslations('');
-    const pathname = usePathname();
-    const router = useRouter();
-    const currentLocale = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
+    
 
     return (
         <main style={{
