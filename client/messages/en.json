@@ -161,6 +161,12 @@
     "noReviews": "No reviews yet",
     "cancel": "Cancel"
   },
+  "about": {
+    "title": "About Us",
+    "description":"At Shatleh, we believe that gardening is not just a hobby it’s a way of life. We are a Jordanian platform that helps people who love home gardening and small gardens. We offer plants, fertilizers, and eco-friendly pesticides, as well as professional agricultural services by certified engineers, such as garden design, tree trimming, and consultations.",
+    "description-2":"We also share easy educational content to help people learn and grow plants at home with confidence and knowledge.",
+    "above-text":"With Shatleh, we plant the love of gardening in every home."
+  },
   "pagination": {
     "prev": "Previous",
     "next": "Next"

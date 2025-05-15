@@ -53,7 +53,7 @@ const Header = () => {
         { label: t('header.products'), href: `/${currentLocale}/products` },
         { label: t('header.blog'), href: `/${currentLocale}/blog` },
         { label: t('header.services'), href: `/${currentLocale}/services` },
-        { label: t('header.about'), href: `/${currentLocale}/about` },
+        { label: t('header.about'), href: `/${currentLocale}/about-us` },
     ];
 
     return (
