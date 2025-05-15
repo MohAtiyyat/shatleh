@@ -126,13 +126,7 @@ const Header = () => {
                                     >
                                         <span className="inline-flex">{t('user.address')}</span>
                                     </Link>
-                                    <Link
-                                        href={`/${currentLocale}/payments`}
-                                        className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
-                                        onClick={toggleUserMenu}
-                                    >
-                                        <span className="inline-flex">{t('user.payments')}</span>
-                                    </Link>
+                                    
                                     <Link
                                         href={`/${currentLocale}/orders`}
                                         className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
