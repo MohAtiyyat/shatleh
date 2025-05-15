@@ -27,10 +27,7 @@ class Product extends Model
         'image' => 'array',
     ];
 
-    public function getImageAttribute($value)
-    {
-        return json_decode($value);
-    }
+
 
     public function cart()
     {
