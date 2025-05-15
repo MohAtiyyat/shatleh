@@ -87,7 +87,7 @@ class ProductSeeder extends Seeder
                 'name_en' => $names_en[$index],
                 'name_ar' => $names_ar[$index],
                 'price' => $prices[$index]*100,
-                'image' => json_encode([$images[$index]]),
+                'image' => [$images[$index]],
                 'description_en' => $descriptions_en[$index],
                 'description_ar' => $descriptions_ar[$index],
                 'status' => $faker->randomElement(['active', 'inactive']),
