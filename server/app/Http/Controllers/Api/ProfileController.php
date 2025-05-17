@@ -298,7 +298,11 @@ class ProfileController extends Controller
         $serviceRequests = ServiceRequest::where('customer_id', $user->id)->get()->map(function ($serviceRequest) {
             return [
                 'id' => $serviceRequest->id,
-                'service_id' => $serviceRequest->service_id,
+                'service' => $serviceRequest->service ? [
+                    'id' => $serviceRequest->service->id,
+                    'title_en' => $serviceRequest->service->name_en,
+                    'title_ar' => $serviceRequest->service->name_ar
+                ] : null,
                 'customer_id' => $serviceRequest->customer_id,
                 'details' => $serviceRequest->details,
                 'status' => $serviceRequest->status,

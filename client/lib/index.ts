@@ -244,7 +244,7 @@ export interface Order {
 export interface ServiceRequest {
     id: number;
     customer_id: string;
-    service_id: number;
+    service: Service;
     address: OrderAddress | null;
     details: string;
     image: string | null;

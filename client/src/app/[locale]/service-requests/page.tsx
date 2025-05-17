@@ -277,7 +277,7 @@ export default function ServiceRequestsPage() {
                       </div>
                       <div>
                         <p className="font-medium">{t('serviceId')}</p>
-                        <p className="text-sm text-gray-600">{request.service_id}</p>
+                        <p className="text-sm text-gray-600">{currentLocale === 'en' ? request.service?.title_en : request.service?.title_ar}</p>
                       </div>
                     </div>
 
