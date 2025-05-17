@@ -6,7 +6,7 @@
 @section('content')
     <x-management-table
         title="Service Request Management"
-        :headers="['#', 'Customer Name', 'Assign To Expert','Status', 'Managed By Employee','Address']"
+        :headers="['#', 'Customer Name', 'Service Name', 'Assign To Expert','Status', 'Managed By Employee','Address', 'Action']"
         :items="$serviceRequests"
         :Route="'dashboard.service-request'"
     >
@@ -25,6 +25,12 @@
                         </a>
                     </td>
 
+                    {{-- Service Name --}}
+                    <td>
+                        <a href="{{ route('dashboard.service', ['search' => $serviceRequest->service->name]) }}">
+                            {{ $serviceRequest->service?->name_en }}
+                        </a>
+                    </td>
                     {{-- Assign to Expert --}}
                     <td>
                         @if ($serviceRequest->expert)
@@ -68,6 +74,18 @@
                         @include('/components/address-popout', [
                             'addresses' => [$serviceRequest->address]
                         ])
+                    </td>
+
+                    {{-- Actions --}}
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route($Route . '.show', $serviceRequest->id) }}"><i class="fas fa-eye"></i> View</a></li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             @endforeach
