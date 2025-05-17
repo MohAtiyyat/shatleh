@@ -28,6 +28,7 @@ function CartItemList() {
     const pathname = usePathname();
     const currentLocale: 'en' | 'ar' = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
     const { items } = useCartStore();
+    console.log(items);
 
     if (items.length === 0) {
         return (
@@ -141,114 +142,114 @@ const CartItemCard = memo(function CartItemCard({ item, currentLocale }: CartIte
     }, [item.product_id, userId, currentLocale, removeItem, t]);
 
     return (
-        <Link href={`/${currentLocale}/products/${item.product_id}`} passHref>
-            <div
-                className="rounded-lg overflow-hidden border shadow-sm w-full my-2 sm:my-3"
-                style={{ borderColor: 'var(--secondary-bg)', backgroundColor: 'var(--accent-color)' }}
-            >
-                {error && (
-                    <div className="text-red-500 text-xs sm:text-sm p-2 text-center" role="alert">
-                        {error}
-                    </div>
-                )}
-                <div className="flex  sm:flex-row items-start sm:items-center p-3 sm:p-4">
-                    <div className="flex flex-col items-center sm:items-start mx-1 sm:mx-3 mb-3 sm:mb-0">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 relative">
+        <div
+            className="rounded-lg overflow-hidden border shadow-sm w-full my-2 sm:my-3"
+            style={{ borderColor: 'var(--secondary-bg)', backgroundColor: 'var(--accent-color)' }}
+        >
+            {error && (
+                <div className="text-red-500 text-xs sm:text-sm p-2 text-center" role="alert">
+                    {error}
+                </div>
+            )}
+            <div className="flex  sm:flex-row items-start sm:items-center p-3 sm:p-4">
+                <div className="flex flex-col items-center sm:items-start mx-1 sm:mx-3 mb-3 sm:mb-0">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 relative">
+                        <Link href={`/${currentLocale}/products/${item.product_id}`} passHref>
                             <Image
-                                src={process.env.NEXT_PUBLIC_API_URL + item.image[0]}
-                                alt={item.name_en || item.name_ar}
+                                src={process.env.NEXT_PUBLIC_API_URL  +  item.image[0]}
+                                alt={item.name_en || item.name_ar || ''}
                                 fill
                                 className="object-cover rounded"
                                 loading="lazy"
                             />
-                        </div>
-                        <p
-                            className="font-semibold text-xs sm:hidden mt-2 text-center"
-                            style={{ color: 'var(--text-white)' }}
-                        >
-                            {t('price')}: {formatPrice(item.price, currentLocale)}
-                        </p>
+                        </Link>
                     </div>
-                    <div className="flex-1 w-[40%]">
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                            <div className="mb-3 sm:mb-0 max-w-[40%] sm:max-w-[60%]">
-                                <h3
-                                    className="font-medium text-sm sm:text-base"
-                                    style={{ color: 'var(--text-white)' }}
+                    <p
+                        className="font-semibold text-xs sm:hidden mt-2 text-center"
+                        style={{ color: 'var(--text-white)' }}
+                    >
+                        {t('price')}: {formatPrice(item.price, currentLocale)}
+                    </p>
+                </div>
+                <div className="flex-1 w-[40%]">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div className="mb-3 sm:mb-0 max-w-[40%] sm:max-w-[60%]">
+                            <h3
+                                className="font-medium text-sm sm:text-base"
+                                style={{ color: 'var(--text-white)' }}
+                            >
+                                {currentLocale === 'en' ? item.name_en : item.name_ar}
+                            </h3>
+                            {(item.description_en || item.description_ar) && (
+                                <p
+                                    className="text-xs sm:text-sm text-[#dbdada] line-clamp-2 overflow-hidden"
+                                    style={{
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflowWrap: 'break-word',
+                                        direction: currentLocale === 'ar' ? 'rtl' : 'ltr',
+                                    }}
                                 >
-                                    {currentLocale === 'en' ? item.name_en : item.name_ar}
-                                </h3>
-                                {(item.description_en || item.description_ar) && (
-                                    <p
-                                        className="text-xs sm:text-sm text-[#dbdada] line-clamp-2 overflow-hidden"
-                                        style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflowWrap: 'break-word',
-                                            direction: currentLocale === 'ar' ? 'rtl' : 'ltr',
-                                        }}
-                                    >
-                                        {currentLocale === 'en' ? item.description_en : item.description_ar}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="flex items-center sm:items-start space-x-2 sm:space-x-4 w-full sm:w-auto">
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="flex items-center border rounded"
-                                        style={{ borderColor: 'var(--secondary-bg)' }}
-                                    >
-                                        <button
-                                            onClick={handleDecrement}
-                                            className="w-7 h-7 flex items-center justify-center"
-                                            style={{ color: 'var(--text-white)' }}
-                                            disabled={isUpdating || currentQuantity <= 1}
-                                            aria-label={t('decrement')}
-                                        >
-                                            <Minus className="h-4 w-4" />
-                                        </button>
-                                        <span
-                                            className="w-7 text-center text-sm"
-                                            style={{ color: 'var(--text-white)' }}
-                                            aria-live="polite"
-                                        >
-                                            {currentQuantity}
-                                        </span>
-                                        <button
-                                            onClick={handleIncrement}
-                                            className="w-7 h-7 flex items-center justify-center"
-                                            style={{ color: 'var(--text-white)' }}
-                                            disabled={isUpdating}
-                                            aria-label={t('increment')}
-                                        >
-                                            <Plus className="h-4 w-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col items-end">
-                                    <p
-                                        className="font-semibold    text-sm hidden sm:block"
-                                        style={{ color: 'var(--text-white)' }}
-                                    >
-                                        {t('price')}: {formatPrice(item.price, currentLocale)}
-                                    </p>
+                                    {currentLocale === 'en' ? item.description_en : item.description_ar}
+                                </p>
+                            )}
+                        </div>
+                        <div className="flex items-center sm:items-start space-x-2 sm:space-x-4 w-full sm:w-auto">
+                            <div className="flex flex-col items-center">
+                                <div
+                                    className="flex items-center border rounded"
+                                    style={{ borderColor: 'var(--secondary-bg)' }}
+                                >
                                     <button
-                                        onClick={handleRemove}
-                                        className="mt-2 hover:text-[var(--text-hover)]"
-                                        style={{ color: '#ef4444' }}
-                                        disabled={isUpdating}
-                                        aria-label={t('remove')}
+                                        onClick={handleDecrement}
+                                        className="w-7 h-7 flex items-center justify-center hover:cousor-pointer"
+                                        style={{ color: 'var(--text-white)' }}
+                                        disabled={isUpdating || currentQuantity <= 1}
+                                        aria-label={t('decrement')}
                                     >
-                                        <Trash2 className="w-6 h-6" />
+                                        <Minus className="h-4 w-4" />
+                                    </button>
+                                    <span
+                                        className="w-7 text-center text-sm"
+                                        style={{ color: 'var(--text-white)' }}
+                                        aria-live="polite"
+                                    >
+                                        {currentQuantity}
+                                    </span>
+                                    <button
+                                        onClick={handleIncrement}
+                                        className="w-7 h-7 flex items-center justify-center hover:cousor-pointer"
+                                        style={{ color: 'var(--text-white)' }}
+                                        disabled={isUpdating}
+                                        aria-label={t('increment')}
+                                    >
+                                        <Plus className="h-4 w-4" />
                                     </button>
                                 </div>
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <p
+                                    className="font-semibold    text-sm hidden sm:block"
+                                    style={{ color: 'var(--text-white)' }}
+                                >
+                                    {t('price')}: {formatPrice(item.price, currentLocale)}
+                                </p>
+                                <button
+                                    onClick={handleRemove}
+                                    className="mt-2 hover:text-[var(--text-hover)] hover:cursor-pointer"
+                                    style={{ color: '#ef4444' }}
+                                    disabled={isUpdating}
+                                    aria-label={t('remove')}
+                                >
+                                    <Trash2 className="w-6 h-6" />
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 });
 

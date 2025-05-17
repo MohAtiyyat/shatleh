@@ -35,7 +35,7 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             $imagePaths = [];
             foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('product_images', 'public');
+                $imagePath = $image->store('images/products', 'public');
                 $imagePaths[] = Storage::url($imagePath);
             }
             $data['image'] = $imagePaths;
@@ -83,7 +83,7 @@ class ProductController extends Controller
             // Add new images
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $imagePath = $image->store('product_images', 'public');
+                    $imagePath = $image->store('images/products', 'public');
                     $imagePaths[] = Storage::url($imagePath);
                 }
             }

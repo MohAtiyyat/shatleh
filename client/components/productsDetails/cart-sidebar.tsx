@@ -112,13 +112,13 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                             {items.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
                                     <ShoppingCart className="h-16 w-16 mb-4 opacity-20" />
-                                    <p className="text-lg font-medium">{t('cart.empty')}</p>
+                                    <p className="text-lg font-medium">{t('Cart.empty')}</p>
                                     <p className="mt-1">{t('cart.addProducts', { defaultMessage: 'Add some products to your cart' })}</p>
                                     <button
                                         onClick={onClose}
                                         className="mt-6 bg-[#337a5b] text-white px-4 py-2 rounded-md hover:bg-[#025162] transition-colors"
                                     >
-                                        {t('cart.continueShopping')}
+                                        {t('Cart.continueShopping')}
                                     </button>
                                 </div>
                             ) : (
@@ -126,7 +126,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                     <div key={item.id} className="flex border-b pb-4">
                                         <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 mx-2">
                                             <Image
-                                                src={process.env.NEXT_PUBLIC_API_URL + item.image[0] || '/placeholder.svg'}
+                                                src={process.env.NEXT_PUBLIC_API_URL +item.image[0] || '/placeholder.svg'}
                                                 alt={currentLocale === 'en' ? item.name_en : item.name_ar || 'product'}
                                                 width={80}
                                                 height={80}
@@ -195,7 +195,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                         onClick={onClose}
                                         className="w-full text-center text-[#337a5b] hover:text-[#025162] text-sm"
                                     >
-                                        {t('cart.continueShopping')}
+                                        {t('Cart.continueShopping')}
                                     </button>
                                 </div>
                             </div>

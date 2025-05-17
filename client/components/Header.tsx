@@ -53,7 +53,7 @@ const Header = () => {
         { label: t('header.products'), href: `/${currentLocale}/products` },
         { label: t('header.blog'), href: `/${currentLocale}/blog` },
         { label: t('header.services'), href: `/${currentLocale}/services` },
-        { label: t('header.about'), href: `/${currentLocale}/about` },
+        { label: t('header.about'), href: `/${currentLocale}/about-us` },
     ];
 
     return (
@@ -126,13 +126,15 @@ const Header = () => {
                                     >
                                         <span className="inline-flex">{t('user.address')}</span>
                                     </Link>
+                                    
                                     <Link
-                                        href={`/${currentLocale}/payments`}
+                                        href={`/${currentLocale}/service-requests`}
                                         className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
                                         onClick={toggleUserMenu}
                                     >
-                                        <span className="inline-flex">{t('user.payments')}</span>
+                                        <span className="inline-flex">{t('user.serviceRequests')}</span>
                                     </Link>
+
                                     <Link
                                         href={`/${currentLocale}/orders`}
                                         className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"

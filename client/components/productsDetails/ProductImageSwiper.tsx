@@ -18,10 +18,10 @@ export default function ProductImageSwiper({ images, altText }: ProductImageSwip
                 modules={[Navigation]}
                 spaceBetween={10}
                 slidesPerView={1}
-                navigation={{
+                navigation={images.length > 1 ? {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
-                }}
+                } : false}
                 loop={images.length > 1}
                 className="rounded-lg overflow-hidden"
             >
@@ -38,8 +38,12 @@ export default function ProductImageSwiper({ images, altText }: ProductImageSwip
                 ))}
             </Swiper>
 
-            <div className="swiper-button-prev !bg-white !w-10 !h-10 rounded-full after:!text-gray-500"></div>
-            <div className="swiper-button-next !bg-white !w-10 !h-10 rounded-full after:!text-gray-500"></div>
+            {images.length > 1 && (
+                <>
+                    <div className="swiper-button-prev !bg-white !w-10 !h-10 rounded-full after:!text-gray-500"></div>
+                    <div className="swiper-button-next !bg-white !w-10 !h-10 rounded-full after:!text-gray-500"></div>
+                </>
+            )}
         </div>
     );
 }

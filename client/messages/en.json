@@ -12,12 +12,11 @@
     "title": "Shatleh",
     "description": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts."
   },
-    "error": {
-      "title": "Oops, Something Went Wrong",
-      "message": "We encountered an issue while loading the products. Please try again.",
-      "retry": "Try Again"
-    },
-  
+  "error": {
+    "title": "Oops, Something Went Wrong",
+    "message": "We encountered an issue while loading the products. Please try again.",
+    "retry": "Try Again"
+  },
   "footer": {
     "aboutUs": "About Us",
     "aboutUsDescription": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts.",
@@ -27,7 +26,6 @@
     "services": "Services",
     "about": "About Us",
     "recentPosts": "Recent Articles",
-
     "contactInfo": "Contact Info",
     "email": "shatlehteam@gmail.com",
     "phone": "0798827244",
@@ -68,7 +66,7 @@
     }
   },
   "categories": {
-   "categories": "Explore Our Categories"
+    "categories": "Explore Our Categories"
   },
   "topSellers": {
     "calatheaPlant": {
@@ -162,7 +160,12 @@
     "submitReviewFailed": "Failed to submit review",
     "noReviews": "No reviews yet",
     "cancel": "Cancel"
-
+  },
+  "about": {
+    "title": "About Us",
+    "description":"At Shatleh, we believe that gardening is not just a hobby it’s a way of life. We are a Jordanian platform that helps people who love home gardening and small gardens. We offer plants, fertilizers, and eco-friendly pesticides, as well as professional agricultural services by certified engineers, such as garden design, tree trimming, and consultations.",
+    "description-2":"We also share easy educational content to help people learn and grow plants at home with confidence and knowledge.",
+    "above-text":"With Shatleh, we plant the love of gardening in every home."
   },
   "pagination": {
     "prev": "Previous",
@@ -232,7 +235,8 @@
     "signOut": "Sign Out",
     "account": "Account",
     "address": "Address",
-    "payments": "Payments"
+    "payments": "Payments",
+    "serviceRequests": "Service Requests"
   },
   "service": {
     "title": "Service Requests",
@@ -248,6 +252,29 @@
     "loading": "Loading requests...",
     "error": "Failed to load requests",
     "submitError": "Failed to submit request"
+  },
+  "serviceRequests": {
+    "title": "My Service Requests",
+    "request": "Service Request",
+    "noRequests": "No service requests found",
+    "requestService": "Request a Service",
+    "goToLogin": "Go to Login",
+    "errors": {
+      "fetchFailed": "Failed to fetch service requests"
+    },
+    "all": "All",
+    "pending": "Pending",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "serviceId": "Service ID",
+    "address": "Address",
+    "noAddress": "No address provided",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
+    "details": "Details",
+    "requestImage": "Request Image",
+    "serviceAddress": "Service Address"
   },
   "Cart": {
     "title": "Your Cart",
@@ -270,7 +297,9 @@
     "decrement": "Decrement",
     "increment": "Increment",
     "updateQuantityError": "An error occurred while updating the quantity",
-    "removeItemError": "An error occurred while removing the item"
+    "removeItemError": "An error occurred while removing the item",
+    "originalTotal": "Original Total",
+    "discountedTotal": "Discounted Total"
   },
   "checkout": {
     "title": "Checkout",
@@ -300,12 +329,29 @@
     "noOrder": "No order details available.",
     "thankYou": "Thank you for your order!",
     "illustrationAlt": "Order confirmation illustration",
-    "quantity": "Qty: {qty}",
+    "quantity": "Quantity",
     "continueShopping": "Continue Shopping",
     "support": "Need help? Contact our",
     "contactSupport": "support team",
     "exportPDF": "download the invoice",
     "noOrderTitle": "No order details available!",
+    "billingDetails": "Billing Details",
+    "name": "Name",
+    "phone": "Phone",
+    "address": "Address",
+    "incompleteAddress": "Your address is incomplete",
+    "updateProfile": "Update your profile",
+    "isGift": "This is a gift",
+    "giftFirstName": "Recipient First Name",
+    "giftLastName": "Recipient Last Name",
+    "coupon": "Coupon",
+    "applyCoupon": "Apply Coupon",
+    "originalTotal": "Original Total",
+    "discountedTotal": "Discounted Total",
+    "selecatAddress": "Select an address",
+    "manageAddresses": "Manage Addresses",
+    "couponCode": "Coupon Code",
+    "enterCoupon": "Enter your coupon code",
     "errors": {
       "invalidCardNumber": "Please enter a valid 16-digit card number",
       "cardHolderRequired": "Please enter the cardholder's name",
@@ -318,10 +364,14 @@
       "cityRequired": "Please enter your city",
       "countryRequired": "Please select your country",
       "invalidPhone": "Please enter a valid phone number",
-      "checkoutFailed": "Checkout failed. Please try again."
+      "checkoutFailed": "Checkout failed. Please try again.",
+      "addressIncomplete": "Please provide a complete address",
+      "giftFirstNameRequired": "Gift recipient's first name is required",
+      "giftLastNameRequired": "Gift recipient's last name is required",
+      "invalidGiftPhone": "Invalid gift recipient's phone number"
     }
   },
- "payments": {
+  "payments": {
     "paymentMethods": "Payment Methods",
     "defaultSet": "Default payment method updated",
     "cannotDeleteLast": "You must have at least one payment method",
@@ -385,13 +435,15 @@
     "service": "Service Requests",
     "education": "Educational Content",
     "itemName": "{itemName}",
-    "success": "Success"
+    "success": "Success",
+    "orders": "Orders",
+    "servicerequests": "Service Request"
   },
   "nav": {
     "products": "Products",
     "about": "About"
   },
-"serviceRequest": {
+  "serviceRequest": {
     "serviceName": "Service Name",
     "address": "Address",
     "selectService": "Select a service",
@@ -448,22 +500,36 @@
     }
   },
   "orders": {
-    "title": "My Orders",
+    "title": "Your Orders",
     "all": "All",
+    "pending": "Pending",
     "inProgress": "In Progress",
     "delivered": "Delivered",
     "cancelled": "Cancelled",
     "completed": "Completed",
     "order": "Order",
-    "paidWith": "Paid with",
     "items": "Items",
-    "viewDetails": "View Order Details",
-    "hideDetails": "Hide Order Details",
+    "paidWith": "Paid with",
+    "coupon": "Coupon",
+    "unknown": "Unknown",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
     "cancelOrder": "Cancel Order",
     "successMessage": "Order cancelled successfully",
+    "noOrders": "No orders found",
+    "shopNow": "Shop Now",
+    "goToLogin": "Go to Login",
     "errors": {
-      "cancelFailed": "Failed to cancel order. Please try again."
-    }
+      "fetchFailed": "Failed to fetch orders",
+      "cancelFailed": "Failed to cancel order"
+    },
+    "quantity": "Quantity",
+    "shippingAddress": "Shipping Address",
+    "cancelSuccess": "Order cancelled successfully",
+    "confirmCancelTitle": "Confirm Order Cancellation",
+    "confirmCancelMessage": "Are you sure you want to cancel order #{orderCode}?",
+    "cancelButton": "Cancel",
+    "confirmButton": "Confirm"
   },
   "addresses": {
     "title": "Your Addresses",
@@ -501,4 +567,4 @@
     "confirmDeleteConfirm": "Delete",
     "confirmDeleteCancel": "Cancel"
   }
-  }
+}

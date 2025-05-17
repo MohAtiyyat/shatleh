@@ -181,15 +181,16 @@ export const useCartStore = create<CartState>()(
                     set({ isLoading: true, error: null });
                     try {
                         const data = await fetchCart(userId, locale);
+                        console.log('Fetched cart items:', data);
                         const mappedItems: CartItem[] = data.map((item) => ({
                             id: item.id,
                             product_id: item.product_id,
-                            customer_id: item.customer_id,
+                            customer_id: item.customer_id as string,
                             name_en: item.name_en,
                             name_ar: item.name_ar,
                             description_en: item.description_en,
                             description_ar: item.description_ar,    
-                            price: item.price,
+                            price: item.price as string,
                             image: item.image,
                             quantity: item.quantity,
                         }));

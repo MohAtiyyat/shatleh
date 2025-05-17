@@ -41,9 +41,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
             ? t('products.topSellingLabel')
             : null;
 
-    const imagePath = product.image
-        ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`
-        : '/placeholder.svg';
+   
 
     const description = truncateText(
         currentLocale === 'ar' ? product.description_ar : product.description_en,
@@ -63,7 +61,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                         description_en: product.description_en,
                         description_ar: product.description_ar,
                         price: product.price,
-                        image: imagePath,
+                        image: product.image,
                     },
                     userId,
                     currentLocale
@@ -72,7 +70,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                 console.error('Error adding to cart:', error);
             }
         },
-        [addItem, product, userId, currentLocale, imagePath]
+        [addItem, product, userId, currentLocale, product.image]
     );
 
     const handleUpdateQuantity = useCallback(
@@ -116,7 +114,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                         </span>
                     )}
                     <Image
-                        src={imagePath}
+                        src={process.env.NEXT_PUBLIC_API_URL  + product.image[0]}
                         alt={currentLocale === 'ar' ? product.name_ar : product.name_en}
                         width={300}
                         height={270}

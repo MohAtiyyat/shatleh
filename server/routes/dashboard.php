@@ -115,7 +115,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::prefix('service-request')->name('service-request.')->group(function () {
 
             Route::resource('/', ServiceRequestController::class)
-                ->only(['index', 'update'])
+                ->only(['index', 'update', 'show'])
                 ->parameter('', 'service_request');
 
             Route::post('{service_request}/assign', [ServiceRequestController::class, 'assign'])
@@ -155,7 +155,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::get('/', [ReviewController::class, 'index'])->name('index');
             Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
             Route::delete('/{id}', [ReviewController::class, 'delete'])->name('delete');
-        });        
+        });
 
     });
 });

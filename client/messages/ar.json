@@ -161,6 +161,12 @@
     "submitReviewFailed": "فشل في إرسال المراجعة",
     "noReviews": "لا توجد مراجعات بعد"
   },
+  "about": {
+    "title": "من نحن",
+    "description":"في شَتله، نؤمن أن الزراعة ليست مجرد هواية، بل أسلوب حياة. نحن منصة أردنية متخصصة في تقديم كل ما يحتاجه محبّو الزراعة المنزلية والحدائق الصغيرة، من نباتات، وأسمدة، ومبيدات صديقة للبيئة، إلى خدمات زراعية احترافية يقدمها مهندسون زراعيون معتمدون، مثل تنسيق الحدائق، تقليم الأشجار، وتقديم الاستشارات الزراعية.",
+    "description-2":"كما نحرص على نشر الوعي الزراعي من خلال محتوى تعليمي مبسّط، يهدف إلى تمكين كل فرد من الزراعة في منزله بثقة ومعرفة.",
+    "above-text":"مع شَتله، نزرع شغف الزراعة في كل بيت."
+  },
   "pagination": {
     "prev": "السابق",
     "next": "التالي"
@@ -229,7 +235,8 @@
     "signOut": "تسجيل الخروج",
     "account": "الحساب",
     "address": "العنوان",
-    "payments": "المدفوعات"
+    "payments": "المدفوعات",
+    "serviceRequests": "طلبات الخدمة"
   },
   "service": {
     "title": "طلبات الخدمة",
@@ -245,6 +252,29 @@
     "loading": "جارٍ تحميل الطلبات...",
     "error": "فشل تحميل الطلبات",
     "submitError": "فشل إرسال الطلب"
+  },
+  "serviceRequests": {
+    "title": "طلبات الخدمة الخاصة بي",
+    "request": "طلب الخدمة",
+    "noRequests": "لم يتم العثور على طلبات خدمة",
+    "requestService": "طلب خدمة",
+    "goToLogin": "الذهاب إلى تسجيل الدخول",
+    "errors": {
+      "fetchFailed": "فشل في جلب طلبات الخدمة"
+    },
+    "all": "الكل",
+    "pending": "قيد الانتظار",
+    "inProgress": "قيد التنفيذ",
+    "completed": "مكتمل",
+    "cancelled": "ملغى",
+    "serviceId": "معرف الخدمة",
+    "address": "العنوان",
+    "noAddress": "لم يتم تقديم عنوان",
+    "viewDetails": "عرض التفاصيل",
+    "hideDetails": "إخفاء التفاصيل",
+    "details": "التفاصيل",
+    "requestImage": "صورة الطلب",
+    "serviceAddress": "عنوان الخدمة"
   },
   "Cart": {
     "title": "سلتك",
@@ -267,7 +297,9 @@
     "decrement": "إنقاص",
     "increment": "زيادة",
     "updateQuantityError": "حدث خطأ أثناء تحديث الكمية",
-    "removeItemError": "حدث خطأ أثناء إزالة المنتج"
+    "removeItemError": "حدث خطأ أثناء إزالة المنتج",
+    "originalTotal": "الإجمالي الأصلي",
+    "discountedTotal": "الإجمالي بعد الخصم"
   },
   "checkout": {
     "title": "الدفع",
@@ -296,12 +328,30 @@
     "noOrder": "لا توجد تفاصيل الطلب متاحة.",
     "thankYou": "شكرًا لطلبك!",
     "illustrationAlt": "رسم توضيحي لتأكيد الطلب",
-    "quantity": "الكمية: {qty}",
+    "quantity": "الكمية",
     "continueShopping": "متابعة التسوق",
     "support": "هل تحتاج إلى مساعدة؟ اتصل بـ",
     "contactSupport": "فريق الدعم",
     "exportPDF": "تنزيل الفاتورة",
     "noOrderTitle": "لا توجد تفاصيل الطلب",
+    "billingDetails": "تفاصيل الفوترة",
+    "name": "الاسم",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "incompleteAddress": "عنوانك غير مكتمل",
+    "updateProfile": "تحديث ملفك الشخصي",
+    "isGift": "هذا هدية",
+    "giftFirstName": "اسم المستلم الأول",
+    "giftLastName": "اسم المستلم الأخير",
+    "coupon": "كوبون",
+    "applyCoupon": "تطبيق الكوبون",
+    "originalTotal": "الإجمالي الأصلي",
+    "discountedTotal": "الإجمالي بعد الخصم",
+    "selectAddress": "اختر عنوانًا",
+    "manageAddresses": "إدارة العناوين",
+    "couponCode": "كود الخصم",
+    "enterCoupon": "ادخل كود الخصم الخاص بك",
+    
     "errors": {
       "invalidCardNumber": "يرجى إدخال رقم بطاقة مكون من 16 رقمًا",
       "cardHolderRequired": "يرجى إدخال اسم حامل البطاقة",
@@ -314,7 +364,11 @@
       "cityRequired": "يرجى إدخال المدينة",
       "countryRequired": "يرجى اختيار الدولة",
       "invalidPhone": "يرجى إدخال رقم هاتف صالح",
-      "checkoutFailed": "فشل الدفع. يرجى المحاولة مرة أخرى."
+      "checkoutFailed": "فشل الدفع. يرجى المحاولة مرة أخرى.",
+      "addressIncomplete": "يرجى تقديم عنوان كامل",
+      "giftFirstNameRequired": "اسم المستلم للهدية مطلوب",
+      "giftLastNameRequired": "اسم العائلة للمستلم للهدية مطلوب",
+      "invalidGiftPhone": "رقم هاتف المستلم للهدية غير صالح"
     }
   },
   "payments": {
@@ -381,7 +435,9 @@
     "service": "طلبات الخدمة",
     "education": "المحتوى التعليمي",
     "itemName": "{itemName}",
-    "success": "نجاح"
+    "success": "نجاح",
+    "orders": "الطلبات",
+    "servicerequests": "طلبات الخدمة"
   },
   "nav": {
     "products": "المنتجات",
@@ -445,22 +501,36 @@
     }
   },
   "orders": {
-    "title": "طلباتي",
+    "title": "طلباتك",
     "all": "الكل",
+    "pending": "قيد الانتظار",
     "inProgress": "قيد التنفيذ",
     "delivered": "تم التوصيل",
-    "cancelled": "ملغاة",
+    "cancelled": "ملغى",
     "completed": "مكتمل",
-    "order": "طلب",
+    "order": "الطلب",
+    "items": "المنتجات",
     "paidWith": "مدفوع بـ",
-    "items": "عناصر",
-    "viewDetails": "عرض تفاصيل الطلب",
-    "hideDetails": "إخفاء تفاصيل الطلب",
+    "coupon": "كوبون",
+    "unknown": "غير معروف",
+    "viewDetails": "عرض التفاصيل",
+    "hideDetails": "إخفاء التفاصيل",
     "cancelOrder": "إلغاء الطلب",
     "successMessage": "تم إلغاء الطلب بنجاح",
+    "noOrders": "لم يتم العثور على طلبات",
+    "shopNow": "تسوق الآن",
+    "goToLogin": "الذهاب إلى تسجيل الدخول",
     "errors": {
-      "cancelFailed": "فشل إلغاء الطلب. يرجى المحاولة مرة أخرى."
-    }
+      "fetchFailed": "فشل في جلب الطلبات",
+      "cancelFailed": "فشل في إلغاء الطلب"
+    },
+    "quantity": "الكمية",
+    "shippingAddress": "عنوان الشحن",
+    "cancelSuccess": "تم إلغاء الطلب بنجاح",
+    "confirmCancelTitle": "تأكيد إلغاء الطلب",
+    "confirmCancelMessage": "هل أنت متأكد من إلغاء الطلب #{orderCode}؟",
+    "cancelButton": "إلغاء",
+    "confirmButton": "تأكيد"
   },
   "addresses": {
     "title": "عناوينك",
