@@ -10,7 +10,7 @@ import Link from 'next/link';
 import ServicePageSkeleton from '../../../../components/service/ServicePageSkeleton';
 import SuccessPopup from '../../../../components/service/SuccessPopup';
 import { fetchServices, createServiceRequest, fetchAddresses } from '../../../../lib/api';
-import { useAuth } from '../../../../lib/AuthContext';
+import {  useAuth } from '../../../../lib/AuthContext';
 
 interface Service {
     id: number;

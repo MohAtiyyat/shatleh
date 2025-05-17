@@ -12,12 +12,11 @@
     "title": "Shatleh",
     "description": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts."
   },
-    "error": {
-      "title": "Oops, Something Went Wrong",
-      "message": "We encountered an issue while loading the products. Please try again.",
-      "retry": "Try Again"
-    },
-  
+  "error": {
+    "title": "Oops, Something Went Wrong",
+    "message": "We encountered an issue while loading the products. Please try again.",
+    "retry": "Try Again"
+  },
   "footer": {
     "aboutUs": "About Us",
     "aboutUsDescription": "A Jordanian agricultural platform offering products, services, and educational content supervised by specialists for gardening and decoration enthusiasts.",
@@ -27,7 +26,6 @@
     "services": "Services",
     "about": "About Us",
     "recentPosts": "Recent Articles",
-
     "contactInfo": "Contact Info",
     "email": "shatlehteam@gmail.com",
     "phone": "0798827244",
@@ -68,7 +66,7 @@
     }
   },
   "categories": {
-   "categories": "Explore Our Categories"
+    "categories": "Explore Our Categories"
   },
   "topSellers": {
     "calatheaPlant": {
@@ -116,6 +114,7 @@
     "quantityControl": "Quantity",
     "addToCart": "Add to Cart",
     "noProducts": "No products available yet.",
+    "noCategory": "No products in this category.",
     "addedToCart": "{name} has been added to your cart!",
     "viewCart": "View Cart",
     "category": "Category",
@@ -149,7 +148,18 @@
     "sizeValue": "Medium",
     "careValue": "Low",
     "lightValue": "Indirect",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "rateProduct": "Rate Product",
+    "yourRating": "Your Rating",
+    "yourReview": "Your Review",
+    "reviewPlaceholder": "Write your review here...",
+    "ratingRequired": "Please select a rating",
+    "reviewTextRequired": "Review must be at least 3 characters",
+    "submitReview": "Submit Review",
+    "submitting": "Submitting...",
+    "submitReviewFailed": "Failed to submit review",
+    "noReviews": "No reviews yet",
+    "cancel": "Cancel"
   },
   "pagination": {
     "prev": "Previous",
@@ -236,7 +246,7 @@
     "error": "Failed to load requests",
     "submitError": "Failed to submit request"
   },
-  "cart": {
+  "Cart": {
     "title": "Your Cart",
     "empty": "Your cart is empty.",
     "price": "Price",
@@ -255,7 +265,11 @@
     "tax": "Tax",
     "processing": "Processing...",
     "decrement": "Decrement",
-    "increment": "Increment"
+    "increment": "Increment",
+    "updateQuantityError": "An error occurred while updating the quantity",
+    "removeItemError": "An error occurred while removing the item",
+    "originalTotal": "Original Total",
+    "discountedTotal": "Discounted Total"
   },
   "checkout": {
     "title": "Checkout",
@@ -285,12 +299,29 @@
     "noOrder": "No order details available.",
     "thankYou": "Thank you for your order!",
     "illustrationAlt": "Order confirmation illustration",
-    "quantity": "Qty: {qty}",
+    "quantity": "Quantity",
     "continueShopping": "Continue Shopping",
     "support": "Need help? Contact our",
     "contactSupport": "support team",
     "exportPDF": "download the invoice",
     "noOrderTitle": "No order details available!",
+    "billingDetails": "Billing Details",
+    "name": "Name",
+    "phone": "Phone",
+    "address": "Address",
+    "incompleteAddress": "Your address is incomplete",
+    "updateProfile": "Update your profile",
+    "isGift": "This is a gift",
+    "giftFirstName": "Recipient First Name",
+    "giftLastName": "Recipient Last Name",
+    "coupon": "Coupon",
+    "applyCoupon": "Apply Coupon",
+    "originalTotal": "Original Total",
+    "discountedTotal": "Discounted Total",
+    "selecatAddress": "Select an address",
+    "manageAddresses": "Manage Addresses",
+    "couponCode": "Coupon Code",
+    "enterCoupon": "Enter your coupon code",
     "errors": {
       "invalidCardNumber": "Please enter a valid 16-digit card number",
       "cardHolderRequired": "Please enter the cardholder's name",
@@ -303,10 +334,14 @@
       "cityRequired": "Please enter your city",
       "countryRequired": "Please select your country",
       "invalidPhone": "Please enter a valid phone number",
-      "checkoutFailed": "Checkout failed. Please try again."
+      "checkoutFailed": "Checkout failed. Please try again.",
+      "addressIncomplete": "Please provide a complete address",
+      "giftFirstNameRequired": "Gift recipient's first name is required",
+      "giftLastNameRequired": "Gift recipient's last name is required",
+      "invalidGiftPhone": "Invalid gift recipient's phone number"
     }
   },
- "payments": {
+  "payments": {
     "paymentMethods": "Payment Methods",
     "defaultSet": "Default payment method updated",
     "cannotDeleteLast": "You must have at least one payment method",
@@ -336,6 +371,7 @@
   "education": {
     "title": "Educational Content",
     "newPost": "Create a New Post",
+    "search": "Search Posts",
     "postTitle": "Title",
     "content": "Content",
     "submit": "Submit Post",
@@ -348,7 +384,12 @@
     "submitComment": "Submit Comment",
     "error": "Failed to load posts",
     "submitError": "Failed to submit post or comment",
-    "loading": "Loading posts..."
+    "loading": "Loading posts...",
+    "noResults": "No results found for your search.",
+    "postProduct": "Post Product",
+    "relatedProducts": "Related Products",
+    "relatedArticles": "Related Posts",
+    "noRelatedArticles": "No related posts available."
   },
   "pages": {
     "home": "Home",
@@ -370,7 +411,7 @@
     "products": "Products",
     "about": "About"
   },
-"serviceRequest": {
+  "serviceRequest": {
     "serviceName": "Service Name",
     "address": "Address",
     "selectService": "Select a service",
@@ -480,4 +521,4 @@
     "confirmDeleteConfirm": "Delete",
     "confirmDeleteCancel": "Cancel"
   }
-  }
+}

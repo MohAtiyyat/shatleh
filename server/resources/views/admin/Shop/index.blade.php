@@ -17,16 +17,7 @@
             @foreach ($shops as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <!-- <td>
-                        <img src="{{ $item->image ?? 'https://placehold.co/60x60' }}"
-                             alt="Shop Image"
-                             class="img-thumbnail"
-                             style="width: 60px; height: 60px; object-fit: cover;">
-                    </td> -->
                     <td>{{ $item->name ?? 'N/A' }}</td>
-                    <!-- <td>{{ $item->details ?? 'N/A' }}</td>
-                    <td>{{ $item->owner_name ?? 'N/A' }}</td>
-                    <td>{{ $item->owner_phone_number ?? 'N/A' }}</td> -->
                     <td>{{ $item->is_partner ? 'Yes' : 'No' }}</td>
                     <td>{{ $item->employee->first_name . ' ' . $item->employee->last_name ?? 'N/A' }}</td>
                     <td>
@@ -46,7 +37,6 @@
                             N/A
                         @endif
                     </td>
-                    <!-- <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->toDateString() : 'N/A' }}</td> -->
                     <td>
                         <div class="dropdown">
                             <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">

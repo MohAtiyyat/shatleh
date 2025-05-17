@@ -1,42 +1,16 @@
 'use client';
 
-import type React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, X, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { FiltersState } from '../../lib/index';
 
-type FilterCategory = {
-    id: number;
-    name: {
-        en: string;
-        ar: string;
-    };
-    selected: boolean;
-};
-
-type FilterRating = FilterCategory & {
-    count: number;
-    stars: number;
-};
-
-type FiltersProps = {
+interface FiltersProps {
     currentLocale: string;
-    filters: {
-        categories: FilterCategory[];
-        availability: FilterCategory[];
-        ratings: FilterRating[];
-        bestSelling: boolean;
-    };
-    setFilters: React.Dispatch<
-        React.SetStateAction<{
-            categories: FilterCategory[];
-            availability: FilterCategory[];
-            ratings: FilterRating[];
-            bestSelling: boolean;
-        }>
-    >;
-};
+    filters: FiltersState;
+    setFilters: React.Dispatch<React.SetStateAction<FiltersState>>;
+}
 
 export default function Filters({ filters, setFilters, currentLocale }: FiltersProps) {
     const t = useTranslations('');
@@ -76,8 +50,40 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
         }
     };
 
-    // Toggle filter selection
-    const toggleFilter = (type: 'categories' | 'availability' | 'ratings', id: number) => {
+    // Toggle category or subcategory selection
+    const toggleCategory = (categoryId: number, subcategoryId?: number) => {
+        setFilters((prev) => ({
+            ...prev,
+            categories: prev.categories.map((category) => {
+                if (category.id === categoryId) {
+                    if (subcategoryId) {
+                        // Toggle subcategory
+                        return {
+                            ...category,
+                            subcategories: category.subcategories.map((sub) =>
+                                sub.id === subcategoryId ? { ...sub, selected: !sub.selected } : sub
+                            ),
+                        };
+                    } else {
+                        // Toggle main category and all subcategories
+                        const newSelected = !category.selected;
+                        return {
+                            ...category,
+                            selected: newSelected,
+                            subcategories: category.subcategories.map((sub) => ({
+                                ...sub,
+                                selected: newSelected,
+                            })),
+                        };
+                    }
+                }
+                return category;
+            }),
+        }));
+    };
+
+    // Toggle other filters
+    const toggleFilter = (type: 'availability' | 'ratings', id: number) => {
         setFilters((prev) => ({
             ...prev,
             [type]: prev[type].map((item) => (item.id === id ? { ...item, selected: !item.selected } : item)),
@@ -93,11 +99,37 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
     };
 
     // Clear filter
-    const clearFilter = (type: 'categories' | 'availability' | 'ratings' | 'bestSelling', id?: number) => {
+    const clearFilter = (
+        type: 'categories' | 'availability' | 'ratings' | 'bestSelling',
+        id?: number,
+        subcategoryId?: number
+    ) => {
         if (type === 'bestSelling') {
             setFilters((prev) => ({
                 ...prev,
                 bestSelling: false,
+            }));
+        } else if (type === 'categories' && id !== undefined) {
+            setFilters((prev) => ({
+                ...prev,
+                categories: prev.categories.map((category) => {
+                    if (category.id === id) {
+                        if (subcategoryId) {
+                            return {
+                                ...category,
+                                subcategories: category.subcategories.map((sub) =>
+                                    sub.id === subcategoryId ? { ...sub, selected: false } : sub
+                                ),
+                            };
+                        }
+                        return {
+                            ...category,
+                            selected: false,
+                            subcategories: category.subcategories.map((sub) => ({ ...sub, selected: false })),
+                        };
+                    }
+                    return category;
+                }),
             }));
         } else if (id !== undefined) {
             setFilters((prev) => ({
@@ -107,30 +139,57 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
         }
     };
 
+    // Clear all filters
+    const clearAllFilters = () => {
+        setFilters((prev) => ({
+            ...prev,
+            categories: prev.categories.map((c) => ({
+                ...c,
+                selected: false,
+                subcategories: c.subcategories.map((s) => ({ ...s, selected: false })),
+            })),
+            availability: prev.availability.map((a) => ({ ...a, selected: false })),
+            ratings: prev.ratings.map((r) => ({ ...r, selected: false })),
+            bestSelling: false,
+        }));
+    };
+
     // Get selected filters count
     const getSelectedCount = (type: 'categories' | 'availability' | 'ratings') => {
+        if (type === 'categories') {
+            return filters.categories.reduce((count, category) => {
+                const subCount = category.subcategories.filter((sub) => sub.selected).length;
+                return count + (category.selected ? 1 : 0) + subCount;
+            }, 0);
+        }
         return filters[type].filter((item) => item.selected).length;
     };
 
     // Get selected filters names
     const getSelectedNames = (type: 'categories' | 'availability' | 'ratings') => {
-        return filters[type].filter((item) => item.selected).map((item) => currentLocale === 'ar' ? item.name.ar : item.name.en);
-    };
-
-    // Clear all filters
-    const clearAllFilters = () => {
-        setFilters({
-            categories: filters.categories.map((c) => ({ ...c, selected: false })),
-            availability: filters.availability.map((a) => ({ ...a, selected: false })),
-            ratings: filters.ratings.map((r) => ({ ...r, selected: false })),
-            bestSelling: false,
-        });
+        if (type === 'categories') {
+            const names: string[] = [];
+            filters.categories.forEach((category) => {
+                if (category.selected) {
+                    names.push(currentLocale === 'ar' ? category.name.ar : category.name.en);
+                }
+                category.subcategories.forEach((sub) => {
+                    if (sub.selected) {
+                        names.push(currentLocale === 'ar' ? sub.name.ar : sub.name.en);
+                    }
+                });
+            });
+            return names;
+        }
+        return filters[type]
+            .filter((item) => item.selected)
+            .map((item) => (currentLocale === 'ar' ? item.name.ar : item.name.en));
     };
 
     // Check if any filters are applied
     const hasActiveFilters = () => {
         return (
-            filters.categories.some((c) => c.selected) ||
+            filters.categories.some((c) => c.selected || c.subcategories.some((s) => s.selected)) ||
             filters.availability.some((a) => a.selected) ||
             filters.ratings.some((r) => r.selected) ||
             filters.bestSelling
@@ -162,22 +221,44 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-full left-0 mt-1 bg-white border border-[#80ce97] rounded-md shadow-lg z-10 min-w-[150px]"
+                            className="absolute top-full left-0 mt-1 bg-white border border-[#80ce97] rounded-md shadow-lg z-10 min-w-[200px]"
                             role="menu"
                             aria-label={t('products.categoryOptions')}
                         >
                             <div className="p-2 space-y-2">
                                 {filters.categories.map((category) => (
-                                    <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={category.selected}
-                                            onChange={() => toggleFilter('categories', category.id)}
-                                            className="rounded border-[#80ce97]"
-                                            aria-label={currentLocale === 'ar' ? category.name.ar : category.name.en}
-                                        />
-                                        <span className="text-[#414141] whitespace-nowrap">{currentLocale === 'ar' ? category.name.ar : category.name.en}</span>
-                                    </label>
+                                    <div key={category.id}>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={category.selected}
+                                                onChange={() => toggleCategory(category.id)}
+                                                className="rounded border-[#80ce97]"
+                                                aria-label={currentLocale === 'ar' ? category.name.ar : category.name.en}
+                                            />
+                                            <span className="text-[#414141] font-medium">
+                                                {currentLocale === 'ar' ? category.name.ar : category.name.en}
+                                            </span>
+                                        </label>
+                                        {category.subcategories.length > 0 && (
+                                            <div className="mx-6 space-y-1">
+                                                {category.subcategories.map((subcategory) => (
+                                                    <label key={subcategory.id} className="flex items-center space-x-2 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={subcategory.selected}
+                                                            onChange={() => toggleCategory(category.id, subcategory.id)}
+                                                            className="rounded border-[#80ce97]"
+                                                            aria-label={currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en}
+                                                        />
+                                                        <span className="text-[#414141]">
+                                                            {currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en}
+                                                        </span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 ))}
                             </div>
                         </motion.div>
@@ -287,7 +368,6 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                                                 ))}
                                             </div>
                                         </div>
-                                        <span className="text-sm text-[#414141]">{rating.count}</span>
                                     </label>
                                 ))}
                             </div>
@@ -303,94 +383,122 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                     animate={{ opacity: 1, height: 'auto' }}
                     className="flex flex-wrap items-center gap-2 mb-6"
                 >
-                    <div className="flex flex-wrap gap-2 flex-1">
-                        {/* Selected category filters */}
-                        {filters.categories
-                            .filter((item) => item.selected)
-                            .map((item) => (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    key={`category-${item.id}`}
-                                    className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
-                                >
-                                    <span>{currentLocale === 'ar' ? item.name.ar : item.name.en}</span>
-                                    <button
-                                        onClick={() => clearFilter('categories', item.id)}
-                                        className="text-[#0f4229] hover:text-[#e75313]"
-                                        aria-label={t('products.removeFilter', { name: currentLocale === 'ar' ? item.name.ar : item.name.en })}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </motion.div>
-                            ))}
-
-                        {/* Selected availability filters */}
-                        {filters.availability
-                            .filter((item) => item.selected)
-                            .map((item) => (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    key={`availability-${item.id}`}
-                                    className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
-                                >
-                                    <span>{currentLocale === 'ar' ? item.name.ar : item.name.en}</span>
-                                    <button
-                                        onClick={() => clearFilter('availability', item.id)}
-                                        className="text-[#0f4229] hover:text-[#e75313]"
-                                        aria-label={t('products.removeFilter', { name: currentLocale === 'ar' ? item.name.ar : item.name.en })}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </motion.div>
-                            ))}
-
-                        {/* Selected rating filters */}
-                        {filters.ratings
-                            .filter((item) => item.selected)
-                            .map((item) => (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    key={`rating-${item.id}`}
-                                    className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
-                                >
-                                    <span>{currentLocale === 'ar' ? item.name.ar : item.name.en}</span>
-                                    <button
-                                        onClick={() => clearFilter('ratings', item.id)}
-                                        className="text-[#0f4229] hover:text-[#e75313]"
-                                        aria-label={t('products.removeFilter', { name: currentLocale === 'ar' ? item.name.ar : item.name.en })}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </motion.div>
-                            ))}
-
-                        {/* Best selling filter */}
-                        {filters.bestSelling && (
+                    {/* Selected category filters */}
+                    {filters.categories.map((category) =>
+                        category.selected ? (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
+                                key={`category-${category.id}`}
                                 className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
                             >
-                                <span>{t('products.bestSelling')}</span>
+                                <span>{currentLocale === 'ar' ? category.name.ar : category.name.en}</span>
                                 <button
-                                    onClick={() => clearFilter('bestSelling')}
+                                    onClick={() => clearFilter('categories', category.id)}
                                     className="text-[#0f4229] hover:text-[#e75313]"
-                                    aria-label={t('products.removeFilter', { name: t('products.bestSelling') })}
+                                    aria-label={t('products.removeFilter', {
+                                        name: currentLocale === 'ar' ? category.name.ar : category.name.en,
+                                    })}
                                 >
                                     <X className="h-3 w-3" />
                                 </button>
                             </motion.div>
-                        )}
-                        
-                        
-                    </div>
+                        ) : null
+                    )}
+                    {filters.categories.map((category) =>
+                        category.subcategories
+                            .filter((sub) => sub.selected)
+                            .map((sub) => (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    key={`subcategory-${sub.id}`}
+                                    className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
+                                >
+                                    <span>{currentLocale === 'ar' ? sub.name.ar : sub.name.en}</span>
+                                    <button
+                                        onClick={() => clearFilter('categories', category.id, sub.id)}
+                                        className="text-[#0f4229] hover:text-[#e75313]"
+                                        aria-label={t('products.removeFilter', {
+                                            name: currentLocale === 'ar' ? sub.name.ar : sub.name.en,
+                                        })}
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </motion.div>
+                            ))
+                    )}
+
+                    {/* Selected availability filters */}
+                    {filters.availability
+                        .filter((item) => item.selected)
+                        .map((item) => (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                key={`availability-${item.id}`}
+                                className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
+                            >
+                                <span>{currentLocale === 'ar' ? item.name.ar : item.name.en}</span>
+                                <button
+                                    onClick={() => clearFilter('availability', item.id)}
+                                    className="text-[#0f4229] hover:text-[#e75313]"
+                                    aria-label={t('products.removeFilter', {
+                                        name: currentLocale === 'ar' ? item.name.ar : item.name.en,
+                                    })}
+                                >
+                                    <X className="h-3 w-3" />
+                                </button>
+                            </motion.div>
+                        ))}
+
+                    {/* Selected rating filters */}
+                    {filters.ratings
+                        .filter((item) => item.selected)
+                        .map((item) => (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                key={`rating-${item.id}`}
+                                className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
+                            >
+                                <span>{currentLocale === 'ar' ? item.name.ar : item.name.en}</span>
+                                <button
+                                    onClick={() => clearFilter('ratings', item.id)}
+                                    className="text-[#0f4229] hover:text-[#e75313]"
+                                    aria-label={t('products.removeFilter', {
+                                        name: currentLocale === 'ar' ? item.name.ar : item.name.en,
+                                    })}
+                                >
+                                    <X className="h-3 w-3" />
+                                </button>
+                            </motion.div>
+                        ))}
+
+                    {/* Best selling filter */}
+                    {filters.bestSelling && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            className="flex items-center gap-1 px-3 py-1 bg-[#80ce97]/20 rounded-full text-sm"
+                        >
+                            <span>{t('products.bestSelling')}</span>
+                            <button
+                                onClick={() => clearFilter('bestSelling')}
+                                className="text-[#0f4229] hover:text-[#e75313]"
+                                aria-label={t('products.removeFilter', { name: t('products.bestSelling') })}
+                            >
+                                <X className="h-3 w-3" />
+                            </button>
+                        </motion.div>
+                    )}
+
+                    {/* Clear All Button */}
                     <button
                         onClick={clearAllFilters}
                         className="text-sm text-[#e75313] hover:underline"

@@ -13,7 +13,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{route('dashboard.home')}}" class="nav-link @yield('dashboard_show')">
                         <ion-icon class="nav-icon" name="home-outline"></ion-icon>
                         <p>Dashboard Home</p>
                     </a>
@@ -48,12 +48,12 @@
                         <p>Categories Management</p>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item">
+                    <a href="{{ route('dashboard.post.index') }}" class="nav-link @yield('Posts_Show')">
                         <ion-icon class="nav-icon" name="document-text-outline"></ion-icon>
                         <p>Posts Management</p>
                     </a>
-                </li> -->
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('dashboard.specialties.index') }}" class="nav-link @yield('Specialties_Show')">
                         <ion-icon class="nav-icon" name="star-outline"></ion-icon>
@@ -109,7 +109,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('dashboard.review.index') }}" class="nav-link @yield('Review_Show')">
                         <ion-icon class="nav-icon" name="chatbubble-outline"></ion-icon>
                         <p>Reviews Management</p>
                     </a>

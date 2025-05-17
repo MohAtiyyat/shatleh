@@ -6,42 +6,22 @@ import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useCartStore } from '../../lib/store';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import type { CartItem } from '../../lib/cart';
-
-interface FormData {
-    firstName: string;
-    lastName: string;
-    addressLine: string;
-    city: string;
-    country: string;
-    phoneNumber: string;
-    cardNumber: string;
-    cardHolder: string;
-    expiryDate: string;
-    cvv: string;
-    paymentMethod: 'credit-card' | 'cash';
-}
-
-interface FormErrors {
-    firstName?: string;
-    lastName?: string;
-    addressLine?: string;
-    city?: string;
-    country?: string;
-    phoneNumber?: string;
-    cardNumber?: string;
-    cardHolder?: string;
-    expiryDate?: string;
-    cvv?: string;
-}
+import { checkout } from '../../lib/api';
+import { FormErrors, BackendCartItem, UserData, Address, FormData, Locale } from '../../lib';
 
 interface ConfirmButtonProps {
     formData: FormData;
     setFormErrors: React.Dispatch<React.SetStateAction<FormErrors>>;
     isProcessing: boolean;
     setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>;
-    currentLocale: 'en' | 'ar';
-    items: CartItem[];
+    currentLocale: Locale;
+    items: BackendCartItem[];
+    userData: UserData;
+    addresses: Address[];
+    defaultAddressId: number | null;
+    total: number;
+    couponApplied: boolean;
+    couponDiscount: number;
 }
 
 export default function ConfirmButton({
@@ -51,34 +31,36 @@ export default function ConfirmButton({
     setIsProcessing,
     currentLocale,
     items,
+    userData,
+    addresses,
+    defaultAddressId,
+    total,
+    couponApplied,
+    couponDiscount,
 }: ConfirmButtonProps) {
     const t = useTranslations('checkout');
     const router = useRouter();
     const { clearCart } = useCartStore();
 
+    // Find the default address
+    const defaultAddress = addresses.find((addr) => addr.id === defaultAddressId) || null;
+
     // Validate form fields
     const validateForm = (): FormErrors => {
         const errors: FormErrors = {};
 
-        // Validate billing fields for both payment methods
-        if (!formData.firstName.trim()) {
-            errors.firstName = t('errors.firstNameRequired');
-        }
-        if (!formData.lastName.trim()) {
-            errors.lastName = t('errors.lastNameRequired');
-        }
-        if (!formData.addressLine.trim()) {
-            errors.addressLine = t('errors.addressLineRequired');
-        }
-        if (!formData.city.trim()) {
-            errors.city = t('errors.cityRequired');
-        }
-        if (!formData.country) {
-            errors.country = t('errors.countryRequired');
-        }
-        const phoneNumber = parsePhoneNumberFromString(`+${formData.phoneNumber}`);
-        if (!phoneNumber || !phoneNumber.isValid()) {
-            errors.phoneNumber = t('errors.invalidPhone');
+        // Validate gift fields if isGift is true
+        if (formData.isGift) {
+            if (!formData.giftFirstName.trim()) {
+                errors.giftFirstName = t('errors.giftFirstNameRequired');
+            }
+            if (!formData.giftLastName.trim()) {
+                errors.giftLastName = t('errors.giftLastNameRequired');
+            }
+            const giftPhoneNumber = parsePhoneNumberFromString(`+${formData.giftPhoneNumber}`);
+            if (!giftPhoneNumber || !giftPhoneNumber.isValid()) {
+                errors.giftPhoneNumber = t('errors.invalidGiftPhone');
+            }
         }
 
         // Validate credit card fields if selected
@@ -112,106 +94,204 @@ export default function ConfirmButton({
 
     // Handle form submission
     const handleConfirm = async () => {
+        // Check if address is complete
+        if (!defaultAddress || !defaultAddress.address_line?.trim()) {
+            setFormErrors({ address: t('errors.addressIncomplete') });
+            return;
+        }
+
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
             setFormErrors(errors);
             // Focus the first invalid field
-            if (errors.firstName) document.getElementsByName('firstName')[0]?.focus();
-            else if (errors.lastName) document.getElementsByName('lastName')[0]?.focus();
-            else if (errors.addressLine) document.getElementsByName('addressLine')[0]?.focus();
-            else if (errors.city) document.getElementsByName('city')[0]?.focus();
-            else if (errors.country) document.getElementsByName('country')[0]?.focus();
-            else if (errors.phoneNumber) document.getElementsByName('phoneNumber')[0]?.focus();
+            if (errors.giftFirstName) document.getElementsByName('giftFirstName')[0]?.focus();
+            else if (errors.giftLastName) document.getElementsByName('giftLastName')[0]?.focus();
+            else if (errors.giftPhoneNumber) document.getElementsByName('giftPhoneNumber')[0]?.focus();
             else if (errors.cardNumber) document.getElementsByName('cardNumber')[0]?.focus();
             else if (errors.cardHolder) document.getElementsByName('cardHolder')[0]?.focus();
             else if (errors.expiryDate) document.getElementsByName('expiryDate')[0]?.focus();
             else if (errors.cvv) document.getElementsByName('cvv')[0]?.focus();
             return;
         }
+
         setIsProcessing(true);
         try {
-            // Simulate API call to process payment
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                throw new Error('User ID not found');
+            }
 
-            // Calculate total
-            const subtotal = items.reduce((sum, item) => {
-                const price = Number.parseFloat(item.price.replace(/[^\d.]/g, ''));
-                return sum + price * item.quantity;
-            }, 0);
-            const tax = subtotal * 0.08;
-            const total = subtotal + tax;
+            // Get coupon ID from localStorage
+            const couponData = localStorage.getItem('appliedCoupon');
+            const coupon = couponData ? JSON.parse(couponData) : null;
 
-            // Generate deterministic order ID
-            const orderId = `ORD${Date.now().toString().slice(-6)}`;
+            // Prepare checkout data
+            const checkoutData = {
+                customer_id: userId,
+                address_id: defaultAddressId!,
+                items: items.map((item: BackendCartItem) => ({
+                    product_id: item.product_id,
+                    price: item.price.toString(),
+                    quantity: item.quantity,
+                })),
+                is_gift: formData.isGift,
+                gift_first_name: formData.isGift ? formData.giftFirstName : undefined,
+                gift_last_name: formData.isGift ? formData.giftLastName : undefined,
+                gift_phone_number: formData.isGift ? formData.giftPhoneNumber : undefined,
+                coupon_id: couponApplied && coupon ? coupon.id : null,
+                total,
+                delivery_cost: 2, // Hardcoded from PaymentDetails
+            };
 
-            // Store order data in localStorage (exclude billing)
+            // Log checkout data for debugging
+            console.log('Checkout data:', checkoutData);
+
+            // Send checkout request
+            const response = await checkout(checkoutData);
+
+            // Format order date
+            const orderDate = new Date().toISOString();
+
+            // Store order data in localStorage for success page
             const lastOrder = {
-                orderId,
-                items,
-                total: total.toFixed(2),
+                orderId: response.data.order_id.toString(),
+                items: items.map(item => ({
+                    id: item.product_id.toString(), // Use product_id as id
+                    name_ar: item.name_ar,
+                    name_en: item.name_en,
+                    quantity: item.quantity,
+                    price: item.price,
+                })),
+                total: response.data.total.toFixed(2),
+                orderDate,
+                couponApplied,
+                couponDiscount,
+                billing: {
+                    first_name: formData.isGift ? formData.giftFirstName : userData.first_name,
+                    last_name: formData.isGift ? formData.giftLastName : userData.last_name,
+                    phone_number: formData.isGift ? formData.giftPhoneNumber : userData.phone_number,
+                    address_line: defaultAddress.address_line,
+                    city: defaultAddress.city,
+                    country: defaultAddress.country_name,
+                },
+                gift: formData.isGift
+                    ? {
+                        firstName: formData.giftFirstName,
+                        lastName: formData.giftLastName,
+                        phoneNumber: formData.giftPhoneNumber,
+                    }
+                    : null,
             };
             localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
 
             // Log for debugging
             console.log('Checkout items:', items);
             console.log('Checkout total:', total.toFixed(2));
-            console.log('Checkout orderId:', orderId);
+            console.log('Checkout order:', response.data);
             console.log('Stored lastOrder:', lastOrder);
 
             // Clear cart
-            await clearCart(currentLocale);
+            await clearCart(userId, currentLocale);
             console.log('Cart cleared, current items:', useCartStore.getState().items);
+
+            // Clear coupon data
+            if (couponApplied) {
+                localStorage.removeItem('appliedCoupon');
+            }
 
             // Redirect to success page
             router.push(`/${currentLocale}/success`);
         } catch (err) {
             console.error('Checkout error:', err);
-            alert(t('errors.checkoutFailed'));
+            setFormErrors({ general: t('errors.checkoutFailed') });
         } finally {
             setIsProcessing(false);
         }
     };
 
+
     // Check if confirm button should be enabled
     const isConfirmDisabled = () => {
-        if (isProcessing || items.length === 0) return true;
-        const billingFieldsFilled =
-            formData.firstName &&
-            formData.lastName &&
-            formData.addressLine &&
-            formData.city &&
-            formData.country &&
-            formData.phoneNumber;
-        if (formData.paymentMethod === 'cash') {
-            return !billingFieldsFilled;
+        // Log state for debugging
+        console.log('isConfirmDisabled state:', {
+            isProcessing,
+            itemsCount: items.length,
+            defaultAddress,
+            isGift: formData.isGift,
+            giftFields: {
+                giftFirstName: formData.giftFirstName,
+                giftLastName: formData.giftLastName,
+                giftPhoneNumber: formData.giftPhoneNumber,
+            },
+            paymentMethod: formData.paymentMethod,
+            cardFields: {
+                cardNumber: formData.cardNumber,
+                cardHolder: formData.cardHolder,
+                expiryDate: formData.expiryDate,
+                cvv: formData.cvv,
+            },
+        });
+
+        // Disable if processing or cart is empty
+        if (isProcessing || items.length === 0) {
+            console.log('Disabled: Processing or empty cart');
+            return true;
         }
-        return (
-            !billingFieldsFilled ||
-            !formData.cardNumber ||
-            !formData.cardHolder ||
-            !formData.expiryDate ||
-            !formData.cvv
-        );
+
+        // Disable if no valid default address
+        if (!defaultAddress) {
+            console.log('Disabled: Invalid or missing default address');
+            return true;
+        }
+
+        // If gift option is enabled, require gift fields
+        if (formData.isGift) {
+            if (!formData.giftFirstName?.trim() || !formData.giftLastName?.trim() || !formData.giftPhoneNumber?.trim()) {
+                console.log('Disabled: Missing gift fields');
+                return true;
+            }
+        }
+
+        // If payment method is cash, no further checks needed
+        if (formData.paymentMethod === 'cash') {
+            console.log('Enabled: Cash payment selected');
+            return false;
+        }
+
+        // For credit-card, require non-empty card fields
+        if (formData.paymentMethod === 'credit-card') {
+
+        }
+        if (!formData.cardNumber?.trim() || !formData.cardHolder?.trim() || !formData.expiryDate?.trim() || !formData.cvv?.trim()) {
+            console.log('Disabled: Missing credit card fields');
+            return true;
+        }
+
+        console.log('Enabled: All conditions met');
+        return false;
     };
 
     return (
-        <motion.button
-            onClick={handleConfirm}
-            disabled={isConfirmDisabled() || isProcessing}
-            className={`w-full py-4 mt-6 text-white font-medium rounded-md transition-colors flex items-center justify-center ${isConfirmDisabled() || isProcessing ? 'bg-gray-400 cursor-not-allowed' : 'bg-[var(--secondary-bg)] hover:bg-[var(--accent-color)]'}`}
-            aria-label={isProcessing ? t('processing') : t('confirm')}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={isConfirmDisabled() || isProcessing ? {} : { scale: 1.05, boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)' }}
-        >
-            {isProcessing ? (
-                <>
-                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                    {t('processing')}
-                </>
-            ) : (
-                t('confirm')
-            )}
-        </motion.button>
+        <>
+            <motion.button
+                onClick={handleConfirm}
+                disabled={isConfirmDisabled()}
+                className={`w-full py-4 mt-6 text-white font-medium rounded-md transition-colors flex items-center justify-center ${isConfirmDisabled() ? 'bg-gray-400 cursor-not-allowed' : 'bg-[var(--secondary-bg)] hover:bg-[var(--accent-color)]'
+                    }`}
+                aria-label={isProcessing ? t('processing') : t('confirm')}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={isConfirmDisabled() ? {} : { scale: 1.05, boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)' }}
+            >
+                {isProcessing ? (
+                    <>
+                        <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                        {t('processing')}
+                    </>
+                ) : (
+                    t('confirm')
+                )}
+            </motion.button>
+        </>
     );
 }

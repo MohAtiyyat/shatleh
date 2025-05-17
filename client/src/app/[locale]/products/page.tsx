@@ -10,83 +10,82 @@ import { useTranslations } from 'next-intl';
 import Breadcrumb from '../../../../components/breadcrumb';
 import { usePathname, useRouter } from 'next/navigation';
 import { useProducts } from '../../../../lib/ProductContext';
-import type { Product } from '../../../../lib';
+import { fetchCategories } from '../../../../lib/api';
+import { Product, Category, FiltersState } from '../../../../lib/index';
 
-// Mock filters (unchanged)
-const mockFilters = {
-    categories: [
-        { id: 1, name: { en: 'seeds', ar: 'بذور' }, selected: false },
-        { id: 2, name: { en: 'Home Plants', ar: 'نباتات منزلية' }, selected: false },
-        { id: 3, name: { en: 'Fruit Plants', ar: 'نباتات مثمرة' }, selected: false },
-        { id: 4, name: { en: 'Supplies', ar: 'مستلزمات' }, selected: false },
-        { id: 5, name: { en: 'Plants', ar: 'نباتات' }, selected: false },
-        { id: 6, name: { en: 'Pesticides', ar: 'مبيدات' }, selected: false },
-        { id: 7, name: { en: 'Fertilizers', ar: 'أسمدة' }, selected: false },
-        { id: 8, name: { en: 'Agricultural Equipment', ar: 'مستلزمات زراعية' }, selected: false },
-    ],
+// Initialize filters with dynamic categories
+const initializeFilters = (categories: Category[]): FiltersState => ({
+    categories: categories.map((category) => ({
+        id: category.id,
+        name: category.name,
+        selected: false,
+        subcategories: category.subcategories.map((sub) => ({
+            id: sub.id,
+            name: sub.name,
+            selected: false,
+        })),
+    })),
     availability: [
-        { id: 1, name: { en: 'In Stock', ar: 'متوفر' }, selected: false },
-        { id: 2, name: { en: 'Out of Stock', ar: 'غير متوفر' }, selected: false },
+        { id: 1, name: { en: 'In Stock', ar: 'متوفر' }, stars: 0, selected: false },
+        { id: 2, name: { en: 'Out of Stock', ar: 'غير متوفر' }, stars: 0, selected: false },
     ],
     ratings: [
-        { id: 5, name: { en: '5 Stars', ar: '5 نجوم' }, count: 589, stars: 5, selected: false },
-        { id: 4, name: { en: '4 Stars', ar: '4 نجوم' }, count: 461, stars: 4, selected: false },
-        { id: 3, name: { en: '3 Stars', ar: '3 نجوم' }, count: 203, stars: 3, selected: false },
-        { id: 2, name: { en: '2 Stars', ar: '2 نجوم' }, count: 50, stars: 2, selected: false },
-        { id: 1, name: { en: '1 Star', ar: '1 نجمة' }, count: 18, stars: 1, selected: false },
+        { id: 5, name: { en: '5 Stars', ar: '5 نجوم' }, stars: 5, selected: false },
+        { id: 4, name: { en: '4 Stars', ar: '4 نجوم' }, stars: 4, selected: false },
+        { id: 3, name: { en: '3 Stars', ar: '3 نجوم' }, stars: 3, selected: false },
+        { id: 2, name: { en: '2 Stars', ar: '2 نجوم' }, stars: 2, selected: false },
+        { id: 1, name: { en: '1 Star', ar: '1 نجمة' }, stars: 1, selected: false },
+        { id: 0, name: { en: '0 Stars', ar: '0 نجوم' }, stars: 0, selected: false },
     ],
-};
+    bestSelling: false,
+});
 
-// Updated filters to match product types
-/*
-const mockFilters = {
-    categories: [
-        { id: 1, name: { en: 'Laptops', ar: 'لاب توب' }, selected: false },
-        { id: 2, name: { en: 'Smartphones', ar: 'هواتف ذكية' }, selected: false },
-        { id: 3, name: { en: 'Tablets', ar: 'تابلت' }, selected: false },
-    ],
-    availability: [
-        { id: 1, name: { en: 'In Stock', ar: 'متوفر' }, selected: false },
-        { id: 2, name: { en: 'Out of Stock', ar: 'غير متوفر' }, selected: false },
-    ],
-    ratings: [
-        { id: 5, name: { en: '5 Stars', ar: '5 نجوم' }, count: 0, stars: 5, selected: false },
-        { id: 4, name: { en: '4 Stars', ar: '4 نجوم' }, count: 0, stars: 4, selected: false },
-        { id: 3, name: { en: '3 Stars', ar: '3 نجوم' }, count: 0, stars: 3, selected: false },
-        { id: 2, name: { en: '2 Stars', ar: '2 نجوم' }, count: 0, stars: 2, selected: false },
-        { id: 1, name: { en: '1 Star', ar: '1 نجمة' }, count: 0, stars: 1, selected: false },
-        { id: 0, name: { en: '0 Stars', ar: '0 نجوم' }, count: 0, stars: 0, selected: false },
-    ],
-};
-*/
 export default function ProductsPage() {
     const t = useTranslations('');
     const pathname = usePathname();
     const router = useRouter();
     const currentLocale = pathname.split('/')[1] || 'ar';
     const { allProducts, isLoading } = useProducts();
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [filters, setFilters] = useState<FiltersState>(initializeFilters([]));
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-    const [filters, setFilters] = useState({
-        categories: [...mockFilters.categories],
-        availability: [...mockFilters.availability],
-        ratings: [...mockFilters.ratings],
-        bestSelling: false,
-    });
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 12;
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
+    // Fetch categories on mount
+    useEffect(() => {
+        const loadCategories = async () => {
+            try {
+                console.log('Attempting to fetch categories...');
+                const fetchedCategories = await fetchCategories();
+                console.log('Categories fetched:', fetchedCategories);
+                setCategories(fetchedCategories);
+                setFilters(initializeFilters(fetchedCategories));
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+                setCategories([]);
+                setFilters(initializeFilters([]));
+            }
+        };
+        loadCategories();
+    }, []);
+
     // Pre-select category from localStorage
     useEffect(() => {
-        const category = localStorage.getItem('selectedCategory')?.toLocaleLowerCase();
-        if (category) {
+        const category = localStorage.getItem('selectedCategory')?.toLowerCase();
+        if (category && categories.length > 0) {
             setFilters((prev) => ({
                 ...prev,
                 categories: prev.categories.map((c) => ({
                     ...c,
-                    selected: c.name.ar === category || c.name.en === category,
+                    selected: c.name.en.toLowerCase() === category || c.name.ar.toLowerCase() === category,
+                    subcategories: c.subcategories.map((s) => ({
+                        ...s,
+                        selected: c.name.en.toLowerCase() === category || c.name.ar.toLowerCase() === category,
+                    })),
                 })),
                 availability: prev.availability.map((a) => ({ ...a, selected: false })),
                 ratings: prev.ratings.map((r) => ({ ...r, selected: false })),
@@ -94,7 +93,7 @@ export default function ProductsPage() {
             }));
             localStorage.removeItem('selectedCategory');
         }
-    }, []);
+    }, [categories]);
 
     // Clear localStorage on unmount
     useEffect(() => {
@@ -129,12 +128,22 @@ export default function ProductsPage() {
             });
         }
 
-        // Filter by category (note: ineffective due to null categories in data)
-        const selectedCategories = filters.categories
-            .filter((c) => c.selected)
-            .map((c) => c.name.en);
-        if (selectedCategories.length > 0) {
-            result = result.filter((product) => product.category_en && selectedCategories.includes(product.category_en));
+        // Filter by category
+        const selectedCategoryIds: number[] = [];
+        filters.categories.forEach((category) => {
+            if (category.selected) {
+                selectedCategoryIds.push(category.id);
+                category.subcategories.forEach((sub) => selectedCategoryIds.push(sub.id));
+            } else {
+                category.subcategories.forEach((sub) => {
+                    if (sub.selected) {
+                        selectedCategoryIds.push(sub.id);
+                    }
+                });
+            }
+        });
+        if (selectedCategoryIds.length > 0) {
+            result = result.filter((product) => product.category_id && selectedCategoryIds.includes(product.category_id));
         }
 
         // Filter by availability
@@ -149,13 +158,13 @@ export default function ProductsPage() {
         // Filter by rating
         const selectedRatings = filters.ratings.filter((r) => r.selected).map((r) => r.stars);
         if (selectedRatings.length > 0) {
-            result = result.filter((product) => selectedRatings.includes(Math.floor(Number(product.rating))));
+            result = result.filter((product) => product.rating && selectedRatings.includes(Math.floor(product.rating)));
         }
 
         // Filter by best selling
         if (filters.bestSelling) {
-            if (result.every((p) => p.sold_quantity === 0)) {
-                // No best-selling products available
+            result = result.filter((product) => (product.sold_quantity || 0) > 10);
+            if (result.length === 0) {
                 console.log('No best-selling products found');
             } else {
                 result = result.sort((a, b) => (b.sold_quantity || 0) - (a.sold_quantity || 0));
@@ -235,12 +244,7 @@ export default function ProductsPage() {
                             <p className="text-lg text-[#0f4229]">{t('products.noProducts')}</p>
                             <button
                                 onClick={() => {
-                                    setFilters({
-                                        categories: filters.categories.map((c) => ({ ...c, selected: false })),
-                                        availability: filters.availability.map((a) => ({ ...a, selected: false })),
-                                        ratings: filters.ratings.map((r) => ({ ...r, selected: false })),
-                                        bestSelling: false,
-                                    });
+                                    setFilters(initializeFilters(categories));
                                     setSearchTerm('');
                                     setFilteredProducts(allProducts);
                                 }}

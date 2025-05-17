@@ -89,9 +89,9 @@
                                         <h5 class="text-muted font-weight-semibold mb-2">Status</h5>
                                         @php
                                             $statusMap = [
-                                                '1' => 'Active',
-                                                '0' => 'Inactive',
-                                                '2' => 'Draft'
+                                                'active' => 'Active',
+                                                'inactive' => 'Inactive',
+                                                'draft' => 'Draft'
                                             ];
                                             $status = $statusMap[$product->status] ?? 'N/A';
                                         @endphp

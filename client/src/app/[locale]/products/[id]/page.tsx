@@ -1,12 +1,8 @@
-
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, useEffect, useMemo } from 'react';
 import { Star, Minus, Plus, ShoppingCart, ShoppingBag } from 'lucide-react';
-import { ProductTabs } from '../../../../../components/productsDetails/product-tabs';
 import ProductCarousel from '../../../../../components/productsDetails/product-carousel';
-import ExpandableDescription from '../../../../../components/productsDetails/expandable-description';
 import CartSidebar from '../../../../../components/productsDetails/cart-sidebar';
 import ProductDetailsSkeleton from '../../../../../components/productsDetails/product-details-skeleton';
 import { useCartStore } from '../../../../../lib/store';
@@ -14,7 +10,14 @@ import { useTranslations } from 'next-intl';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import Breadcrumb from '../../../../../components/breadcrumb';
 import { useProducts } from '../../../../../lib/ProductContext';
-import { formatPrice } from '../../../../../lib/utils';
+import { useAuth } from '../../../../../lib/AuthContext';
+import { formatPrice, getRelatedProducts } from '../../../../../lib/utils';
+import { fetchCategories, fetchProductReviews, submitProductReview } from '../../../../../lib/api';
+import { Category, Review } from '../../../../../lib/index';
+import { motion } from 'framer-motion';
+import ExpandableDescription from '../../../../../components/productsDetails/expandable-description';
+import { ProductTabs } from '../../../../../components/productsDetails/product-tabs';
+import ProductImageSwiper from '../../../../../components/productsDetails/ProductImageSwiper';
 
 export default function ProductDetailsPage() {
     const t = useTranslations('');
@@ -26,22 +29,92 @@ export default function ProductDetailsPage() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { items, addItem, updateQuantity, isLoading: isCartLoading } = useCartStore();
     const { allProducts, isLoading } = useProducts();
+    const { userId, isAuthenticated } = useAuth();
     const [isAdding, setIsAdding] = useState(false);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [categoryName, setCategoryName] = useState<string>('');
+    const [subcategoryName, setSubcategoryName] = useState<string>('');
+    const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [averageRating, setAverageRating] = useState<number>(0);
+    const [isReviewsLoading, setIsReviewsLoading] = useState(true);
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [rating, setRating] = useState<number>(0);
+    const [reviewText, setReviewText] = useState<string>('');
+    const [ratingError, setRatingError] = useState<string>('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Find the product
     const product = allProducts.find((p) => p.id === productId);
 
-    // Render skeleton UI while loading
-    if (isLoading) {
-        return <ProductDetailsSkeleton />;
-    }
+    // Fetch categories on mount
+    useEffect(() => {
+        const loadCategories = async () => {
+            setIsCategoriesLoading(true);
+            try {
+                const fetchedCategories = await fetchCategories();
+                setCategories(fetchedCategories);
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+                setCategories([]);
+            } finally {
+                setIsCategoriesLoading(false);
+            }
+        };
+        loadCategories();
+    }, []);
+
+    // Find category and subcategory for the product
+    useEffect(() => {
+        if (product && categories.length > 0 && product.category_id) {
+            let foundCategory = '';
+            let foundSubcategory = '';
+
+            for (const category of categories) {
+                if (category.id === product.category_id) {
+                    foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
+                    break;
+                }
+                const subcategory = category.subcategories.find((sub) => sub.id === product.category_id);
+                if (subcategory) {
+                    foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
+                    foundSubcategory = currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en;
+                    break;
+                }
+            }
+
+            setCategoryName(foundCategory);
+            setSubcategoryName(foundSubcategory);
+        }
+    }, [product, categories, currentLocale]);
+
+    // Fetch reviews on mount
+    useEffect(() => {
+        const loadReviews = async () => {
+            setIsReviewsLoading(true);
+            try {
+                const { reviews, averageRating } = await fetchProductReviews(productId);
+                setReviews(reviews);
+                setAverageRating(averageRating);
+            } catch (error) {
+                console.error('Failed to load reviews:', error);
+                setReviews([]);
+                setAverageRating(0);
+            } finally {
+                setIsReviewsLoading(false);
+            }
+        };
+        if (productId) {
+            loadReviews();
+        }
+    }, [productId]);
 
     // Handle quantity update
     const handleUpdateQuantity = async (newQuantity: number) => {
         if (!product) return;
         setIsAdding(true);
         try {
-            await updateQuantity(product.id, newQuantity, currentLocale);
+            await updateQuantity(product.id, newQuantity, userId, currentLocale);
         } catch (error) {
             console.error('Error updating quantity:', error);
         } finally {
@@ -56,7 +129,7 @@ export default function ProductDetailsPage() {
         try {
             await addItem(
                 {
-                    id: product.id,
+                    product_id: product.id,
                     name_en: product.name_en,
                     name_ar: product.name_ar,
                     description_en: product.description_en,
@@ -64,6 +137,7 @@ export default function ProductDetailsPage() {
                     price: product.price,
                     image: product.image,
                 },
+                userId,
                 currentLocale
             );
             setIsCartOpen(true);
@@ -79,10 +153,11 @@ export default function ProductDetailsPage() {
         if (!product) return;
         setIsAdding(true);
         try {
-            if (quantity === 0) {
+            const cartItem = items.find((item) => item.product_id === product.id);
+            if (!cartItem) {
                 await addItem(
                     {
-                        id: product.id,
+                        product_id: product.id,
                         name_en: product.name_en,
                         name_ar: product.name_ar,
                         description_en: product.description_en,
@@ -90,10 +165,11 @@ export default function ProductDetailsPage() {
                         price: product.price,
                         image: product.image,
                     },
+                    userId,
                     currentLocale
                 );
-            } else if (quantity !== cartItem?.quantity) {
-                await updateQuantity(product.id, quantity, currentLocale);
+            } else if (cartItem.quantity !== quantity) {
+                await updateQuantity(product.id, quantity, userId, currentLocale);
             }
             router.push(`/${currentLocale}/checkout`);
         } catch (error) {
@@ -103,53 +179,86 @@ export default function ProductDetailsPage() {
         }
     };
 
-    // Mock tab content
+    // Handle rate product button click
+    const handleRateProduct = () => {
+        if (!isAuthenticated) {
+            router.push(`/${currentLocale}/login?redirect=/products/${productId}`);
+            return;
+        }
+        setIsRatingModalOpen(true);
+    };
+
+    // Handle rating star click
+    const handleStarClick = (value: number) => {
+        setRating(value);
+        setRatingError('');
+    };
+
+    // Handle review submission
+    const handleSubmitReview = async () => {
+        if (!product || !userId) return;
+        if (rating < 1 || rating > 5) {
+            setRatingError(t('products.ratingRequired'));
+            return;
+        }
+        if (reviewText.trim().length < 3) {
+            setRatingError(t('products.reviewTextRequired'));
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const newReview = await submitProductReview(
+                {
+                    product_id: productId,
+                    rating,
+                    text: reviewText,
+                    customer_id: userId,
+                },
+                currentLocale
+            );
+            setReviews((prev) => [newReview, ...prev].slice(0, 4));
+            const { averageRating: newAverage } = await fetchProductReviews(productId);
+            setAverageRating(newAverage);
+            setIsRatingModalOpen(false);
+            setRating(0);
+            setReviewText('');
+            setRatingError('');
+        } catch (error) {
+            setRatingError(error instanceof Error ? error.message : t('products.submitReviewFailed'));
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Split description into lines
+    const description = product && (currentLocale === 'en' ? product.description_en : product.description_ar) || '';
+    const descriptionLines = description.split('\n').filter(line => line.trim());
+    const shortDescription = descriptionLines.slice(0, 3).join('\n');
+    const showReadMore = descriptionLines.length > 5;
+
+    // Memoize related products
+    const relatedProducts = useMemo(() => {
+        return product ? getRelatedProducts(product, allProducts, categories) : [];
+    }, [product, allProducts, categories]);
+
+    // Tab content
     const tabContent = [
         {
             id: 'description',
             label: t('products.description', { defaultMessage: currentLocale === 'en' ? 'Description' : 'الوصف' }),
             content: (
-                <ExpandableDescription
-                    shortDescription={product && currentLocale === 'en' ? product.description_en : product?.description_ar || ''}
-                    fullDescription={
-                        (currentLocale === 'en' ? product?.description_en : product?.description_ar || '') +'. '}
-                    moreText={t('products.readMore', { defaultMessage: currentLocale === 'en' ? 'More ...' : 'المزيد ...' })}
-                    lessText={t('products.readLess', { defaultMessage: currentLocale === 'en' ? 'Less' : 'أقل' })}
-                />
-            ),
-        },
-        {
-            id: 'specification',
-            label: t('products.specification', { defaultMessage: currentLocale === 'en' ? 'Specification' : 'المواصفات' }),
-            content: (
-                <div className="space-y-4">
-                    <h3 className="font-medium text-lg">
-                        {t('products.technicalSpecifications', {
-                            defaultMessage: currentLocale === 'en' ? 'Technical Specifications' : 'المواصفات الفنية',
-                        })}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <p className="flex gap-x-2">
-                                <span className="font-medium">{t('products.size', { defaultMessage: currentLocale === 'en' ? 'Size' : 'الحجم' })}:</span>
-                                <span>{currentLocale === 'en' ? 'Medium' : 'متوسط'}</span>
-                            </p>
-                            <p className="flex gap-x-2">
-                                <span className="font-medium">{t('products.type', { defaultMessage: currentLocale === 'en' ? 'Type' : 'النوع' })}:</span>
-                                <span>{product ? (currentLocale === 'en' ? product.category_en : product.category_ar) : ''}</span>
-                            </p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className="flex gap-x-2">
-                                <span className="font-medium">{t('products.care', { defaultMessage: currentLocale === 'en' ? 'Care Level' : 'مستوى العناية' })}:</span>
-                                <span>{currentLocale === 'en' ? 'Low' : 'منخفض'}</span>
-                            </p>
-                            <p className="flex gap-x-2">
-                                <span className="font-medium">{t('products.light', { defaultMessage: currentLocale === 'en' ? 'Light' : 'الإضاءة' })}:</span>
-                                <span>{currentLocale === 'en' ? 'Indirect' : 'غير مباشر'}</span>
-                            </p>
-                        </div>
-                    </div>
+                <div className="text-[#667085]">
+                    {showReadMore ? (
+                        <ExpandableDescription
+                            shortDescription={shortDescription}
+                            fullDescription={description}
+                            moreText={t('products.readMore', { defaultMessage: currentLocale === 'en' ? 'More ...' : 'المزيد ...' })}
+                            lessText={t('products.readLess', { defaultMessage: currentLocale === 'en' ? 'Less' : 'أقل' })}
+                        />
+                    ) : (
+                        <p>{description}</p>
+                    )}
                 </div>
             ),
         },
@@ -157,34 +266,85 @@ export default function ProductDetailsPage() {
             id: 'reviews',
             label: t('products.reviews', { defaultMessage: currentLocale === 'en' ? 'Reviews' : 'التقييمات' }),
             content: (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="border border-[#d0d5dd] rounded-lg p-4 bg-white">
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="w-8 h-8 bg-[#d0d5dd] rounded-full flex items-center justify-center text-[#667085]">
-                                    <span className="text-xs">AM</span>
-                                </div>
-                                <span className="font-medium">{currentLocale === 'en' ? 'Alex Morningstar' : 'أليكس مورنينغستار'}</span>
-                                <div className="ml-auto flex">
-                                    {Array.from({ length: 5 }).map((_, j) => (
-                                        <Star key={j} className={`w-4 h-4 ${j < 4 ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`} />
-                                    ))}
-                                </div>
+                <div className="flex flex-col gap-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="text-lg font-medium text-[#026e78]">
+                                {averageRating.toFixed(1)} / 5
+                            </span>
+                            <div className="flex">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        className={`w-5 h-5 ${i < Math.round(averageRating) ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`}
+                                    />
+                                ))}
                             </div>
-                            <h3 className="font-medium mb-1">{currentLocale === 'en' ? 'Great Product!' : 'منتج رائع!'}</h3>
-                            <p className="text-sm text-[#667085]">
-                                {currentLocale === 'en' ? 'This plant is beautiful and easy to care for.' : 'هذا النبات جميل وسهل العناية به.'}
-                            </p>
                         </div>
-                    ))}
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={handleRateProduct}
+                            className="bg-[#038c8c] text-white px-4 py-2 rounded-md hover:bg-[#026e78] transition-colors"
+                        >
+                            {t('products.rateProduct')}
+                        </motion.button>
+                    </div>
+                    {isReviewsLoading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {Array.from({ length: 4 }).map((_, i) => (
+                                <div key={i} className="border border-[#d0d5dd] rounded-lg p-4 bg-white animate-pulse">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-8 h-8 bg-[#d0d5dd] rounded-full"></div>
+                                        <div className="h-4 bg-[#d0d5dd] w-1/3 rounded"></div>
+                                        <div className="ml-auto flex gap-1">
+                                            {Array.from({ length: 5 }).map((_, j) => (
+                                                <div key={j} className="w-4 h-4 bg-[#d0d5dd] rounded"></div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="h-4 bg-[#d0d5dd] w-1/2 rounded mb-2"></div>
+                                    <div className="h-3 bg-[#d0d5dd] w-full rounded"></div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : reviews.length === 0 ? (
+                        <p className="text-[#667085]">{t('products.noReviews')}</p>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {reviews.map((review) => (
+                                <div key={review.id} className="border border-[#d0d5dd] rounded-lg p-4 bg-white">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-8 h-8 bg-[#d0d5dd] rounded-full flex items-center justify-center text-[#667085]">
+                                            <span className="text-xs">{review.customer_name[0]}</span>
+                                        </div>
+                                        <span className="font-medium">{review.customer_name}</span>
+                                        <div className="ml-auto flex">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <Star
+                                                    key={i}
+                                                    className={`w-4 h-4 ${i < review.rating ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-[#667085]">{review.text}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             ),
         },
     ];
 
     // Get current quantity from cart
-    const cartItem = items.find((item) => item.id === productId);
+    const cartItem = items.find((item) => item.product_id === productId);
     const quantity = cartItem?.quantity || 0;
+
+    if (isLoading) {
+        return <ProductDetailsSkeleton />;
+    }
 
     if (!product) {
         return (
@@ -195,45 +355,129 @@ export default function ProductDetailsPage() {
             </div>
         );
     }
-    console.log('Product Image:', product.image[0]);
+
     return (
         <div className={`min-h-screen bg-[#e8f5e9] overflow-hidden ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
             <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
+            {/* Rating Modal */}
+            {isRatingModalOpen && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
+                    style={{ backdropFilter: 'blur(0.8px)' }}
+                >
+                    <motion.div
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        className="bg-white rounded-lg p-6 w-full max-w-md"
+                    >
+                        <h2 className="text-xl font-medium text-[#026e78] mb-4">{t('products.rateProduct')}</h2>
+                        <div className="mb-4">
+                            <label className="block mb-2 text-[#667085]">{t('products.yourRating')}</label>
+                            <div className="flex gap-1">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        className={`w-6 h-6 cursor-pointer ${i < rating ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`}
+                                        onClick={() => handleStarClick(i + 1)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block mb-2 text-[#667085]">{t('products.yourReview')}</label>
+                            <textarea
+                                value={reviewText}
+                                onChange={(e) => setReviewText(e.target.value)}
+                                className="w-full rounded-md border border-[#d0d5dd] p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#038c8c]"
+                                rows={4}
+                                placeholder={t('products.reviewPlaceholder')}
+                            />
+                        </div>
+                        {ratingError && <p className="text-red-500 text-sm mb-4">{ratingError}</p>}
+                        <div className="flex justify-end gap-2">
+                            <button
+                                onClick={() => {
+                                    setIsRatingModalOpen(false);
+                                    setRating(0);
+                                    setReviewText('');
+                                    setRatingError('');
+                                }}
+                                className="px-4 py-2 border border-[#d0d5dd] text-[#667085] rounded-md hover:bg-gray-100"
+                            >
+                                {t('products.cancel')}
+                            </button>
+                            <button
+                                onClick={handleSubmitReview}
+                                disabled={isSubmitting}
+                                className={`px-4 py-2 bg-[#038c8c] text-white rounded-md hover:bg-[#026e78] ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                            >
+                                {isSubmitting ? t('products.submitting') : t('products.submitReview')}
+                            </button>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
 
             <div className="max-w-7xl mx-auto px-4 py-6">
                 <div className="flex flex-col md:flex-row gap-8">
                     <div className="md:w-1/2 lg:w-5/12">
                         <Breadcrumb pageName={'products'} product={currentLocale === 'en' ? product.name_en : product.name_ar} />
                         <div className="rounded-lg overflow-hidden">
-                            <Image
-                                src={product.image[0] ? `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}` : '/default.jpg'}
-                                alt={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
-                                width={400}
-                                height={400}
-                                className="w-[700px] h-[400px] object-cover rounded-lg"
+                            <ProductImageSwiper
+                                images={Array.isArray(product.image) ? product.image : [product.image]}
+                                altText={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
                             />
                         </div>
                     </div>
 
-                    <div className="md:w-1/2 lg:w-7/12">
+                    <div className="md:w-1/2 lg:w-7/12 mt-6">
                         <h1 className="text-3xl font-medium text-[#026e78] mb-3">{currentLocale === 'en' ? product.name_en : product.name_ar}</h1>
                         <p className="text-[#667085] mb-4">{(currentLocale === 'en' ? product.description_en : product.description_ar).split('.')[0]}</p>
 
-                        <div className="flex flex-wrap gap-2 mb-3">
-                            <span className="bg-[#038c8c] text-white px-3 py-1 rounded-full text-sm">
-                                {currentLocale === 'en' ? product.category_en : product.category_ar || 'Category'}
-                            </span>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {isCategoriesLoading ? (
+                                <>
+                                    <div className="bg-gray-200 h-6 w-24 rounded-full animate-pulse"></div>
+                                    <div className="bg-gray-200 h-6 w-32 rounded-full animate-pulse ml-2"></div>
+                                </>
+                            ) : (
+                                <>
+                                    {categoryName ? (
+                                        <span className="bg-[#038c8c] text-white px-3 py-1 rounded-full text-sm w-fit">
+                                            {categoryName}
+                                        </span>
+                                    ) : (
+                                        <span className="text-[#667085] text-sm">{t('products.noCategory')}</span>
+                                    )}
+                                    {subcategoryName && (
+                                        <span className="bg-[#038c8c] text-white px-3 py-1 rounded-full text-sm w-fit ml-2">
+                                            {subcategoryName}
+                                        </span>
+                                    )}
+                                </>
+                            )}
                         </div>
 
                         <div className="flex mb-4">
                             {Array.from({ length: 5 }).map((_, i) => (
-                                <Star key={i} className={`w-5 h-5 ${i < product.rating ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`} />
+                                <Star
+                                    key={i}
+                                    className={`w-5 h-5 ${i < Math.round(averageRating) ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`}
+                                />
                             ))}
+                            <span className="ml-2 text-[#667085] text-sm">({averageRating.toFixed(1)})</span>
                         </div>
 
                         <div className="mb-6">
                             <p className="text-[#667085] text-sm">{t('products.price')}</p>
-                            <p className="text-3xl font-semibold text-[#026e78]">{formatPrice(product.price, currentLocale)}</p>
+                            <p className="text-3xl font-semibold text-[#026e78]">
+                                {product.price && !isNaN(parseFloat(product.price))
+                                    ? formatPrice(parseFloat(product.price), currentLocale)
+                                    : t('products.contactForPrice')}
+                            </p>
                         </div>
 
                         {!product.availability && (
@@ -247,8 +491,7 @@ export default function ProductDetailsPage() {
                                 <button
                                     onClick={handleAddToCart}
                                     disabled={isAdding || isCartLoading || !product.availability}
-                                    className={`bg-white text-[#337a5b] px-4 py-2 rounded-md transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-200'
-                                        }`}
+                                    className={`bg-white text-[#337a5b] px-4 py-2 rounded-md transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-200'}`}
                                 >
                                     <ShoppingCart className="w-4 h-4 mr-2" />
                                     {t('products.addToCart')}
@@ -276,8 +519,7 @@ export default function ProductDetailsPage() {
                             <button
                                 onClick={handleBuyNow}
                                 disabled={isAdding || isCartLoading || !product.availability}
-                                className={`bg-[#8dfb9e] text-[#121619] px-6 py-2 rounded-full transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#27eb00]'
-                                    }`}
+                                className={`bg-[#8dfb9e] text-[#121619] px-6 py-2 rounded-full transition-colors flex items-center ${isAdding || isCartLoading || !product.availability ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#27eb00]'}`}
                                 title={isAdding || isCartLoading ? t('products.processing') : ''}
                             >
                                 {t('products.buyNow')}
@@ -296,14 +538,14 @@ export default function ProductDetailsPage() {
                 </div>
             </div>
 
-            <div className="md:max-w-7xl mx-auto px-4 py-12">
+            <div className="md:max-w-7xl mx-auto px-4 py-7">
                 <ProductTabs tabs={tabContent} initialTab="description" />
             </div>
 
             <div className="border-t border-[#d0d5dd] py-8 items-center justify-center bg-[#e8f5e9]">
                 <div className="max-w-7xl mx-auto px-4">
                     <h2 className="text-xl font-medium text-center mb-8 text-[#337a5b]">{t('products.suggestedProducts')}</h2>
-                    <ProductCarousel products={allProducts} />
+                    <ProductCarousel products={relatedProducts} />
                 </div>
             </div>
         </div>

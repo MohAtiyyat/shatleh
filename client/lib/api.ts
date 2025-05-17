@@ -1,11 +1,7 @@
-// Base API URL from environment variable
-const API_URL = process.env.NEXT_PUBLIC_API_URL || ' ';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 import { mockProducts } from './mockData';
+import type { Product, Category, BackendCartItem, Service, BlogPost, PostFilterCategory } from './index';
 
-// Import Product type
-import type { Product } from './index';
-
-// Interfaces for request and response data
 interface LoginRequest {
     email: string;
     password: string;
@@ -38,6 +34,22 @@ interface RegisterResponse {
 
 interface ProductsResponse {
     data: Product[];
+}
+
+interface RawCategory {
+    id: number;
+    name_en: string;
+    name_ar: string;
+    subcategories: {
+        id: number;
+        name_en: string;
+        name_ar: string;
+        parent_id: number;
+    }[];
+}
+
+interface CategoriesResponse {
+    data: RawCategory[];
 }
 
 interface Address {
@@ -73,15 +85,6 @@ interface ProfileResponse {
     message?: string;
 }
 
-interface Service {
-    id: number;
-    name_en: string;
-    name_ar: string;
-    description_en: string;
-    description_ar: string;
-    image: string[] | null;
-}
-
 interface ServicesResponse {
     data: Service[];
     message: string;
@@ -90,21 +93,124 @@ interface ServicesResponse {
 interface ServiceRequestRequest {
     service_id: number;
     address_id: number;
-    customer_id: string; // Add customer_id
+    customer_id: string;
     details: string;
     image?: File;
 }
 
-// Update the ServiceRequestResponse interface (align with backend response)
 interface ServiceRequestResponse {
     data: {
         id: number;
         user_id: number;
-        customer_id: string; // Add customer_id
+        customer_id: string;
         service_id: number;
         address_id: number;
         details: string;
         image: string | null;
+        status: string;
+    };
+    message: string;
+}
+
+interface CartResponse {
+    data: BackendCartItem[];
+}
+
+interface CartUpdateRequest {
+    customer_id: string;
+    product_id: number;
+    quantity: number;
+}
+
+interface CartUpdateResponse {
+    message: string;
+}
+
+interface CartClearResponse {
+    message: string;
+}
+
+interface Review {
+    id: number;
+    rating: number;
+    text: string;
+    customer_name: string;
+    created_at: string;
+}
+
+interface ReviewsResponse {
+    data: {
+        reviews: Review[];
+        average_rating: number;
+    };
+    message: string;
+}
+
+interface ReviewRequest {
+    product_id: number;
+    rating: number;
+    text: string;
+    customer_id: string;
+}
+
+interface ReviewResponse {
+    data: Review;
+    message: string;
+}
+interface subcategories {
+    id: number;
+    name_en: string;
+    name_ar: string;
+}
+interface PostCategoriesResponse {
+    data: {
+        id: number;
+        name_en: string;
+        name_ar: string;
+        subcategories: subcategories[];
+    }[];
+}
+
+
+interface Coupon {
+    id: number;
+    title: string;
+    code: string;
+    amount: number;
+    expire_date: string;
+    country_id: number | null;
+    country_name?: string | null;
+}
+
+interface CouponsResponse {
+    data: Coupon[];
+    message: string;
+}
+
+
+interface ApplyCouponResponse {
+    data: Coupon;
+    message: string;
+}
+
+interface CheckoutRequest {
+    customer_id: string;
+    address_id: number;
+    items: { product_id: number; price: string; quantity: number }[];
+    is_gift?: boolean; // Made optional
+    gift_first_name?: string;
+    gift_last_name?: string;
+    gift_phone_number?: string;
+    coupon_id?: number | null;
+    total: number;
+    delivery_cost: number;
+}
+
+interface CheckoutResponse {
+    data: {
+        order_id: number;
+        order_code: string;
+        total: number;
         status: string;
     };
     message: string;
@@ -116,15 +222,23 @@ interface ApiErrorResponse {
     errors?: Record<string, string[]>;
 }
 
-// Helper function to get auth token
 const getAuthToken = (): string | null => {
     return localStorage.getItem('token');
 };
 
-// Helper function to handle fetch responses
 const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
-        const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
+        let errorData: ApiErrorResponse = {};
+        try {
+            errorData = await response.json();
+        } catch {
+            // Handle case where response is not JSON
+        }
+        console.error('API Error:', {
+            status: response.status,
+            statusText: response.statusText,
+            errorData,
+        });
         throw new Error(
             errorData.message || errorData.error || JSON.stringify(errorData.errors) || `HTTP error ${response.status}`
         );
@@ -132,7 +246,6 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     return response.json() as Promise<T>;
 };
 
-// Login API call
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
     try {
         const response = await fetch(`${API_URL}/api/login`, {
@@ -143,15 +256,15 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
             },
             body: JSON.stringify(data),
         });
-        return handleResponse<LoginResponse>(response);
+        const result = await handleResponse<LoginResponse>(response);
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.user.id);
+        return result;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Login failed'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Login failed');
     }
 };
 
-// Register API call
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
     try {
         const response = await fetch(`${API_URL}/api/register`, {
@@ -162,15 +275,15 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
             },
             body: JSON.stringify(data),
         });
-        return handleResponse<RegisterResponse>(response);
+        const result = await handleResponse<RegisterResponse>(response);
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.user.id);
+        return result;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Registration failed'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Registration failed');
     }
 };
 
-// Logout API call
 export const logoutApi = async (token: string): Promise<void> => {
     try {
         const response = await fetch(`${API_URL}/api/logout`, {
@@ -182,14 +295,47 @@ export const logoutApi = async (token: string): Promise<void> => {
             },
         });
         await handleResponse<void>(response);
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Logout failed'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Logout failed');
     }
 };
 
-// Fetch top products
+export const fetchCategories = async (): Promise<Category[]> => {
+    try {
+        console.log('Fetching categories from:', `${API_URL}/api/categories`);
+        const response = await fetch(`${API_URL}/api/categories`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<CategoriesResponse>(response);
+        const transformedCategories: Category[] = data.data.map((category) => ({
+            id: category.id,
+            name: {
+                en: category.name_en,
+                ar: category.name_ar,
+            },
+            subcategories: category.subcategories.map((sub) => ({
+                id: sub.id,
+                name: {
+                    en: sub.name_en,
+                    ar: sub.name_ar,
+                },
+                subcategories: [],
+            })),
+        }));
+        console.log('Transformed categories:', transformedCategories);
+        return transformedCategories;
+    } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch categories');
+    }
+};
+
 export const fetchTopProducts = async (): Promise<Product[]> => {
     try {
         const response = await fetch(`${API_URL}/api/top_sellers`, {
@@ -202,13 +348,10 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
         const data = await handleResponse<ProductsResponse>(response);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch top products'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch top products');
     }
 };
 
-// Fetch all products (for ProductsPage)
 export const fetchAllProducts = async (): Promise<Product[]> => {
     try {
         const response = await fetch(`${API_URL}/api/all_products`, {
@@ -222,11 +365,18 @@ export const fetchAllProducts = async (): Promise<Product[]> => {
         return data.data;
     } catch (error) {
         console.error('Error fetching all products:', error);
-        return mockProducts; // Return mock data on failure
+        return mockProducts.map((product) => ({
+            ...product,
+            price: product.price.toString(),
+            availability: !!product.availability,
+            category_id: product.category_id || null,
+            category_en: product.category_en || null,
+            category_ar: product.category_ar || null,
+            rating: product.rating || undefined,
+        }));
     }
 };
 
-// Fetch user profile
 export const fetchProfile = async (): Promise<Profile> => {
     const token = getAuthToken();
     if (!token) {
@@ -242,16 +392,12 @@ export const fetchProfile = async (): Promise<Profile> => {
             },
         });
         const data = await handleResponse<ProfileResponse>(response);
-        console.log(data);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch profile'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch profile');
     }
 };
 
-// Update user profile
 export const updateProfile = async (formData: FormData): Promise<Profile> => {
     const token = getAuthToken();
     if (!token) {
@@ -269,13 +415,10 @@ export const updateProfile = async (formData: FormData): Promise<Profile> => {
         const data = await handleResponse<ProfileResponse>(response);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to update profile'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to update profile');
     }
 };
 
-// Fetch user addresses
 export const fetchAddresses = async (): Promise<Address[]> => {
     const token = getAuthToken();
     if (!token) {
@@ -293,13 +436,10 @@ export const fetchAddresses = async (): Promise<Address[]> => {
         const data = await handleResponse<AddressesResponse>(response);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch addresses'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch addresses');
     }
 };
 
-// Add new address
 export const addAddress = async (address: Omit<Address, 'id' | 'is_default' | 'country_name'>): Promise<Address> => {
     const token = getAuthToken();
     if (!token) {
@@ -318,13 +458,10 @@ export const addAddress = async (address: Omit<Address, 'id' | 'is_default' | 'c
         const data = await handleResponse<AddressResponse>(response);
         return data.address;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to add address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to add address');
     }
 };
 
-// Update address
 export const updateAddress = async (id: number, address: Omit<Address, 'id' | 'is_default' | 'country_name'>): Promise<Address> => {
     const token = getAuthToken();
     if (!token) {
@@ -343,13 +480,10 @@ export const updateAddress = async (id: number, address: Omit<Address, 'id' | 'i
         const data = await handleResponse<AddressResponse>(response);
         return data.address;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to update address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to update address');
     }
 };
 
-// Set default address
 export const setDefaultAddress = async (id: number): Promise<void> => {
     const token = getAuthToken();
     if (!token) {
@@ -366,13 +500,10 @@ export const setDefaultAddress = async (id: number): Promise<void> => {
         });
         await handleResponse<void>(response);
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to set default address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to set default address');
     }
 };
 
-// Delete address
 export const deleteAddress = async (id: number): Promise<void> => {
     const token = getAuthToken();
     if (!token) {
@@ -389,13 +520,10 @@ export const deleteAddress = async (id: number): Promise<void> => {
         });
         await handleResponse<void>(response);
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to delete address'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to delete address');
     }
 };
 
-// Fetch all active services
 export const fetchServices = async (): Promise<Service[]> => {
     try {
         const response = await fetch(`${API_URL}/api/services`, {
@@ -406,16 +534,12 @@ export const fetchServices = async (): Promise<Service[]> => {
             },
         });
         const data = await handleResponse<ServicesResponse>(response);
-        console.log("service",data);
         return data.data;
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to fetch services'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch services');
     }
 };
 
-// Create a new service request
 export const createServiceRequest = async (data: ServiceRequestRequest): Promise<ServiceRequestResponse> => {
     const token = getAuthToken();
     if (!token) {
@@ -425,7 +549,7 @@ export const createServiceRequest = async (data: ServiceRequestRequest): Promise
         const formData = new FormData();
         formData.append('service_id', data.service_id.toString());
         formData.append('address_id', data.address_id.toString());
-        formData.append('customer_id', data.customer_id); // Add customer_id
+        formData.append('customer_id', data.customer_id);
         formData.append('details', data.details);
         if (data.image) {
             formData.append('image', data.image);
@@ -441,8 +565,221 @@ export const createServiceRequest = async (data: ServiceRequestRequest): Promise
         });
         return handleResponse<ServiceRequestResponse>(response);
     } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : 'Failed to create service request'
-        );
+        throw new Error(error instanceof Error ? error.message : 'Failed to create service request');
+    }
+};
+
+export const fetchCart = async (customerId: string, locale: string): Promise<BackendCartItem[]> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/cart`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify({ customer_id: customerId }),
+        });
+        const data = await handleResponse<CartResponse>(response);
+        return data.data.map((item) => ({
+            ...item,
+            price: item.price.toString(),
+        }));
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch cart');
+    }
+};
+
+export const updateCartItem = async (data: CartUpdateRequest, locale: string): Promise<CartUpdateResponse> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/cart/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify(data),
+        });
+        return handleResponse<CartUpdateResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to update cart');
+    }
+};
+
+export const clearCart = async (customerId: string, locale: string): Promise<CartClearResponse> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/cart/clear`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify({ customer_id: customerId }),
+        });
+        return handleResponse<CartClearResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to clear cart');
+    }
+};
+
+export const fetchProductReviews = async (productId: number): Promise<{ reviews: Review[]; averageRating: number }> => {
+    try {
+        const response = await fetch(`${API_URL}/api/products/${productId}/reviews`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<ReviewsResponse>(response);
+        return {
+            reviews: data.data.reviews,
+            averageRating: data.data.average_rating,
+        };
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch product reviews');
+    }
+};
+
+export const submitProductReview = async (data: ReviewRequest, locale: string): Promise<Review> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/products/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await handleResponse<ReviewResponse>(response);
+        return result.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to submit review');
+    }
+};
+
+export const fetchBlogPosts = async (locale: string): Promise<BlogPost[]> => {
+    try {
+        const response = await fetch(`${API_URL}/api/blog`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<BlogPost[]>(response);
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch blog posts:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch blog posts');
+    }
+};
+
+export const fetchPostCategories = async (locale: string): Promise<PostFilterCategory[]> => {
+    try {
+        const response = await fetch(`${API_URL}/api/categories`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<PostCategoriesResponse>(response);
+        const transformedCategories: PostFilterCategory[] = data.data.map((category) => ({
+            id: category.id,
+            name: {
+                en: category.name_en,
+                ar: category.name_ar,
+            },
+            selected: false,
+        }));
+        return transformedCategories;
+    } catch (error) {
+        console.error('Failed to fetch post categories:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch post categories');
+    }
+};
+
+export const fetchCoupons = async (): Promise<Coupon[]> => {
+    try {
+        const response = await fetch(`${API_URL}/api/coupons`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<CouponsResponse>(response);
+        return data.data;
+    } catch (error) {
+        console.error('Failed to fetch coupons:', error);
+        return [];
+    }
+};
+
+export const applyCoupon = async (code: string, countryId: number | null): Promise<ApplyCouponResponse> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/coupons/apply`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ code, country_id: countryId }),
+        });
+        return await handleResponse<ApplyCouponResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to apply coupon');
+    }
+};
+
+export const checkout = async (data: CheckoutRequest): Promise<CheckoutResponse> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/checkout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+        return await handleResponse<CheckoutResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Checkout failed');
     }
 };

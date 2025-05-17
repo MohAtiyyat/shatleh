@@ -9,8 +9,10 @@ use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\LogController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PaymentController;
+use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductShopController;
+use App\Http\Controllers\Dashboard\ReviewController;
 use App\Http\Controllers\Dashboard\ServiceController;
 use App\Http\Controllers\Dashboard\ServiceRequestController;
 use App\Http\Controllers\Dashboard\ShopController;
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(function () {
+    Route::get('/home', function () {return view('admin.index');})->name('home');
     // logging test route
     Route::get('/test-log', function () {
         \Log::channel('mysql')->info('Test log entry', [
@@ -42,7 +45,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('product');
             Route::get('/create', [ProductController::class, 'create'])->name('product.create');
-            Route::post('/create', [ProductController::class, 'store'])->name('product.create');
+            Route::post('/create', [ProductController::class, 'store'])->name('product.store');
             Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
             Route::get('/{id}', [ProductController::class, 'show'])->name('product.show');
             Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');
@@ -140,12 +143,19 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::get('/{order}', [OrderController::class, 'show'])->name('.show');
             Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
         });
-
+        Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::resource('specialties', SpecialtiesController::class)->except('show');
 
         Route::resource('coupon', CouponController::class)->except('show');
 
-        Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
+        Route::resource('post', PostController::class);
+
+        Route::name('review.')->prefix('review')->group(function () {
+            Route::get('/', [ReviewController::class, 'index'])->name('index');
+            Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
+            Route::delete('/{id}', [ReviewController::class, 'delete'])->name('delete');
+        });        
+
     });
 });
 
