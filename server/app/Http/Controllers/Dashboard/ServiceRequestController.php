@@ -17,7 +17,7 @@ class ServiceRequestController extends Controller
         $serviceRequests = ServiceRequest::with([
             'address',
             'service',
-            'customer.user',
+            'customer',
             'employee',
             'expert',
         ])->get();

@@ -20,8 +20,8 @@
 
                     {{-- Customer Name --}}
                     <td>
-                        <a href="{{ route('dashboard.customer.index', ['search' => $serviceRequest->customer->user->email]) }}">
-                            {{ $serviceRequest->customer?->user?->first_name }} {{ $serviceRequest->customer?->user?->last_name }}
+                        <a href="{{ route('dashboard.customer.index', ['search' => $serviceRequest->customer->email]) }}">
+                            {{ $serviceRequest->customer?->first_name }} {{ $serviceRequest->customer?->last_name }}
                         </a>
                     </td>
 
