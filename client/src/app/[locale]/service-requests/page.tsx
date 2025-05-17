@@ -20,7 +20,7 @@ export default function ServiceRequestsPage() {
   const [activeTab, setActiveTab] = useState<ServiceRequestStatus>('all');
   const [expandedRequest, setExpandedRequest] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage] = useState('');
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

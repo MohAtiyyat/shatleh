@@ -119,6 +119,7 @@ export interface Product {
 export interface Category {
     id: number;
     name: Name;
+    image: string;
     subcategories: Category[];
 }
 

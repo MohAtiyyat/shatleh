@@ -4,7 +4,6 @@ import { useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
-import { Calendar } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { BlogPost, Locale } from "../../lib"
 
@@ -26,50 +25,26 @@ export default function BlogSection({ currentLocale }: BlogSectionProps) {
     const blogData: BlogPost[] = [
         {
             id: 1,
-            title: {
-                en: "How to Choose the Best Plants for Your Garden?",
-                ar: "كيف تختار أفضل النباتات لحديقتك؟",
-            },
-            description: {
-                en: "Looking for perfect plants for your garden? Here are the best choices",
-                ar: "هل تبحث عن نباتات مثالية لحديقتك؟ إليك أفضل الاختيارات",
-            },
-            date: {
-                en: "January 20, 2023",
-                ar: "20 يناير 2023",
-            },
+            title_ar: "أفضل النباتات لحديقتك",
+            title_en: "Best Plants for Your Garden",
+            content_en: "Looking for perfect plants for your garden? Here are the best choices",
+            content_ar: "هل تبحث عن نباتات مثالية لحديقتك؟ إليك أفضل الاختيارات",
             image: "/best plants.jpg",
         },
         {
             id: 2,
-            title: {
-                en: "Common Mistakes in Plant Care and How to Avoid Them",
-                ar: "أخطاء شائعة في العناية بالنباتات وكيفية تجنبها",
-            },
-            description: {
-                en: "Are you making these mistakes? Learn how to improve your plant care",
-                ar: "هل تقع في هذه الأخطاء؟ تعلم كيف تحسن رعاية نباتاتك",
-            },
-            date: {
-                en: "January 10, 2023",
-                ar: "10 يناير 2023",
-            },
+            title_ar: "أخطاء شائعة في العناية بالنباتات وكيفية تجنبها",
+            title_en: "Common Mistakes in Plant Care and How to Avoid Them",
+            content_en: "Are you making these mistakes? Learn how to improve your plant care",
+            content_ar: "هل تقع في هذه الأخطاء؟ تعلم كيف تحسن رعاية نباتاتك",
             image: "/problemes.jpg",
         },
         {
             id: 3,
-            title: {
-                en: "Secrets of Indoor Plant Care Throughout the Year",
-                ar: "أسرار العناية بالنباتات الداخلية طوال السنة",
-            },
-            description: {
-                en: "Do you know how to maintain your indoor plants in summer and winter?",
-                ar: "هل تعلم كيف تحافظ على نباتاتك الداخلية في الصيف والشتاء؟",
-            },
-            date: {
-                en: "January 15, 2023",
-                ar: "15 يناير 2023",
-            },
+            title_en: "How to Maintain Your Indoor Plants in Summer and Winter",
+            title_ar: "كيف تحافظ على نباتاتك الداخلية في الصيف والشتاء",
+            content_en: "Indoor plants need special care in different seasons. Here are some tips",
+            content_ar: "تحتاج النباتات الداخلية إلى رعاية خاصة في مواسم مختلفة. إليك بعض النصائح",
             image: "/secret care.jpg",
         },
     ]
@@ -105,19 +80,15 @@ export default function BlogSection({ currentLocale }: BlogSectionProps) {
                                 src={post.image || "/placeholder.svg"}
                                 width={400}
                                 height={300}
-                                alt={post.title[currentLocale]}
+                                alt={currentLocale === "ar" ? post.title_ar : post.title_en}
                                 className="w-full h-56 object-cover"
                             />
                             <div className="p-4 bg-[var(--primary-bg)] min-h-full">
                                 <h3 className="text-xl font-medium text-[var(--accent-color)] mb-2">
-                                    {post.title[currentLocale]}
+                                    {currentLocale === "ar" ? post.title_ar : post.title_en}
                                 </h3>
-                                <p className="text-sm text-gray-700 mb-4">{post.description[currentLocale]}</p>
+                                <p className="text-sm text-gray-700 mb-4">{currentLocale === "ar" ? post.content_ar : post.content_en}</p>
                                 <div className="flex justify-between items-center">
-                                    <div className="flex items-center text-sm text-gray-500">
-                                        <Calendar className="w-4 h-4 mr-1" />
-                                        {post.date[currentLocale]}
-                                    </div>
                                     <div className="text-sm text-[var(--accent-color)] flex items-center font-medium">
                                         {t("home.readMore")}
                                         <svg

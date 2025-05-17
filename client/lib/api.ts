@@ -334,8 +334,10 @@ export const fetchCategories = async (): Promise<Category[]> => {
                     en: sub.name_en,
                     ar: sub.name_ar,
                 },
+                image: sub.name_en,
                 subcategories: [],
             })),
+            image: category.subcategories.length > 0 ? category.subcategories[0].name_en : '',
         }));
         console.log('Transformed categories:', transformedCategories);
         return transformedCategories;
