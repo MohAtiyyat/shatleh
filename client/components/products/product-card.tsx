@@ -114,7 +114,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                         </span>
                     )}
                     <Image
-                        src={process.env.NEXT_PUBLIC_API_URL + "/" + product.image[0]}
+                        src={process.env.NEXT_PUBLIC_API_URL  + product.image[0]}
                         alt={currentLocale === 'ar' ? product.name_ar : product.name_en}
                         width={300}
                         height={270}

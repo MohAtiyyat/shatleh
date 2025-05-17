@@ -268,7 +268,7 @@ export default function OrdersPage() {
                         {t('order')} #{order.order_code}
                       </h2>
                       <p className="text-sm text-gray-600">
-                        {new Date(order.delivery_date).toLocaleDateString(currentLocale, {
+                        {new Date(order.order_date).toLocaleDateString(currentLocale, {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -421,7 +421,7 @@ export default function OrdersPage() {
               <Image
                 src={
                   item.image
-                    ? `${process.env.NEXT_PUBLIC_API_URL + "/"}${item.image}`
+                    ? `${process.env.NEXT_PUBLIC_API_URL}${item.image}`
                     : '/placeholder.svg'
                 }
                 alt={item.name[currentLocale]}

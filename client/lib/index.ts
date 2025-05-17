@@ -236,8 +236,7 @@ export interface Order {
   order_code: string;
   total_price: number;
   status: string;
-  delivery_cost: number;
-  delivery_date: string;
+  order_date: string;
   products: OrderProduct[];
   address: OrderAddress | null;
   coupon: OrderCoupon | null;

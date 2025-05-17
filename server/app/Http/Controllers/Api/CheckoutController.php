@@ -44,7 +44,7 @@ class CheckoutController extends Controller
             ], 422);
         }
 
-        
+
         try {
             DB::beginTransaction();
 
@@ -58,7 +58,7 @@ class CheckoutController extends Controller
             $order = Order::create([
                 'order_code' => $orderCode,
                 'address_id' => $request->address_id,
-                'total_price' => round($request->total * 100), // Convert to cents
+                'total_price' => round($request->total),
                 'customer_id' => $request->customer_id,
                 'first_name' => $isGift ? $request->gift_first_name : $request->user()->first_name,
                 'last_name' => $isGift ? $request->gift_last_name : $request->user()->last_name,
@@ -66,7 +66,7 @@ class CheckoutController extends Controller
                 'is_gift' => $isGift,
                 'coupon_id' => $request->coupon_id,
                 'status' => 'pending',
-                'delivery_cost' => round($request->delivery_cost * 100), // Convert to cents
+                'delivery_cost' => round($request->delivery_cost),
                 'delivered_at' => null,
             ]);
 
@@ -76,7 +76,7 @@ class CheckoutController extends Controller
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'product_id' => $item['product_id'],
-                    'price' => round($item['price'] * 100), // Convert to cents
+                    'price' => round($item['price']),
                     'quantity' => $item['quantity'],
                 ]);
             }
@@ -95,7 +95,7 @@ class CheckoutController extends Controller
                 'data' => [
                     'order_id' => $order->id,
                     'order_code' => $order->order_code,
-                    'total' => $order->total_price / 100, // Convert back to dollars
+                    'total' => $order->total_price,
                     'status' => $order->status,
                 ],
                 'message' => 'Order placed successfully',

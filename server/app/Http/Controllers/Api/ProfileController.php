@@ -240,8 +240,7 @@ class ProfileController extends Controller
                     'order_code' => $order->order_code,
                     'total_price' => $order->total_price,
                     'status' => $order->status,
-                    'delivery_cost' => $order->delivery_cost,
-                    'delivery_date' => $order->delivery_date,
+                    'order_date' => $order->created_at->format('Y-m-d H:i:s'),
                     'products' => $order->products->map(function ($product) {
                         return [
                             'id' => $product->id,

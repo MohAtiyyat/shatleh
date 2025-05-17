@@ -84,7 +84,7 @@ export default function OrderSummary({ couponApplied, couponDiscount }: OrderSum
                         <Link href={`/${currentLocale}/products/${item.product_id}`} className="gap-4" passHref>
                             <div className="w-20 h-20 relative">
                                 <Image
-                                    src={process.env.NEXT_PUBLIC_API_URL + "/" + item.image[0] || '/placeholder.svg'}
+                                    src={process.env.NEXT_PUBLIC_API_URL + item.image[0] || '/placeholder.svg'}
                                     alt={(currentLocale === 'ar' ? item.name_ar : item.name_en) || 'Product Image'}
                                     fill
                                     className="object-cover rounded"

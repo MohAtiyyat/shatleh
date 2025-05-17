@@ -126,7 +126,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                     <div key={item.id} className="flex border-b pb-4">
                                         <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 mx-2">
                                             <Image
-                                                src={process.env.NEXT_PUBLIC_API_URL + "/" +item.image[0] || '/placeholder.svg'}
+                                                src={process.env.NEXT_PUBLIC_API_URL +item.image[0] || '/placeholder.svg'}
                                                 alt={currentLocale === 'en' ? item.name_en : item.name_ar || 'product'}
                                                 width={80}
                                                 height={80}

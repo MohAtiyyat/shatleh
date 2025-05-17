@@ -24,7 +24,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        $this->call(PostsSeeder::class);
+
+        $this->call(ProductSeeder::class);
+
+
 
 
         DB::table('payment_info')->insert([

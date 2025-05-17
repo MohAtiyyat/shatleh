@@ -73,11 +73,11 @@ class ProductSeeder extends Seeder
         ];
 
         $images = [
-            'images/products/AloeVera.jpg', 'images/products/BasilPlant.jpg', 'images/products/RosemaryPlant.avif',
-            'images/products/TomatoSeedsHybrid.webp', 'images/products/CucumberSeeds.webp', 'images/products/LettuceSeeds.webp',
-            'images/products/NPK20-20-20Fertilizer.webp', 'images/products/PotassiumSulfateSOP.jpg', 'images/products/CalciumNitrate.webp',
-            'images/products/Imidacloprid35%SC.avif', 'images/products/LambdaCyhalothrin5%EC.avif', 'images/products/Deltamethrin2.5%EC.jpg',
-            'images/products/DripIrrigationKit.jpg', 'images/products/SeedlingTrays.jpg', 'images/products/GreenhousePlasticCover.jpg'
+            '/storage/images/products/AloeVera.jpg', '/storage/images/products/BasilPlant.jpg', '/storage/images/products/RosemaryPlant.avif',
+            '/storage/images/products/TomatoSeedsHybrid.webp', '/storage/images/products/CucumberSeeds.webp', '/storage/images/products/LettuceSeeds.webp',
+            '/storage/images/products/NPK20-20-20Fertilizer.webp', '/storage/images/products/PotassiumSulfateSOP.jpg', '/storage/images/products/CalciumNitrate.webp',
+            '/storage/images/products/Imidacloprid35%SC.avif', '/storage/images/products/LambdaCyhalothrin5%EC.avif', '/storage/images/products/Deltamethrin2.5%EC.jpg',
+            '/storage/images/products/DripIrrigationKit.jpg', '/storage/images/products/SeedlingTrays.jpg', '/storage/images/products/GreenhousePlasticCover.jpg'
         ];
 
         // Create 15 example products
@@ -91,7 +91,7 @@ class ProductSeeder extends Seeder
                 'description_en' => $descriptions_en[$index],
                 'description_ar' => $descriptions_ar[$index],
                 'status' => $faker->randomElement(['active', 'inactive']),
-                'availability' => $faker->randomElement([1,0]), 
+                'availability' => $faker->randomElement([1,0]),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

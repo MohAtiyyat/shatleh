@@ -28,7 +28,7 @@ export default function ProductImageSwiper({ images, altText }: ProductImageSwip
                 {images.map((image, index) => (
                     <SwiperSlide key={index}>
                         <Image
-                            src={`${process.env.NEXT_PUBLIC_API_URL + "/"}${image}`}
+                            src={`${process.env.NEXT_PUBLIC_API_URL}${image}`}
                             alt={`${altText} ${index + 1}`}
                             width={700}
                             height={400}
