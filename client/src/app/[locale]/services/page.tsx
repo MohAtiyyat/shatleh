@@ -18,7 +18,7 @@ interface Service {
     name_ar: string;
     description_en: string;
     description_ar: string;
-    svg: string ;
+    image: string ;
 }
 
 interface Address {
@@ -66,7 +66,7 @@ export default function ServiceRequestForm() {
             name_ar: 'العناية بالأشجار والنباتات',
             description_en: 'Full care services for trees and plants to help them grow healthy and beautiful.',
             description_ar: 'خدمات متكاملة للعناية بالأشجار والنباتات لضمان نموها بشكل صحي وجميل.',
-            svg: '/agri services.jpg',
+            image: '/agri services.jpg',
         },
         {
             id: 2,
@@ -74,7 +74,7 @@ export default function ServiceRequestForm() {
             name_ar: 'الاستشارات الزراعية',
             description_en: 'Expert advice from agricultural engineers to improve plant care.',
             description_ar: 'توجيهات ونصائح مهنية من مهندسين زراعيين مختصين لتحسين العناية بالنباتات.',
-            svg: '/educational content.webp',
+            image: '/educational content.webp',
         },
         {
             id: 3,
@@ -82,7 +82,7 @@ export default function ServiceRequestForm() {
             name_ar: 'تنسيق الحدائق',
             description_en: 'Designing and organizing small gardens with high quality to improve their look and use space wisely.',
             description_ar: 'تصميم وتنظيم الحدائق الصغيرة بأعلى جودة لتحسين مظهرها واستخدام المساحات بشكل فعال.',
-            svg: '/best plants.jpg',
+            image: '/best plants.jpg',
         },
     ];
 

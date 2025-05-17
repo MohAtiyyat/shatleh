@@ -129,7 +129,7 @@ export interface Service {
     name_ar: string;
     description_en: string;
     description_ar: string;
-    svg: string;
+    image: string;
 }
 
 
