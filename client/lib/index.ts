@@ -125,11 +125,11 @@ export interface Category {
 
 export interface Service {
     id: number;
-    title_en: string;
-    title_ar: string;
+    name_en: string;
+    name_ar: string;
     description_en: string;
     description_ar: string;
-    svg: string;
+    image: string;
 }
 
 

@@ -14,11 +14,11 @@ import {  useAuth } from '../../../../lib/AuthContext';
 
 interface Service {
     id: number;
-    title_en: string;
-    title_ar: string;
+    name_en: string;
+    name_ar: string;
     description_en: string;
     description_ar: string;
-    svg: string ;
+    image: string ;
 }
 
 interface Address {
@@ -62,27 +62,27 @@ export default function ServiceRequestForm() {
     const mockServicesData: Service[] = [
         {
             id: 1,
-            title_en: 'Tree and Plant Care',
-            title_ar: 'العناية بالأشجار والنباتات',
+            name_en: 'Tree and Plant Care',
+            name_ar: 'العناية بالأشجار والنباتات',
             description_en: 'Full care services for trees and plants to help them grow healthy and beautiful.',
             description_ar: 'خدمات متكاملة للعناية بالأشجار والنباتات لضمان نموها بشكل صحي وجميل.',
-            svg: '/agri services.jpg',
+            image: '/agri services.jpg',
         },
         {
             id: 2,
-            title_en: 'Agricultural Consultations',
-            title_ar: 'الاستشارات الزراعية',
+            name_en: 'Agricultural Consultations',
+            name_ar: 'الاستشارات الزراعية',
             description_en: 'Expert advice from agricultural engineers to improve plant care.',
             description_ar: 'توجيهات ونصائح مهنية من مهندسين زراعيين مختصين لتحسين العناية بالنباتات.',
-            svg: '/educational content.webp',
+            image: '/educational content.webp',
         },
         {
             id: 3,
-            title_en: 'Garden Landscaping',
-            title_ar: 'تنسيق الحدائق',
+            name_en: 'Garden Landscaping',
+            name_ar: 'تنسيق الحدائق',
             description_en: 'Designing and organizing small gardens with high quality to improve their look and use space wisely.',
             description_ar: 'تصميم وتنظيم الحدائق الصغيرة بأعلى جودة لتحسين مظهرها واستخدام المساحات بشكل فعال.',
-            svg: '/best plants.jpg',
+            image: '/best plants.jpg',
         },
     ];
 
@@ -262,7 +262,7 @@ export default function ServiceRequestForm() {
     const getServiceName = (id: number | '') => {
         if (!id) return t('selectService');
         const service = services.find((option) => option.id === id);
-        return service ? (currentLocale === 'ar' ? service.title_ar : service.title_en) : t('selectService');
+        return service ? (currentLocale === 'ar' ? service.name_ar : service.name_en) : t('selectService');
     };
 
     const getAddressName = (id: number | '') => {
@@ -329,7 +329,7 @@ export default function ServiceRequestForm() {
                                                     setErrors((prev) => ({ ...prev, service: undefined }));
                                                 }}
                                             >
-                                                {currentLocale === 'ar' ? service.title_ar : service.title_en}
+                                                {currentLocale === 'ar' ? service.name_ar : service.name_en}
                                             </motion.div>
                                         ))}
                                     </motion.div>
