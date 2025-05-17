@@ -235,7 +235,8 @@
     "signOut": "Sign Out",
     "account": "Account",
     "address": "Address",
-    "payments": "Payments"
+    "payments": "Payments",
+    "serviceRequests": "Service Requests"
   },
   "service": {
     "title": "Service Requests",
@@ -251,6 +252,29 @@
     "loading": "Loading requests...",
     "error": "Failed to load requests",
     "submitError": "Failed to submit request"
+  },
+  "serviceRequests": {
+    "title": "My Service Requests",
+    "request": "Service Request",
+    "noRequests": "No service requests found",
+    "requestService": "Request a Service",
+    "goToLogin": "Go to Login",
+    "errors": {
+      "fetchFailed": "Failed to fetch service requests"
+    },
+    "all": "All",
+    "pending": "Pending",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "serviceId": "Service ID",
+    "address": "Address",
+    "noAddress": "No address provided",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
+    "details": "Details",
+    "requestImage": "Request Image",
+    "serviceAddress": "Service Address"
   },
   "Cart": {
     "title": "Your Cart",
@@ -412,7 +436,8 @@
     "education": "Educational Content",
     "itemName": "{itemName}",
     "success": "Success",
-    "orders": "Orders"
+    "orders": "Orders",
+    "servicerequests": "Service Request"
   },
   "nav": {
     "products": "Products",

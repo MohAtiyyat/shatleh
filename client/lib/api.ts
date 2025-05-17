@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 import { mockProducts } from './mockData';
-import type { Product, Category, BackendCartItem, Service, BlogPost, PostFilterCategory, Order } from './index';
+import type { Product, Category, BackendCartItem, Service, BlogPost, PostFilterCategory, Order, ServiceRequest } from './index';
 
 interface LoginRequest {
     email: string;
@@ -217,6 +217,11 @@ interface CheckoutResponse {
 }
 interface OrdersResponse {
   data: Order[];
+  message: string;
+}
+
+interface ServiceRequestsResponse {
+  data: ServiceRequest[];
   message: string;
 }
 
@@ -833,4 +838,25 @@ export const checkout = async (data: CheckoutRequest): Promise<CheckoutResponse>
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : 'Checkout failed');
     }
+};
+export const fetchServiceRequests = async (locale: string): Promise<ServiceRequest[]> => {
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  try {
+    const response = await fetch(`${API_URL}/api/service-requests`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Accept-Language': locale, // Pass locale for language-specific responses
+      },
+    });
+    const data = await handleResponse<ServiceRequestsResponse>(response);
+    return data.data;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch service requests');
+  }
 };

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Order;
+use App\Models\ServiceRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -286,5 +287,33 @@ class ProfileController extends Controller
         $order->save();
 
         return response()->json(['message' => 'Order cancelled successfully'], 200);
+    }
+
+    public function getServiceRequests()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $serviceRequests = ServiceRequest::where('customer_id', $user->id)->get()->map(function ($serviceRequest) {
+            return [
+                'id' => $serviceRequest->id,
+                'service_id' => $serviceRequest->service_id,
+                'customer_id' => $serviceRequest->customer_id,
+                'details' => $serviceRequest->details,
+                'status' => $serviceRequest->status,
+                'created_at' => $serviceRequest->created_at->format('Y-m-d H:i:s'),
+                'address' => $serviceRequest->address ? [
+                    'id' => $serviceRequest->address->id,
+                    'title' => $serviceRequest->address->title,
+                    'city' => $serviceRequest->address->city,
+                    'address_line' => $serviceRequest->address->address_line,
+                ] : null,
+            ];
+        });
+        return response()->json([
+            'data' => $serviceRequests,
+            'message' => $serviceRequests->isEmpty() ? 'No service requests found' : 'Service requests retrieved successfully',
+        ], 200);
     }
 }

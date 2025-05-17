@@ -128,6 +128,14 @@ const Header = () => {
                                     </Link>
                                     
                                     <Link
+                                        href={`/${currentLocale}/service-requests`}
+                                        className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
+                                        onClick={toggleUserMenu}
+                                    >
+                                        <span className="inline-flex">{t('user.serviceRequests')}</span>
+                                    </Link>
+
+                                    <Link
                                         href={`/${currentLocale}/orders`}
                                         className="block px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap"
                                         onClick={toggleUserMenu}

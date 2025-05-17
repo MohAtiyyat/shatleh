@@ -50,7 +50,7 @@
                             <select name="status" onchange="this.form.submit()" class="form-select">
                                 <option value="{{ $serviceRequest->status }}">{{ $serviceRequest->status }}</option>
                                 <option value="pending">Pending</option>
-                                <option value="in progress">In Progress</option>
+                                <option value="inProgress">In Progress</option>
                                 <option value="completed">Completed</option>
                             </select>
                         </form>

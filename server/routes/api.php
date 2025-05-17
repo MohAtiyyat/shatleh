@@ -50,6 +50,7 @@ Route::prefix('api')->group(function () {
 
         // orders routes
         Route::get('/orders', [ProfileController::class, 'getOrders'])->name('api.orders.index');
+        Route::get('/service-requests', [ProfileController::class, 'getServiceRequests'])->name('api.service_requests.index');
         Route::post('/orders/{id}/cancel', [ProfileController::class, 'cancelOrder'])->name('api.orders.cancel');
     });
 });

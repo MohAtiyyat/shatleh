@@ -241,3 +241,13 @@ export interface Order {
   address: OrderAddress | null;
   coupon: OrderCoupon | null;
 }
+export interface ServiceRequest {
+    id: number;
+    customer_id: string;
+    service_id: number;
+    address: OrderAddress | null;
+    details: string;
+    image: string | null;
+    status: string;
+    created_at: string;
+}
