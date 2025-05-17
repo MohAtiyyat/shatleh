@@ -119,6 +119,7 @@ export interface Product {
 export interface Category {
     id: number;
     name: Name;
+    image: string;
     subcategories: Category[];
 }
 
@@ -209,3 +210,45 @@ export interface FormErrors {
 }
 
 
+
+export interface OrderProduct {
+  id: number;
+  name: Name;
+  price: string;
+  quantity: number;
+  image: string;
+  categories: { id: number; name: string }[];
+}
+
+export interface OrderAddress {
+  id: number;
+  title: string;
+  city: string;
+  address_line: string;
+}
+
+export interface OrderCoupon {
+  id: number;
+  code: string;
+}
+
+export interface Order {
+  id: number;
+  order_code: string;
+  total_price: number;
+  status: string;
+  order_date: string;
+  products: OrderProduct[];
+  address: OrderAddress | null;
+  coupon: OrderCoupon | null;
+}
+export interface ServiceRequest {
+    id: number;
+    customer_id: string;
+    service: Service;
+    address: OrderAddress | null;
+    details: string;
+    image: string | null;
+    status: string;
+    created_at: string;
+}

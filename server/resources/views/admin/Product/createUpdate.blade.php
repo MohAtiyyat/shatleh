@@ -188,7 +188,7 @@
             <!-- Price -->
             <div class="form-group">
                 <label for="price">Price</label>
-                <input type="number" id="price" name="price" placeholder="Enter price" min="0" required
+                <input type="number" id="price" step="0.01" name="price" placeholder="Enter price" min="0" required
                        value="{{ old('price', isset($item) ? $item->price : '') }}">
                 @error('price')
                     <div class="text-danger">{{ $message }}</div>
@@ -262,7 +262,7 @@
                 <select id="status" name="status" required>
                     <option value="active" {{ old('status', isset($item) ? $item->status : '') == '1' ? 'selected' : '' }}>Active</option>
                     <option value="inactive" {{ old('status', isset($item) ? $item->status : '') == '0' ? 'selected' : '' }}>Inactive</option>
-                    <option value="draft" {{ old('status', isset($item) ? $item->status : '') == '2' ? 'selected' : '' }}>Draft</option>
+
                 </select>
                 @error('status')
                     <div class="text-danger">{{ $message }}</div>
@@ -274,9 +274,7 @@
                 <label for="availability">Availability</label>
                 <select id="availability" name="availability" required>
                     <option value="1" {{ old('availability', isset($item) ? $item->availability : '') == '1' ? 'selected' : '' }}>In Stock</option>
-                    <option value="0" {{ old('availability', isset($item) ? $item->availability : '') == '0' ? 'selected' : '' }}>Out of Stock</option>
-                    <option value="2" {{ old('availability', isset($item) ? $item->availability : '') == '2' ? 'selected' : '' }}>Pre-order</option>
-                </select>
+                    <option value="0" {{ old('availability', isset($item) ? $item->availability : '') == '0' ? 'selected' : '' }}>Out of Stock</option>                </select>
                 @error('availability')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror

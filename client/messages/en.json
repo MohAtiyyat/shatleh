@@ -161,6 +161,12 @@
     "noReviews": "No reviews yet",
     "cancel": "Cancel"
   },
+  "about": {
+    "title": "About Us",
+    "description":"At Shatleh, we believe that gardening is not just a hobby it’s a way of life. We are a Jordanian platform that helps people who love home gardening and small gardens. We offer plants, fertilizers, and eco-friendly pesticides, as well as professional agricultural services by certified engineers, such as garden design, tree trimming, and consultations.",
+    "description-2":"We also share easy educational content to help people learn and grow plants at home with confidence and knowledge.",
+    "above-text":"With Shatleh, we plant the love of gardening in every home."
+  },
   "pagination": {
     "prev": "Previous",
     "next": "Next"
@@ -229,7 +235,8 @@
     "signOut": "Sign Out",
     "account": "Account",
     "address": "Address",
-    "payments": "Payments"
+    "payments": "Payments",
+    "serviceRequests": "Service Requests"
   },
   "service": {
     "title": "Service Requests",
@@ -245,6 +252,29 @@
     "loading": "Loading requests...",
     "error": "Failed to load requests",
     "submitError": "Failed to submit request"
+  },
+  "serviceRequests": {
+    "title": "My Service Requests",
+    "request": "Service Request",
+    "noRequests": "No service requests found",
+    "requestService": "Request a Service",
+    "goToLogin": "Go to Login",
+    "errors": {
+      "fetchFailed": "Failed to fetch service requests"
+    },
+    "all": "All",
+    "pending": "Pending",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "serviceId": "Service ID",
+    "address": "Address",
+    "noAddress": "No address provided",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
+    "details": "Details",
+    "requestImage": "Request Image",
+    "serviceAddress": "Service Address"
   },
   "Cart": {
     "title": "Your Cart",
@@ -405,7 +435,9 @@
     "service": "Service Requests",
     "education": "Educational Content",
     "itemName": "{itemName}",
-    "success": "Success"
+    "success": "Success",
+    "orders": "Orders",
+    "servicerequests": "Service Request"
   },
   "nav": {
     "products": "Products",
@@ -468,22 +500,36 @@
     }
   },
   "orders": {
-    "title": "My Orders",
+    "title": "Your Orders",
     "all": "All",
+    "pending": "Pending",
     "inProgress": "In Progress",
     "delivered": "Delivered",
     "cancelled": "Cancelled",
     "completed": "Completed",
     "order": "Order",
-    "paidWith": "Paid with",
     "items": "Items",
-    "viewDetails": "View Order Details",
-    "hideDetails": "Hide Order Details",
+    "paidWith": "Paid with",
+    "coupon": "Coupon",
+    "unknown": "Unknown",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
     "cancelOrder": "Cancel Order",
     "successMessage": "Order cancelled successfully",
+    "noOrders": "No orders found",
+    "shopNow": "Shop Now",
+    "goToLogin": "Go to Login",
     "errors": {
-      "cancelFailed": "Failed to cancel order. Please try again."
-    }
+      "fetchFailed": "Failed to fetch orders",
+      "cancelFailed": "Failed to cancel order"
+    },
+    "quantity": "Quantity",
+    "shippingAddress": "Shipping Address",
+    "cancelSuccess": "Order cancelled successfully",
+    "confirmCancelTitle": "Confirm Order Cancellation",
+    "confirmCancelMessage": "Are you sure you want to cancel order #{orderCode}?",
+    "cancelButton": "Cancel",
+    "confirmButton": "Confirm"
   },
   "addresses": {
     "title": "Your Addresses",

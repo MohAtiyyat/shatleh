@@ -17,13 +17,28 @@ class ServiceRequestController extends Controller
         $serviceRequests = ServiceRequest::with([
             'address',
             'service',
-            'customer.user',
+            'customer',
             'employee',
             'expert',
         ])->get();
 
         $experts = User::whereHas('roles', fn($q) => $q->where('name', 'Expert'))->pluck('first_name', 'id');
         return view('admin.ServiceRequest.index', compact('serviceRequests', 'experts'));
+    }
+
+    public function show(ServiceRequest $serviceRequest)
+    {
+        $serviceRequest->load([
+            'address',
+            'service',
+            'customer',
+            'employee',
+            'expert',
+        ]);
+
+        $experts = User::whereHas('roles', fn($q) => $q->where('name', 'Expert'))->pluck('first_name', 'id');
+
+        return view('admin.ServiceRequest.show', compact('serviceRequest' , 'experts'));
     }
     public function assign(Request $request, ServiceRequest $serviceRequest)
     {

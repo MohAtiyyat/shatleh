@@ -24,32 +24,15 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        $this->call(CountrySeeder::class);
-        $this->call(RoleSeeder::class);
-        $this->call(UserSeeder::class);
-        $this->call(CustomerSeeder::class);
-        $this->call(AddressSeeder::class);
+         $this->call(AddressSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(ProductSeeder::class);
+        $this->call(PostsSeeder::class);
         $this->call(CartsTableSeeder::class);
         $this->call(OrderSeeder::class);
         $this->call(OrderDetailSeeder::class);
-        for ($i = 1; $i <= 2; $i++) {
-            DB::table('categories')->insert([
-                [
 
-                    'name_en' => 'test',
-                    'name_ar' => 'اختبار',
-                    'image' => 'test.jpg',
-                    'description_ar' => 'test',
-                    'description_en' => 'test',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'parent_id' => null,
-                ]
-            ]);
 
-        };
         DB::table('payment_info')->insert([
             [
                 'card_type' => 'visa',

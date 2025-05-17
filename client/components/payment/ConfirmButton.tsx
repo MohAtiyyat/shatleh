@@ -154,7 +154,7 @@ export default function ConfirmButton({
 
             // Store order data in localStorage for success page
             const lastOrder = {
-                orderId: response.data.order_id.toString(),
+                orderId: response.data.order_code.toString(),
                 items: items.map(item => ({
                     id: item.product_id.toString(), // Use product_id as id
                     name_ar: item.name_ar,

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
+
     Route::post('/register', [AuthController::class, 'register'])->name('api.register');
     Route::post('/login', [AuthController::class, 'login'])->name('api.login');
     Route::get('/top_sellers', [ProductController::class, 'top_sellers'])->name('api.top_sellers');
@@ -46,5 +47,10 @@ Route::prefix('api')->group(function () {
 
         // Coupon routes
         Route::post('/coupons/apply', [CouponController::class, 'apply'])->name('api.coupons.apply');
+
+        // orders routes
+        Route::get('/orders', [ProfileController::class, 'getOrders'])->name('api.orders.index');
+        Route::get('/service-requests', [ProfileController::class, 'getServiceRequests'])->name('api.service_requests.index');
+        Route::post('/orders/{id}/cancel', [ProfileController::class, 'cancelOrder'])->name('api.orders.cancel');
     });
 });

@@ -87,7 +87,7 @@
                             <SwiperSlide key={index} className="swiper-slide" style={{ width: '280px' }}>
                                 <Link
                                     href={`/${currentLocale}/products`}
-                                    onClick={() => handleCategoryClick(category.title[currentLocale])}
+                                    onClick={() => handleCategoryClick(category.name[currentLocale])}
                                 >
                                     <div
                                         className={`bg-[var(--accent-color)] rounded-xl p-6 flex flex-col items-center text-white h-[400px] mx-auto w-[260px] transform transition-all duration-300 hover:scale-105 hover:shadow-lg `}
@@ -96,11 +96,11 @@
                                             className="flex-1 flex items-center justify-center mb-8"
                                             width={200}
                                             height={200}
-                                            src={category.svg || "/placeholder.svg"}
-                                            alt={category.title[currentLocale]}
+                                            src={category.image || "/placeholder.svg"}
+                                            alt={category.name[currentLocale]}
                                         />
                                         <div className="text-center">
-                                            <p className="text-lg">{category.title[currentLocale]}</p>
+                                            <p className="text-lg">{category.name[currentLocale]}</p>
                                         </div>
                                     </div>
                                 </Link>

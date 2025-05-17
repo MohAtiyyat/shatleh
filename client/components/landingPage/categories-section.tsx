@@ -64,13 +64,14 @@ export default function CategoriesSection({ currentLocale }: CategoriesSectionPr
     ]
 
     // Map array to Category type based on currentLocale
-    const categories: Category[] = categoriesData.map((item) => ({
+        const categories: Category[] = categoriesData.map((item) => ({
         id: item.id,
-        title: {
+        name: {
             en: item.title.en,
             ar: item.title.ar,
         },
-        svg: item.svg,
+        subcategories: [],
+        image: item.svg,
     }));
 
     return (
