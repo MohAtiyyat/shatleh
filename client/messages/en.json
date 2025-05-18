@@ -352,6 +352,7 @@
     "manageAddresses": "Manage Addresses",
     "couponCode": "Coupon Code",
     "enterCoupon": "Enter your coupon code",
+    "selectAddress": "Select an address",
     "errors": {
       "invalidCardNumber": "Please enter a valid 16-digit card number",
       "cardHolderRequired": "Please enter the cardholder's name",
@@ -368,7 +369,9 @@
       "addressIncomplete": "Please provide a complete address",
       "giftFirstNameRequired": "Gift recipient's first name is required",
       "giftLastNameRequired": "Gift recipient's last name is required",
-      "invalidGiftPhone": "Invalid gift recipient's phone number"
+      "invalidGiftPhone": "Invalid gift recipient's phone number",
+      "addressRequired": "Please select an address.",
+      "addressChangeFailed": "Failed to update the default address. Please try again."
     }
   },
   "payments": {
