@@ -199,7 +199,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
     return (
         <>
             {/* Filter Dropdowns */}
-            <div className={`flex flex-wrap items-center gap-3 mb-4 justify-center ${currentLocale === 'ar' ? 'ml-10' : 'mr-10'}`}>
+            <div className={`flex flex-wrap items-center gap-3 mb-4 justify-center `}>
                 {/* Category Dropdown */}
                 <div className="relative" ref={dropdownRefs.category}>
                     <button

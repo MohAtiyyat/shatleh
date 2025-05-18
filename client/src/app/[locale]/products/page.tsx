@@ -215,14 +215,12 @@ export default function ProductsPage() {
                 <div className="mb-4 mx-8">
                     <Breadcrumb pageName="products" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 mb-3">
-                    <div className="sm:col-span-2 md:col-span-1 sm:mx-auto">
-                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
-                    </div>
+                <div className="flex flex-wrap justify-center space-x-6  mb-3 ">
+                    <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
                     <Filters filters={filters} setFilters={setFilters} currentLocale={currentLocale} />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 w-[90%] mx-auto">
+                <div className="flex flex-wrap justify-center  md:justify-end  gap-6 sm:w-[280px] md:w-[90%] mx-auto ">
                     {isLoading ? (
                         Array.from({ length: 12 }).map((_, index) => <SkeletonCard key={index} />)
                     ) : currentProducts.length > 0 ? (
@@ -230,7 +228,7 @@ export default function ProductsPage() {
                             <div
                                 key={product.id}
                                 onClick={() => router.push(`/${currentLocale}/products/${product.id}`)}
-                                className="cursor-pointer"
+                                className="cursor-pointer mx-4  max-w-6xl rounded-3xl  relative "
                             >
                                 <ProductCard product={product} index={index} pageName="products" />
                             </div>
