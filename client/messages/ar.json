@@ -7,7 +7,9 @@
     "about": "معلومات عنا",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب",
-    "account": "حساب"
+    "account": "حساب",
+    "search": "بحث",
+    "searchButton": "بحث"
   },
   "metadata": {
     "title": "شتلة",

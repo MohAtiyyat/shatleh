@@ -7,7 +7,9 @@
     "about": "About Us",
     "login": "Login",
     "signup": "Sign Up",
-    "account": "Account"
+    "account": "Account",
+    "search": "Search",
+    "searchButton": "Search"
   },
   "metadata": {
     "title": "Shatleh",

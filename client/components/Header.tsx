@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingCart, Languages } from 'lucide-react';
+import { ShoppingCart, Search } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '../lib/store';
 import { useAuth } from '../lib/AuthContext';
@@ -25,12 +25,14 @@ const Header = () => {
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const [authMenuOpen, setAuthMenuOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const [profile, setProfile] = useState<Profile | null>(null);
     const currentLocale = pathname.split('/')[1] || 'en';
     const { items, syncWithBackend } = useCartStore();
     const userMenuRef = useRef<HTMLDivElement>(null);
     const langMenuRef = useRef<HTMLDivElement>(null);
     const authMenuRef = useRef<HTMLDivElement>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
 
     const cartQuantity = items.reduce((total, item) => total + (item.quantity || 0), 0);
 
@@ -99,6 +101,16 @@ const Header = () => {
         }
     };
 
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/${currentLocale}/search?q=${encodeURIComponent(searchQuery.trim())}`);
+            setSearchQuery('');
+            setIsOpen(false);
+            searchInputRef.current?.blur();
+        }
+    };
+
     const navItems = [
         { label: t('header.products'), path: 'products' },
         { label: t('header.blog'), path: 'blog' },
@@ -157,6 +169,27 @@ const Header = () => {
                 </div>
 
                 <div className="flex flex-row items-center space-x-3">
+                    <form onSubmit={handleSearch} className="hidden md:flex items-center relative">
+                        <div className="relative">
+                            <input
+                                ref={searchInputRef}
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder={t('header.search')}
+                                className="w-32 lg:w-48 px-3 py-1.5 pr-8 text-sm text-text-primary bg-[var(--primary-bg)] border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-accent hover:bg-gray-100 transition-all duration-200"
+                                aria-label={t('header.search')}
+                            />
+                            <button
+                                type="submit"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-text-primary hover:text-accent"
+                                aria-label={t('header.searchButton')}
+                            >
+                                <Search className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </form>
+
                     <div className="relative" ref={langMenuRef}>
                         <button
                             onClick={toggleLangMenu}
@@ -292,6 +325,28 @@ const Header = () => {
             {isOpen && (
                 <nav className="md:hidden bg-[var(--primary-bg)] border-t border-accent absolute top-[10vh] left-0 w-full px-4 py-4 shadow-md">
                     <div className="flex flex-col space-y-3">
+                        {/* Search Bar (Mobile) */}
+                        <form onSubmit={handleSearch} className="flex items-center relative">
+                            <div className="relative w-full">
+                                <input
+                                    ref={searchInputRef}
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder={t('header.search')}
+                                    className="w-full px-3 py-1.5 pr-8 text-sm text-text-primary bg-[var(--primary-bg)] border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-accent hover:bg-gray-100 transition-all duration-200"
+                                    aria-label={t('header.search')}
+                                />
+                                <button
+                                    type="submit"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-text-primary hover:text-accent"
+                                    aria-label={t('header.searchButton')}
+                                >
+                                    <Search className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </form>
+
                         {navItems.map((item) => (
                             <Link
                                 key={item.label}
