@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
-import { EffectCoverflow, Pagination, Navigation } from "swiper/modules"
+import { EffectCoverflow, Pagination } from "swiper/modules"
 import { SwiperOptions, Swiper as SwiperClass } from "swiper/types"
 import ProductCard from "../products/product-card"
 import type { Product, Locale } from "../../lib"
@@ -62,11 +62,7 @@ export default function ProductCarousel({ products, currentLocale, pageName }: P
                 modifier: 2,
                 slideShadows: false,
             },
-            pagination: { clickable: true },
-            navigation: {
-                prevEl: '.custom-swiper-button-prev',
-                nextEl: '.custom-swiper-button-next',
-            },
+            pagination: { clickable: true }
         }
     }
 
@@ -75,7 +71,7 @@ export default function ProductCarousel({ products, currentLocale, pageName }: P
             <div className="max-w-5xl mx-auto">
                 <Swiper
                     {...getSwiperParams()}
-                    modules={[EffectCoverflow, Pagination, Navigation]}
+                    modules={[EffectCoverflow, Pagination]}
                     onSlideChange={(swiper: SwiperClass) => setActiveIndex(swiper.activeIndex)}
                     className="swiper-container"
                 >
@@ -88,18 +84,6 @@ export default function ProductCarousel({ products, currentLocale, pageName }: P
                     ))}
                 </Swiper>
 
-                <button
-                    className="custom-swiper-button-prev absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full flex items-center justify-center text-white transition-colors"
-                    aria-label="Previous"
-                >
-                    <span className="text-2xl">{currentLocale === "ar" ? ">" : "<"}</span>
-                </button>
-                <button
-                    className="custom-swiper-button-next absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full flex items-center justify-center text-white transition-colors"
-                    aria-label="Next"
-                >
-                    <span className="text-2xl">{currentLocale === "ar" ? "<" : ">"}</span>
-                </button>
             </div>
 
             <style jsx global>{`
