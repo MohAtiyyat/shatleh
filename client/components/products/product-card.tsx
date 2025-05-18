@@ -19,7 +19,7 @@ const truncateText = (text: string, maxLength: number = 100): string => {
 };
 
 interface ProductCardProps {
-    product: Product;
+    product: Product;   
     index: number;
     pageName: string;
 }
@@ -41,7 +41,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
             ? t('products.topSellingLabel')
             : null;
 
-   
+
 
     const description = truncateText(
         currentLocale === 'ar' ? product.description_ar : product.description_en,
@@ -103,7 +103,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                 className={
                     pageName !== 'products'
                         ? 'bg-[#337a5b] rounded-xl p-4 text-white flex flex-col justify-between h-full w-full relative cursor-pointer'
-                        : 'bg-[#337a5b] rounded-xl p-4 text-white flex flex-col justify-between h-full relative cursor-pointer w-full sm:w-[280px]'
+                        : 'bg-[#337a5b] rounded-xl p-4 text-white flex flex-col justify-between h-full relative cursor-pointer w-[280px]'
                 }
                 aria-label={currentLocale === 'ar' ? product.name_ar : product.name_en}
             >
@@ -114,7 +114,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                         </span>
                     )}
                     <Image
-                        src={process.env.NEXT_PUBLIC_API_URL  + product.image[0]}
+                        src={process.env.NEXT_PUBLIC_API_URL + product.image[0]}
                         alt={currentLocale === 'ar' ? product.name_ar : product.name_en}
                         width={300}
                         height={270}

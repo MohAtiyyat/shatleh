@@ -24,7 +24,7 @@ export default function SearchBar({ searchTerm, setSearchTerm, onSearch }: Searc
   };
 
   return (
-    <div className="relative lg:min-w-xl sm:max-w-lg  mb-2 ">
+    <div className="relative sm:max-w-xl md:min-w-xl    mb-2 ">
       <input
         type="text"
         value={searchTerm}
