@@ -7,7 +7,9 @@ import { UserData, Address } from '../../lib';
 interface CheckoutContentProps {
     userData: UserData;
     addresses: Address[];
+    setAddresses: React.Dispatch<React.SetStateAction<Address[]>>; // Added prop
     defaultAddressId: number | null;
+    setDefaultAddressId: (id: number | null) => void;
     couponCode: string;
     setCouponCode: (code: string) => void;
     couponApplied: boolean;
@@ -22,7 +24,9 @@ interface CheckoutContentProps {
 export default function CheckoutContent({
     userData,
     addresses,
+    setAddresses, // Added to props
     defaultAddressId,
+    setDefaultAddressId,
     couponCode,
     setCouponCode,
     couponApplied,
@@ -47,7 +51,9 @@ export default function CheckoutContent({
                 <PaymentDetails
                     userData={userData}
                     addresses={addresses}
+                    setAddresses={setAddresses} // Pass setAddresses
                     defaultAddressId={defaultAddressId}
+                    setDefaultAddressId={setDefaultAddressId}
                     couponCode={couponCode}
                     setCouponCode={setCouponCode}
                     couponApplied={couponApplied}
@@ -56,6 +62,7 @@ export default function CheckoutContent({
                     setCouponDiscount={setCouponDiscount}
                     couponError={couponError}
                     setCouponError={setCouponError}
+                    currentLocale={currentLocale}
                 />
             </div>
         </div>

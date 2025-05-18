@@ -98,7 +98,9 @@ export default function CheckoutPage() {
                     <CheckoutContent
                         userData={userData}
                         addresses={addresses}
+                        setAddresses={setAddresses} // Pass setAddresses
                         defaultAddressId={defaultAddressId}
+                        setDefaultAddressId={setDefaultAddressId}
                         couponCode={couponCode}
                         setCouponCode={setCouponCode}
                         couponApplied={couponApplied}

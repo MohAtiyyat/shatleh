@@ -26,7 +26,9 @@ interface Coupon {
 interface PaymentDetailsProps {
     userData: UserData;
     addresses: Address[];
+    setAddresses: React.Dispatch<React.SetStateAction<Address[]>>; // Added prop
     defaultAddressId: number | null;
+    setDefaultAddressId: (id: number | null) => void;
     couponCode: string;
     setCouponCode: (code: string) => void;
     couponApplied: boolean;
@@ -35,12 +37,15 @@ interface PaymentDetailsProps {
     setCouponDiscount: (discount: number) => void;
     couponError: string | null;
     setCouponError: (error: string | null) => void;
+    currentLocale: 'en' | 'ar';
 }
 
 export default function PaymentDetails({
     userData,
     addresses,
+    setAddresses, // Added to props
     defaultAddressId,
+    setDefaultAddressId,
     couponCode,
     setCouponCode,
     couponApplied,
@@ -188,7 +193,9 @@ export default function PaymentDetails({
 
     return (
         <div
-            className={`sticky-container p-6 sm:p-8 w-[95%] md:w-full max-w-md sm:max-w-lg lg:max-w-2xl mx-auto lg:mx-7 min-h-[450px] sm:mx-auto md:mx-auto flex flex-col z-10 rounded-lg shadow-md ${isFooterVisible ? 'lg:sticky lg:top-25' : 'lg:sticky lg:top-25'}`}
+            className={`sticky-container p-6 sm:p-8 w-[95%] md:w-full max-w-md sm:max-w-lg lg:max-w-2xl mx-auto lg:mx-7 min-h-[450px] sm:mx-auto md:mx-auto flex flex-col z-10 rounded-lg shadow-md ${
+                isFooterVisible ? 'lg:sticky lg:top-25' : 'lg:sticky lg:top-25'
+            }`}
             style={{ backgroundColor: 'var(--primary-bg)', borderColor: 'var(--secondary-bg)' }}
             role="region"
             aria-label={t('paymentDetails')}
@@ -200,7 +207,9 @@ export default function PaymentDetails({
             <BillingDetails
                 userData={userData}
                 addresses={addresses}
+                setAddresses={setAddresses} // Pass setAddresses
                 defaultAddressId={defaultAddressId}
+                setDefaultAddressId={setDefaultAddressId}
                 formData={formData}
                 formErrors={formErrors}
                 handleGiftInputChange={handleGiftInputChange}
