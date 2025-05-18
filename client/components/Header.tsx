@@ -8,6 +8,13 @@ import { ShoppingCart, Languages } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '../lib/store';
 import { useAuth } from '../lib/AuthContext';
+import { fetchProfile } from '../lib/api';
+
+interface Profile {
+    first_name: string;
+    last_name: string;
+    photo: string | null;
+}
 
 const Header = () => {
     const t = useTranslations();
@@ -17,12 +24,31 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [langMenuOpen, setLangMenuOpen] = useState(false);
+    const [profile, setProfile] = useState<Profile | null>(null);
     const currentLocale = pathname.split('/')[1] || 'en';
     const { items, syncWithBackend } = useCartStore();
     const userMenuRef = useRef<HTMLDivElement>(null);
     const langMenuRef = useRef<HTMLDivElement>(null);
 
     const cartQuantity = items.reduce((total, item) => total + (item.quantity || 0), 0);
+
+    useEffect(() => {
+        const loadProfile = async () => {
+            if (isAuthenticated && userId) {
+                try {
+                    const profileData = await fetchProfile();
+                    setProfile({
+                        first_name: profileData.first_name,
+                        last_name: profileData.last_name,
+                        photo: profileData.photo
+                    });
+                } catch (error) {
+                    console.error('Failed to fetch profile:', error);
+                }
+            }
+        };
+        loadProfile();
+    }, [isAuthenticated, userId]);
 
     useEffect(() => {
         if (userId) {
@@ -67,6 +93,7 @@ const Header = () => {
         try {
             await logout();
             setUserMenuOpen(false);
+            setProfile(null);
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -83,6 +110,13 @@ const Header = () => {
         { locale: 'en', label: 'EN', icon: '/flags/GB.png' },
         { locale: 'ar', label: 'العربية', icon: '/flags/SA.png' },
     ];
+
+    const getInitials = () => {
+        if (!profile) return '';
+        const firstInitial = profile.first_name.charAt(0).toUpperCase();
+        const lastInitial = profile.last_name.charAt(0).toUpperCase();
+        return `${firstInitial}${lastInitial}`;
+    };
 
     return (
         <header className="w-full text-text-primary h-[10vh] shadow-md transition-all duration-300 ease-in-out animate-header md:px-6 sm:px-6 sticky z-50 top-0 bg-[var(--primary-bg)]">
@@ -131,7 +165,6 @@ const Header = () => {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                             </svg>
-                            
                         </button>
                         {langMenuOpen && (
                             <div className={`absolute ${currentLocale === 'ar' ? 'left-0' : 'right-0'} mt-2 w-32 bg-white text-text-primary rounded-md shadow-lg z-50`}>
@@ -169,13 +202,19 @@ const Header = () => {
                     {isAuthenticated && (
                         <div className="relative" ref={userMenuRef} dir="ltr">
                             <button onClick={toggleUserMenu} className="focus:outline-none">
-                                <Image
-                                    width={40}
-                                    height={40}
-                                    src="https://images.pexels.com/photos/3198639/pexels-photo-3198639.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                                    alt="User"
-                                    className="w-10 h-10 rounded-full border-2 border-accent"
-                                />
+                                {profile && profile.photo ? (
+                                    <Image
+                                        width={40}
+                                        height={40}
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}${profile.photo}`}
+                                        alt="User profile"
+                                        className="w-10 h-10 rounded-full border-2 border-accent"
+                                    />
+                                ) : (
+                                    <div className="w-10 h-10 rounded-full border-2 border-accent bg-gray-200 flex items-center justify-center text-text-primary font-semibold">
+                                        {getInitials()}
+                                    </div>
+                                )}
                             </button>
                             {userMenuOpen && (
                                 <div className={`absolute ${currentLocale === 'ar' ? 'left-2' : 'right-2'} z-50 mt-2 w-48 bg-white text-text-primary rounded-md shadow-lg`}>
