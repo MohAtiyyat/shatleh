@@ -24,11 +24,13 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [langMenuOpen, setLangMenuOpen] = useState(false);
+    const [authMenuOpen, setAuthMenuOpen] = useState(false);
     const [profile, setProfile] = useState<Profile | null>(null);
     const currentLocale = pathname.split('/')[1] || 'en';
     const { items, syncWithBackend } = useCartStore();
     const userMenuRef = useRef<HTMLDivElement>(null);
     const langMenuRef = useRef<HTMLDivElement>(null);
+    const authMenuRef = useRef<HTMLDivElement>(null);
 
     const cartQuantity = items.reduce((total, item) => total + (item.quantity || 0), 0);
 
@@ -60,17 +62,14 @@ const Header = () => {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (
-                userMenuRef.current &&
-                !userMenuRef.current.contains(event.target as Node)
-            ) {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
                 setUserMenuOpen(false);
             }
-            if (
-                langMenuRef.current &&
-                !langMenuRef.current.contains(event.target as Node)
-            ) {
+            if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
                 setLangMenuOpen(false);
+            }
+            if (authMenuRef.current && !authMenuRef.current.contains(event.target as Node)) {
+                setAuthMenuOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -82,6 +81,7 @@ const Header = () => {
     const toggleMenu = () => setIsOpen(!isOpen);
     const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
     const toggleLangMenu = () => setLangMenuOpen(!langMenuOpen);
+    const toggleAuthMenu = () => setAuthMenuOpen(!authMenuOpen);
 
     const switchLanguage = (newLocale: string) => {
         const newPath = pathname.replace(/^\/(en|ar)/, `/${newLocale}`);
@@ -100,10 +100,10 @@ const Header = () => {
     };
 
     const navItems = [
-        { label: t('header.products'), href: `/${currentLocale}/products` },
-        { label: t('header.blog'), href: `/${currentLocale}/blog` },
-        { label: t('header.services'), href: `/${currentLocale}/services` },
-        { label: t('header.about'), href: `/${currentLocale}/about-us` },
+        { label: t('header.products'), path: 'products' },
+        { label: t('header.blog'), path: 'blog' },
+        { label: t('header.services'), path: 'services' },
+        { label: t('header.about'), path: 'about-us' },
     ];
 
     const languageOptions = [
@@ -118,17 +118,22 @@ const Header = () => {
         return `${firstInitial}${lastInitial}`;
     };
 
+    const isActiveNavItem = (path: string) => {
+        const basePath = `/${currentLocale}/${path}`;
+        return pathname === basePath || pathname.startsWith(`${basePath}/`);
+    };
+
     return (
-        <header className="w-full text-text-primary h-[10vh] shadow-md transition-all duration-300 ease-in-out animate-header md:px-6 sm:px-6 sticky z-50 top-0 bg-[var(--primary-bg)]">
+        <header className="w-full text-text-primary h-[10vh] shadow-md transition-all duration-300 ease-in-out md:px-6 sm:px-6 sticky z-50 top-0 bg-[var(--primary-bg)]">
             <div className="px-4 flex justify-between items-center h-full relative">
                 <div className="flex items-center space-x-6">
-                    <Link href={`/${currentLocale}`}>
+                    <Link href={`/${currentLocale}`} className="overflow-hidden">
                         <Image
-                            src="/header logo.svg"
+                            src="/logo shatleh.svg"
                             alt="Logo"
-                            width={80}
-                            height={80}
-                            className="w-35 h-35 object-contain mt-4"
+                            width={35}
+                            height={35}
+                            className="w-30 h-30 object-contain mt-4"
                             priority
                         />
                     </Link>
@@ -136,23 +141,26 @@ const Header = () => {
                         {navItems.map((item) => (
                             <Link
                                 key={item.label}
-                                href={item.href}
-                                className="hover:text-text-hover transition-colors flex items-center whitespace-nowrap"
+                                href={`/${currentLocale}/${item.path}`}
+                                className="relative text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105"
                                 onClick={() => setIsOpen(false)}
                             >
-                                {item.label}
+                                <span className={`${isActiveNavItem(item.path) ? 'text-accent' : 'hover:text-accent'}`}>
+                                    {item.label}
+                                </span>
+                                {isActiveNavItem(item.path) && (
+                                    <span className="absolute bottom-[-4px] left-0 w-full h-0.5 bg-accent animate-underline border-b-2" />
+                                )}
                             </Link>
                         ))}
                     </nav>
                 </div>
 
-                {/* Right: Language + Cart + User */}
-                <div className="flex flex-row items-center space-x-4">
-                    {/* Language dropdown */}
+                <div className="flex flex-row items-center space-x-3">
                     <div className="relative" ref={langMenuRef}>
                         <button
                             onClick={toggleLangMenu}
-                            className="flex items-center gap-1 hover:text-text-hover px-3 py-1 rounded-md transition-colors"
+                            className="flex items-center gap-1 hover:text-accent px-2 py-1 transition-all duration-200 ease-in-out"
                         >
                             <Image
                                 src={languageOptions.find(opt => opt.locale === currentLocale)?.icon || '/flags/GB.png'}
@@ -167,12 +175,12 @@ const Header = () => {
                             </svg>
                         </button>
                         {langMenuOpen && (
-                            <div className={`absolute ${currentLocale === 'ar' ? 'left-0' : 'right-0'} mt-2 w-32 bg-white text-text-primary rounded-md shadow-lg z-50`}>
+                            <div className={`absolute ${currentLocale === 'ar' ? 'left-0' : 'right-0'} mt-2 w-32 bg-[var(--primary-bg)] text-text-primary rounded-sm shadow-lg z-50`}>
                                 {languageOptions.map((option) => (
                                     <button
                                         key={option.locale}
                                         onClick={() => switchLanguage(option.locale)}
-                                        className="w-full flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-100 transition-colors"
+                                        className="w-full flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-200 hover:text-accent transition-all duration-200"
                                     >
                                         <Image
                                             src={option.icon}
@@ -188,17 +196,15 @@ const Header = () => {
                         )}
                     </div>
 
-                    {/* Cart icon */}
                     <div className="relative">
-                        <Link href={`/${currentLocale}/cart`} className="md:flex hidden mx-4">
-                            <ShoppingCart className="w-6 h-6 text-text-primary hover:text-text-hover transition-colors" />
+                        <Link href={`/${currentLocale}/cart`} className="md:flex hidden mx-3">
+                            <ShoppingCart className="w-6 h-6 text-text-primary hover:text-accent transition-all duration-200 ease-in-out transform hover:scale-110" />
                             <span className="absolute -top-2 left-7 w-5 h-5 bg-red-400 text-white rounded-full flex items-center justify-center border-2 text-xs">
                                 {cartQuantity}
                             </span>
                         </Link>
                     </div>
 
-                    {/* User Profile */}
                     {isAuthenticated && (
                         <div className="relative" ref={userMenuRef} dir="ltr">
                             <button onClick={toggleUserMenu} className="focus:outline-none">
@@ -208,29 +214,29 @@ const Header = () => {
                                         height={40}
                                         src={`${process.env.NEXT_PUBLIC_API_URL}${profile.photo}`}
                                         alt="User profile"
-                                        className="w-10 h-10 rounded-full border-2 border-accent"
+                                        className="w-10 h-10 rounded-sm border border-accent hover:scale-105 transition-all duration-200"
                                     />
                                 ) : (
-                                    <div className="w-10 h-10 rounded-full border-2 border-accent bg-gray-200 flex items-center justify-center text-text-primary font-semibold">
+                                    <div className="w-10 h-10 rounded-sm border border-accent bg-[var(--primary-bg)] flex items-center justify-center text-text-primary font-medium hover:scale-105 transition-all duration-200">
                                         {getInitials()}
                                     </div>
                                 )}
                             </button>
                             {userMenuOpen && (
-                                <div className={`absolute ${currentLocale === 'ar' ? 'left-2' : 'right-2'} z-50 mt-2 w-48 bg-white text-text-primary rounded-md shadow-lg`}>
-                                    <Link href={`/${currentLocale}/account`} className="block px-4 py-2 hover:bg-gray-100" onClick={toggleUserMenu}>
+                                <div className={`absolute ${currentLocale === 'ar' ? 'left-2' : 'right-2'} z-50 mt-2 w-48 bg-[var(--primary-bg)] text-text-primary rounded-sm shadow-lg`}>
+                                    <Link href={`/${currentLocale}/account`} className="block px-4 py-2 hover:bg-gray-200 hover:text-accent transition-all duration-200" onClick={toggleUserMenu}>
                                         {t('user.account')}
                                     </Link>
-                                    <Link href={`/${currentLocale}/address`} className="block px-4 py-2 hover:bg-gray-100" onClick={toggleUserMenu}>
+                                    <Link href={`/${currentLocale}/address`} className="block px-4 py-2 hover:bg-gray-200 hover:text-accent transition-all duration-200" onClick={toggleUserMenu}>
                                         {t('user.address')}
                                     </Link>
-                                    <Link href={`/${currentLocale}/service-requests`} className="block px-4 py-2 hover:bg-gray-100" onClick={toggleUserMenu}>
+                                    <Link href={`/${currentLocale}/service-requests`} className="block px-4 py-2 hover:bg-gray-200 hover:text-accent transition-all duration-200" onClick={toggleUserMenu}>
                                         {t('user.serviceRequests')}
                                     </Link>
-                                    <Link href={`/${currentLocale}/orders`} className="block px-4 py-2 hover:bg-gray-100" onClick={toggleUserMenu}>
+                                    <Link href={`/${currentLocale}/orders`} className="block px-4 py-2 hover:bg-gray-200 hover:text-accent transition-all duration-200" onClick={toggleUserMenu}>
                                         {t('user.myOrders')}
                                     </Link>
-                                    <button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                                    <button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-gray-200 hover:text-accent transition-all duration-200">
                                         {t('user.logout')}
                                     </button>
                                 </div>
@@ -238,19 +244,38 @@ const Header = () => {
                         </div>
                     )}
 
-                    {/* Login/Register */}
                     {!isAuthenticated && (
-                        <>
-                            <Link href={`/${currentLocale}/login`} className="hidden md:flex items-center whitespace-nowrap">
-                                {t('header.login')}
-                            </Link>
-                            <Link href={`/${currentLocale}/register`} className="hidden md:flex items-center whitespace-nowrap">
-                                {t('header.signup')}
-                            </Link>
-                        </>
+                        <div className="relative" ref={authMenuRef}>
+                            <button
+                                onClick={toggleAuthMenu}
+                                className="hidden md:flex items-center px-3 py-1.5 text-text-primary hover:bg-accent hover:text-[var(--text-gray)] transition-all duration-200 text-sm font-medium"
+                            >
+                                {t('header.account')}
+                                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            {authMenuOpen && (
+                                <div className={`absolute ${currentLocale === 'ar' ? 'left-0' : 'right-0'} mt-2 w-32 bg-[var(--primary-bg)] text-text-primary rounded-sm shadow-lg z-50`}>
+                                    <Link
+                                        href={`/${currentLocale}/login`}
+                                        className="block px-4 py-2 hover:bg-gray-200 hover:text-accent transition-all duration-200"
+                                        onClick={toggleAuthMenu}
+                                    >
+                                        {t('header.login')}
+                                    </Link>
+                                    <Link
+                                        href={`/${currentLocale}/register`}
+                                        className="block px-4 py-2 hover:bg-gray-200 hover:text-accent transition-all duration-200"
+                                        onClick={toggleAuthMenu}
+                                    >
+                                        {t('header.signup')}
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
                     )}
 
-                    {/* Mobile menu toggle */}
                     <button className={`md:hidden focus:outline-none ${currentLocale === 'ar' ? ' pr-3' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -264,18 +289,45 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* Mobile Nav */}
             {isOpen && (
                 <nav className="md:hidden bg-[var(--primary-bg)] border-t border-accent absolute top-[10vh] left-0 w-full px-4 py-4 shadow-md">
-                    <div className="flex flex-col space-y-4">
+                    <div className="flex flex-col space-y-3">
                         {navItems.map((item) => (
-                            <Link key={item.label} href={item.href} className="nav-item flex flex-row items-center whitespace-nowrap" onClick={toggleMenu}>
-                                {item.label}
+                            <Link
+                                key={item.label}
+                                href={`/${currentLocale}/${item.path}`}
+                                className="relative py-2 text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105"
+                                onClick={toggleMenu}
+                            >
+                                <span className={`${isActiveNavItem(item.path) ? 'text-accent' : 'hover:text-accent'}`}>
+                                    {item.label}
+                                </span>
+                                {isActiveNavItem(item.path) && (
+                                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-accent animate-underline" />
+                                )}
                             </Link>
                         ))}
-                        <div className="relative py-2 nav-item">
+                        {!isAuthenticated && (
+                            <div className="flex flex-col space-y-2 pt-2">
+                                <Link
+                                    href={`/${currentLocale}/login`}
+                                    className="px-4 py-2 text-text-primary border border-accent hover:bg-accent hover:text-gray-900 transition-all duration-200 text-sm font-medium text-center"
+                                    onClick={toggleMenu}
+                                >
+                                    {t('header.login')}
+                                </Link>
+                                <Link
+                                    href={`/${currentLocale}/register`}
+                                    className="px-4 py-2 text-gray-900 bg-accent hover:bg-opacity-80 transition-all duration-200 text-sm font-medium text-center"
+                                    onClick={toggleMenu}
+                                >
+                                    {t('header.signup')}
+                                </Link>
+                            </div>
+                        )}
+                        <div className="relative py-2">
                             <Link href={`/${currentLocale}/cart`} className="md:hidden flex mx-4">
-                                <ShoppingCart className="w-6 h-6 text-text-primary hover:text-text-hover transition-colors" />
+                                <ShoppingCart className="w-6 h-6 text-text-primary hover:text-accent transition-all duration-200 ease-in-out transform hover:scale-110" />
                                 <span className={`absolute -top-0 ${currentLocale === 'ar' ? 'right-1' : 'left-7'} w-5 h-5 bg-red-400 text-white rounded-full flex items-center justify-center border-2 text-xs`}>
                                     {cartQuantity}
                                 </span>

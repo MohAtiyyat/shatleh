@@ -6,7 +6,8 @@
     "services": "Services",
     "about": "About Us",
     "login": "Login",
-    "signup": "Sign Up"
+    "signup": "Sign Up",
+    "account": "Account"
   },
   "metadata": {
     "title": "Shatleh",
@@ -51,18 +52,18 @@
   "hero": {
     "slide1": {
       "subtitle": "Welcome to Shatleh",
-      "title": "Transform Your Space with Nature",
-      "description": "Discover a wide range of plants and services to bring greenery into your life."
+      "title": "Make your green space more beautiful with Shatleh",
+      "description": "Find everything you need to grow and take care of your garden, all in one place"
     },
     "slide2": {
-      "subtitle": "Quality Plants",
-      "title": "Fresh and Vibrant Plants for Every Home",
-      "description": "We offer the best selection of indoor and outdoor plants for all your needs."
+      "subtitle": "Educational Content",
+      "title": "Plant Care Tips and Guides",
+      "description": "Learn how to grow and take care of your plants to keep them healthy and beautiful"
     },
     "slide3": {
-      "subtitle": "Expert Services",
+      "subtitle": "Our Services",
       "title": "Professional Gardening Services",
-      "description": "Our team provides top-notch maintenance and design services for your garden."
+      "description": "Our team is ready to take care of your green space and keep it organized"
     }
   },
   "categories": {
