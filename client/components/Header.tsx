@@ -247,10 +247,10 @@ const Header = () => {
                                         height={40}
                                         src={`${process.env.NEXT_PUBLIC_API_URL}${profile.photo}`}
                                         alt="User profile"
-                                        className="w-10 h-10 rounded-sm border border-accent hover:scale-105 transition-all duration-200"
+                                        className="w-10 h-10 rounded-full hover:scale-105 transition-all duration-200"
                                     />
                                 ) : (
-                                    <div className="w-10 h-10 rounded-sm border border-accent bg-[var(--primary-bg)] flex items-center justify-center text-text-primary font-medium hover:scale-105 transition-all duration-200">
+                                    <div className="w-10 h-10 rounded-full border bg-[var(--primary-bg)] flex items-center justify-center text-text-primary font-medium hover:scale-105 transition-all duration-200">
                                         {getInitials()}
                                     </div>
                                 )}
@@ -366,7 +366,7 @@ const Header = () => {
                             <div className="flex flex-col space-y-2 pt-2">
                                 <Link
                                     href={`/${currentLocale}/login`}
-                                    className="px-4 py-2 text-text-primary border border-accent hover:bg-accent hover:text-gray-900 transition-all duration-200 text-sm font-medium text-center"
+                                    className="px-4 py-2 text-text-primary transition-all duration-200 text-sm font-medium text-center"
                                     onClick={toggleMenu}
                                 >
                                     {t('header.login')}
