@@ -31,4 +31,9 @@ class Post extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    public function bookmarkedBy()
+    {
+        return $this->belongsToMany(User::class, 'bookmarks')->withTimestamps();
+    }
+
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -51,5 +52,19 @@ class PostController extends Controller
             'product_ar' => $post->product ? $post->product->name_ar : null,
             'image' => $post->image ? asset('storage/' . $post->image) : null,
         ]);
+    }
+
+    public function bookmarksToggle($postId)
+    {
+        $user = Auth::user();
+        $post = Post::findOrFail($postId);
+
+        if ($user->bookmarks()->where('post_id', $post->id)->exists()) {
+            $user->bookmarks()->detach($post->id);
+            return response()->json(['bookmarked' => false]);
+        } else {
+            $user->bookmarks()->attach($post->id);
+            return response()->json(['bookmarked' => true]);
+        }
     }
 }
