@@ -691,7 +691,6 @@ export const submitProductReview = async (data: ReviewRequest, locale: string): 
         throw new Error(error instanceof Error ? error.message : 'Failed to submit review');
     }
 };
-
 export const fetchBlogPosts = async (locale: string): Promise<BlogPost[]> => {
     try {
         const response = await fetch(`${API_URL}/api/blog`, {
@@ -699,17 +698,54 @@ export const fetchBlogPosts = async (locale: string): Promise<BlogPost[]> => {
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                'Accept-Language': locale,
             },
         });
-        const data = await handleResponse<BlogPost[]>(response);
-        return data;
+        return await handleResponse<BlogPost[]>(response);
     } catch (error) {
-        console.error('Failed to fetch blog posts:', error);
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch blog posts');
     }
 };
 
+export const fetchBookmarkedPosts = async (): Promise<BlogPost[]> => {
+    const token = getAuthToken();
+    if (!token) {
+        return []; // Return empty array for unauthenticated users
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/bookmarks`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return await handleResponse<BlogPost[]>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch bookmarked posts');
+    }
+};
+
+export const toggleBookmark = async (postId: number): Promise<boolean> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/blog/${postId}/bookmark`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await handleResponse<{ bookmarked: boolean }>(response);
+        return data.bookmarked;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to toggle bookmark');
+    }
+};
 export const fetchPostCategories = async (locale: string): Promise<PostFilterCategory[]> => {
     try {
         const response = await fetch(`${API_URL}/api/categories`, {

@@ -9,9 +9,8 @@ import SearchBar from '../../../../components/post/search-bar';
 import Breadcrumb from '../../../../components/breadcrumb';
 import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
-import { BlogPost} from '../../../../lib/index';
-import { PostFiltersState } from '../../../../lib/index';
-import { fetchBlogPosts, fetchPostCategories } from '../../../../lib/api';
+import { BlogPost, PostFiltersState } from '../../../../lib/index';
+import { fetchBlogPosts, fetchPostCategories, fetchBookmarkedPosts } from '../../../../lib/api';
 
 export default function Home() {
     const t = useTranslations('');
@@ -21,49 +20,56 @@ export default function Home() {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    const [posts, setPosts] = useState<BlogPost[]>([]);
+    const [posts, setPosts] = useState<(BlogPost & { bookmarked?: boolean })[]>([]);
     const [filters, setFilters] = useState<PostFiltersState>({ categories: [] });
     const [error, setError] = useState<string | null>(null);
     const postsPerPage = 6;
 
-    // Fetch posts and categories from backend
+    const fetchData = async () => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            // Fetch posts (no token, no bookmark status)
+            const postsData = await fetchBlogPosts(currentLocale);
+
+            // Fetch bookmarked posts for authenticated users
+            const bookmarkedPosts = await fetchBookmarkedPosts();
+            const bookmarkedPostIds = new Set(bookmarkedPosts.map((post) => post.id));
+
+            // Merge bookmark status into posts
+            const postsWithBookmarks = postsData.map((post) => ({
+                ...post,
+                bookmarked: bookmarkedPostIds.has(post.id),
+            }));
+
+            setPosts(postsWithBookmarks);
+
+            // Fetch categories
+            const categoriesData = await fetchPostCategories(currentLocale);
+            const usedCategoryNames = new Set(
+                postsData
+                    .map((post) => (currentLocale === 'ar' ? post.category_ar : post.category_en))
+                    .filter((category) => category)
+            );
+
+            const filteredCategories = categoriesData.filter((category) =>
+                usedCategoryNames.has(currentLocale === 'ar' ? category.name.ar : category.name.en)
+            );
+
+            setFilters({ categories: filteredCategories });
+        } catch (err) {
+            setError(t('error.fetchFailed'));
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            try {
-                // Fetch posts
-                const postsData = await fetchBlogPosts(currentLocale);
-                setPosts(postsData);
-
-                // Fetch categories
-                const categoriesData = await fetchPostCategories(currentLocale);
-
-                // Filter categories to only those with associated posts
-                const usedCategoryNames = new Set(
-                    postsData
-                        .map((post) => (currentLocale === 'ar' ? post.category_ar : post.category_en))
-                        .filter((category) => category) // Remove null/undefined
-                );
-
-                const filteredCategories = categoriesData.filter((category) =>
-                    usedCategoryNames.has(currentLocale === 'ar' ? category.name.ar : category.name.en)
-                );
-
-                setFilters({ categories: filteredCategories });
-            } catch (err) {
-                setError(t('error.fetchFailed'));
-                console.error(err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchData();
     }, [currentLocale]);
 
-    // Reset currentPage to 1 when searchTerm or filters change
     useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm, filters]);
@@ -72,21 +78,14 @@ export default function Home() {
         console.log('Search submitted:', searchTerm);
     };
 
-    // Filter posts based on selected categories
     const filteredPosts = posts.filter((post) => {
         const postCategory = currentLocale === 'ar' ? post.category_ar : post.category_en;
-
-        // If no categories are selected, show all posts
         if (!filters.categories.some((c) => c.selected)) {
             return true;
         }
-
-        // If the post has no category, exclude it only when specific categories are selected
         if (!postCategory) {
             return false;
         }
-
-        // Include posts matching selected categories
         return filters.categories.some(
             (category) =>
                 category.selected &&
@@ -94,7 +93,6 @@ export default function Home() {
         );
     });
 
-    // Apply search term filtering (case-insensitive)
     const finalPosts = filteredPosts.filter((post) =>
         (currentLocale === 'ar' ? post.title_ar : post.title_en)
             .toLowerCase()
@@ -104,13 +102,11 @@ export default function Home() {
             .includes(searchTerm.toLowerCase())
     );
 
-    // Calculate pagination
     const totalPages = Math.ceil(finalPosts.length / postsPerPage);
     const startIndex = (currentPage - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
     const paginatedPosts = finalPosts.slice(startIndex, endIndex);
 
-    // Animation variants for the container
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -121,7 +117,6 @@ export default function Home() {
         },
     };
 
-    // Animation variants for each BlogCard
     const cardVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -140,7 +135,6 @@ export default function Home() {
         },
     };
 
-    // Skeleton Loader Component
     const SkeletonCard = () => (
         <div className="bg-white rounded-xl overflow-hidden shadow-sm h-[400px] animate-pulse">
             <div className="h-56 w-full bg-gray-300"></div>
@@ -185,7 +179,7 @@ export default function Home() {
                     animate="visible"
                 >
                     {isLoading ? (
-                        Array.from({ length: 12 }).map((_, index) => <SkeletonCard key={index} />)
+                        Array.from({ length: postsPerPage }).map((_, index) => <SkeletonCard key={index} />)
                     ) : (
                         <AnimatePresence mode="wait">
                             {paginatedPosts.length > 0 ? (
@@ -198,7 +192,12 @@ export default function Home() {
                                         animate="visible"
                                         exit="exit"
                                     >
-                                        <BlogCard post={post} currentLocale={currentLocale} />
+                                        <BlogCard
+                                            post={post}
+                                            currentLocale={currentLocale}
+                                            onBookmarkToggle={fetchData}
+                                            setPosts={setPosts}
+                                        />
                                     </motion.div>
                                 ))
                             ) : (
@@ -210,7 +209,7 @@ export default function Home() {
                                     animate="visible"
                                     exit="exit"
                                 >
-                                    {t ('education.noResults')}
+                                    {t('education.noResults')}
                                 </motion.p>
                             )}
                         </AnimatePresence>

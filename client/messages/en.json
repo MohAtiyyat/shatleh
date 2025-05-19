@@ -422,7 +422,9 @@
     "postProduct": "Post Product",
     "relatedProducts": "Related Products",
     "relatedArticles": "Related Posts",
-    "noRelatedArticles": "No related posts available."
+    "noRelatedArticles": "No related posts available.",
+    "addBookmark": "Add to Bookmarks",
+    "removeBookmark": "Remove from Bookmarks"
   },
   "pages": {
     "home": "Home",
