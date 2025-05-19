@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\CartController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CouponController;
 use App\Http\Controllers\Dashboard\CustomerController;
+use App\Http\Controllers\Dashboard\IndexController;
 use App\Http\Controllers\Dashboard\LogController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PaymentController;
@@ -22,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(function () {
-    Route::get('/home', function () {return view('admin.index');})->name('home');
     // logging test route
     Route::get('/test-log', function () {
         \Log::channel('mysql')->info('Test log entry', [
@@ -42,6 +42,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
     Route::post('/logout', [AuthController::class, 'Logout'])->name('logout');
 
     Route::middleware(['auth:web', 'check-banned','role:Admin|Expert|Employee'])->group(function () {
+        Route::get('/', [IndexController::class,'index'])->name('home');
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('product');
             Route::get('/create', [ProductController::class, 'create'])->name('product.create');
