@@ -195,7 +195,6 @@ export default function Home() {
                                         <BlogCard
                                             post={post}
                                             currentLocale={currentLocale}
-                                            onBookmarkToggle={fetchData}
                                             setPosts={setPosts}
                                         />
                                     </motion.div>

@@ -13,11 +13,10 @@ import { useRouter } from 'next/navigation';
 interface BlogCardProps {
     post: BlogPost & { bookmarked?: boolean };
     currentLocale: 'en' | 'ar';
-    onBookmarkToggle?: () => Promise<void>;
     setPosts?: React.Dispatch<React.SetStateAction<(BlogPost & { bookmarked?: boolean })[]>>;
 }
 
-export default function BlogCard({ post, currentLocale, onBookmarkToggle, setPosts }: BlogCardProps) {
+export default function BlogCard({ post, currentLocale, setPosts }: BlogCardProps) {
     const t = useTranslations();
     const router = useRouter();
     const title = currentLocale === 'ar' ? post.title_ar : post.title_en;
@@ -39,19 +38,28 @@ export default function BlogCard({ post, currentLocale, onBookmarkToggle, setPos
                     )
                 );
             }
-            if (onBookmarkToggle) {
-                await onBookmarkToggle(); // Fallback to refetch data
-            }
         } catch (error: any) {
             if (error.message.includes('Authentication required') || error.message.includes('No authentication token found')) {
-                alert(t('error.loginRequired', { default: 'Please log in to bookmark posts' }));
-                router.push(`/${currentLocale}/login`);
+                router.push(`/${currentLocale}/login?redirect=/blog`);
             } else {
-                alert(t('error.bookmarkFailed', { default: 'Failed to update bookmark' }));
+                console.error('Bookmark error:', error.message);
             }
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // Animation variants for the bookmark button
+    const buttonVariants = {
+        idle: { scale: 1, rotate: 0 },
+        clicked: {
+            scale: [1, 1.2, 0.9, 1], // Pulse effect
+            rotate: [0, 5, -5, 0], // Slight shake
+            transition: {
+                duration: 0.3,
+                ease: 'easeInOut',
+            },
+        },
     };
 
     return (
@@ -71,7 +79,7 @@ export default function BlogCard({ post, currentLocale, onBookmarkToggle, setPos
                         alt={title}
                         className="w-full h-56 object-cover"
                     />
-                    <button
+                    <motion.button
                         onClick={handleBookmarkToggle}
                         disabled={isLoading}
                         className={`absolute top-2 ${currentLocale === 'ar' ? 'left-2' : 'right-2'} p-2 rounded-full ${
@@ -82,9 +90,14 @@ export default function BlogCard({ post, currentLocale, onBookmarkToggle, setPos
                                 ? t('education.removeBookmark', { default: 'Remove from Bookmarks' })
                                 : t('education.addBookmark', { default: 'Add to Bookmarks' })
                         }
+                        variants={buttonVariants}
+                        initial="idle"
+                        animate={isLoading ? 'clicked' : 'idle'}
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                     >
                         <BookmarkIcon className="h-5 w-5" />
-                    </button>
+                    </motion.button>
                 </div>
                 <div className="p-4 bg-green-50 min-h-[200px] flex flex-col justify-between">
                     <h3 className="text-xl font-medium text-teal-600 mb-2">{title}</h3>
