@@ -2,10 +2,10 @@
 
 namespace App;
 
-enum RequestedServiceStatus : int
+enum OrdersStatus : int
 {
-    case TO_DO = 0;
+    case PENDING = 0;
     case IN_PROGRESS = 1;
-    case DONE = 2;
+    case DELEIVERED = 2;
     case CANCELED = 3;
 }
