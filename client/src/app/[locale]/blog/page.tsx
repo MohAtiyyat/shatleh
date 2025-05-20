@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BookmarkIcon } from 'lucide-react';
 import BlogCard from '../../../../components/post/blog-card';
-import SearchBar from '../../../../components/post/search-bar';
 import Breadcrumb from '../../../../components/breadcrumb';
 import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
+import SearchBar from '../../../../components/post/search-bar';
 import { BlogPost, PostFiltersState } from '../../../../lib/index';
-import { fetchBlogPosts, fetchPostCategories, fetchBookmarkedPosts } from '../../../../lib/api';
+import { fetchBlogPosts, fetchPostCategories, fetchBookmarkedPosts, getAuthToken } from '../../../../lib/api';
 
 export default function Home() {
     const t = useTranslations('');
@@ -23,21 +24,17 @@ export default function Home() {
     const [posts, setPosts] = useState<(BlogPost & { bookmarked?: boolean })[]>([]);
     const [filters, setFilters] = useState<PostFiltersState>({ categories: [] });
     const [error, setError] = useState<string | null>(null);
-    const postsPerPage = 6;
+    const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
 
     const fetchData = async () => {
         setIsLoading(true);
         setError(null);
 
         try {
-            // Fetch posts (no token, no bookmark status)
             const postsData = await fetchBlogPosts(currentLocale);
-
-            // Fetch bookmarked posts for authenticated users
             const bookmarkedPosts = await fetchBookmarkedPosts();
             const bookmarkedPostIds = new Set(bookmarkedPosts.map((post) => post.id));
 
-            // Merge bookmark status into posts
             const postsWithBookmarks = postsData.map((post) => ({
                 ...post,
                 bookmarked: bookmarkedPostIds.has(post.id),
@@ -45,12 +42,11 @@ export default function Home() {
 
             setPosts(postsWithBookmarks);
 
-            // Fetch categories
             const categoriesData = await fetchPostCategories(currentLocale);
             const usedCategoryNames = new Set(
                 postsData
                     .map((post) => (currentLocale === 'ar' ? post.category_ar : post.category_en))
-                    .filter((category) => category)
+                    .filter((category): category is string => !!category)
             );
 
             const filteredCategories = categoriesData.filter((category) =>
@@ -59,8 +55,8 @@ export default function Home() {
 
             setFilters({ categories: filteredCategories });
         } catch (err) {
-            setError(t('error.fetchFailed'));
-            console.error(err);
+            setError(t('error.fetchFailed', { default: 'Failed to fetch data' }));
+            console.error('Fetch error:', err);
         } finally {
             setIsLoading(false);
         }
@@ -72,13 +68,20 @@ export default function Home() {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm, filters]);
+    }, [searchTerm, filters, showBookmarkedOnly]);
 
     const handleSearch = () => {
         console.log('Search submitted:', searchTerm);
     };
 
+    const toggleBookmarkedView = () => {
+        setShowBookmarkedOnly((prev) => !prev);
+    };
+
     const filteredPosts = posts.filter((post) => {
+        if (showBookmarkedOnly && !post.bookmarked) {
+            return false;
+        }
         const postCategory = currentLocale === 'ar' ? post.category_ar : post.category_en;
         if (!filters.categories.some((c) => c.selected)) {
             return true;
@@ -94,14 +97,15 @@ export default function Home() {
     });
 
     const finalPosts = filteredPosts.filter((post) =>
-        (currentLocale === 'ar' ? post.title_ar : post.title_en)
+        ((currentLocale === 'ar' ? post.title_ar : post.title_en) || '')
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-        (currentLocale === 'ar' ? post.content_ar : post.content_en)
+        ((currentLocale === 'ar' ? post.content_ar : post.content_en) || '')
             .toLowerCase()
             .includes(searchTerm.toLowerCase())
     );
 
+    const postsPerPage = 6;
     const totalPages = Math.ceil(finalPosts.length / postsPerPage);
     const startIndex = (currentPage - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
@@ -135,6 +139,10 @@ export default function Home() {
         },
     };
 
+    const buttonVariants = {
+        idle: { scale: 1, rotate: 0 },
+    };
+
     const SkeletonCard = () => (
         <div className="bg-white rounded-xl overflow-hidden shadow-sm h-[400px] animate-pulse">
             <div className="h-56 w-full bg-gray-300"></div>
@@ -150,6 +158,8 @@ export default function Home() {
         </div>
     );
 
+    const isAuthenticated = !!getAuthToken();
+
     return (
         <div className="min-h-screen bg-[#e8f5e9] overflow-hidden mx-10">
             <main className="container mx-auto px-5 py-2">
@@ -157,9 +167,55 @@ export default function Home() {
                     <Breadcrumb pageName="blog" />
                 </div>
                 <div className="mb-3">
-                    <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
-                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
-                        <Filters filters={filters} setFilters={setFilters} currentLocale={currentLocale} />
+                    <div
+                        className={`flex flex-wrap items-center mb-4 ${
+                            currentLocale === 'ar' ? 'flex-row-reverse' : ''
+                        }`}
+                    >
+                        <div className="flex flex-wrap gap-2">
+                            <SearchBar
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                onSearch={handleSearch}
+                            />
+                            <Filters
+                                filters={filters}
+                                setFilters={setFilters}
+                                currentLocale={currentLocale}
+                            />
+                        </div>
+                        {isAuthenticated && (
+                            <motion.button
+                                onClick={toggleBookmarkedView}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-full ${
+                                    showBookmarkedOnly
+                                        ? 'bg-teal-600 text-white'
+                                        : 'bg-white text-teal-600'
+                                } hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm ${
+                                    currentLocale === 'ar' ? 'flex-row-reverse ml-2' : ''
+                                }`}
+                                aria-label={
+                                    showBookmarkedOnly
+                                        ? t('education.showAllPosts', {
+                                              default: 'Show All Posts',
+                                          })
+                                        : t('education.showBookmarked', {
+                                              default: 'Show Bookmarked Posts',
+                                          })
+                                }
+                                variants={buttonVariants}
+                                initial="idle"
+                                animate={showBookmarkedOnly ? 'clicked' : 'idle'}
+                                whileHover={{ scale: 1.05 }}
+                            >
+                                <BookmarkIcon className="h-5 w-5" />
+                                <span>
+                                    {showBookmarkedOnly
+                                        ? t('education.showAllPosts', { default: 'Show All Posts' })
+                                        : t('education.showBookmarked', { default: 'Bookmarks' })}
+                                </span>
+                            </motion.button>
+                        )}
                     </div>
                 </div>
                 {error && (
@@ -179,7 +235,9 @@ export default function Home() {
                     animate="visible"
                 >
                     {isLoading ? (
-                        Array.from({ length: postsPerPage }).map((_, index) => <SkeletonCard key={index} />)
+                        Array.from({ length: postsPerPage }).map((_, index) => (
+                            <SkeletonCard key={index} />
+                        ))
                     ) : (
                         <AnimatePresence mode="wait">
                             {paginatedPosts.length > 0 ? (
@@ -208,7 +266,13 @@ export default function Home() {
                                     animate="visible"
                                     exit="exit"
                                 >
-                                    {t('education.noResults')}
+                                    {showBookmarkedOnly
+                                        ? t('education.noBookmarkedPosts', {
+                                              default: 'No bookmarked posts found',
+                                          })
+                                        : t('education.noResults', {
+                                              default: 'No results found',
+                                          })}
                                 </motion.p>
                             )}
                         </AnimatePresence>

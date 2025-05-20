@@ -231,7 +231,7 @@ interface ApiErrorResponse {
     errors?: Record<string, string[]>;
 }
 
-const getAuthToken = (): string | null => {
+export const getAuthToken = (): string | null => {
     return localStorage.getItem('token');
 };
 
