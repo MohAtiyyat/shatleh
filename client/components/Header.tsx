@@ -26,6 +26,7 @@ const Header = () => {
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const [authMenuOpen, setAuthMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [profile, setProfile] = useState<Profile | null>(null);
     const currentLocale = pathname.split('/')[1] || 'en';
     const { items, syncWithBackend } = useCartStore();
@@ -73,17 +74,21 @@ const Header = () => {
             if (authMenuRef.current && !authMenuRef.current.contains(event.target as Node)) {
                 setAuthMenuOpen(false);
             }
+            if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node) && isSearchOpen) {
+                setIsSearchOpen(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [isSearchOpen]);
 
     const toggleMenu = () => setIsOpen(!isOpen);
     const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
     const toggleLangMenu = () => setLangMenuOpen(!langMenuOpen);
     const toggleAuthMenu = () => setAuthMenuOpen(!authMenuOpen);
+    const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
     const switchLanguage = (newLocale: string) => {
         const newPath = pathname.replace(/^\/(en|ar)/, `/${newLocale}`);
@@ -106,12 +111,13 @@ const Header = () => {
         if (searchQuery.trim()) {
             router.push(`/${currentLocale}/search?q=${encodeURIComponent(searchQuery.trim())}`);
             setSearchQuery('');
-            setIsOpen(false);
+            setIsSearchOpen(false);
             searchInputRef.current?.blur();
         }
     };
 
     const navItems = [
+        { label: t('header.home'), path: '/' },
         { label: t('header.products'), path: 'products' },
         { label: t('header.blog'), path: 'blog' },
         { label: t('header.services'), path: 'services' },
@@ -137,15 +143,15 @@ const Header = () => {
 
     return (
         <header className="w-full text-text-primary h-[10vh] shadow-md transition-all duration-300 ease-in-out md:px-6 sm:px-6 sticky z-50 top-0 bg-[var(--primary-bg)]">
-            <div className="px-4 flex justify-between items-center h-full relative">
-                <div className="flex items-center space-x-6">
+            <div className="px-10 flex justify-between items-center h-full relative">
+                <div className="flex items-center space-x-1">
                     <Link href={`/${currentLocale}`} className="overflow-hidden">
                         <Image
                             src="/logo shatleh.svg"
                             alt="Logo"
                             width={35}
                             height={35}
-                            className="w-30 h-30 object-contain mt-4"
+                            className="w-30 h-30 object-cover mt-4"
                             priority
                         />
                     </Link>
@@ -154,7 +160,7 @@ const Header = () => {
                             <Link
                                 key={item.label}
                                 href={`/${currentLocale}/${item.path}`}
-                                className="relative text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105"
+                                className="relative text-sm font-medium transition-all duration-200 ease-in-out hover:font-semibold hover:px-1"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <span className={`${isActiveNavItem(item.path) ? 'text-accent' : 'hover:text-accent'}`}>
@@ -169,31 +175,36 @@ const Header = () => {
                 </div>
 
                 <div className="flex flex-row items-center space-x-3">
-                    <form onSubmit={handleSearch} className="hidden md:flex items-center relative">
-                        <div className="relative">
+                    <div className="hidden md:flex items-center relative">
+                        <button
+                            onClick={toggleSearch}
+                            className="text-text-primary hover:text-accent focus:outline-none hover:cursor-pointer px-2 py-1"
+                            aria-label={t('header.searchButton')}
+                        >
+                            <Search className="w-5 h-5" />
+                        </button>
+                        <form
+                            onSubmit={handleSearch}
+                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                isSearchOpen ? 'w-32 lg:w-48 opacity-100' : 'w-0 opacity-0'
+                            }`}
+                        >
                             <input
                                 ref={searchInputRef}
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder={t('header.search')}
-                                className="w-32 lg:w-48 px-3 py-1.5 pr-8 text-sm text-text-primary bg-[var(--primary-bg)] border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-accent hover:bg-gray-100 transition-all duration-200"
+                                className="w-full px-3 py-1.5 text-sm text-text-primary bg-[var(--primary-bg)] border border-gray-300 rounded-sm focus:outline-green-600 hover:bg-gray-100 transition-all duration-200"
                                 aria-label={t('header.search')}
                             />
-                            <button
-                                type="submit"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-text-primary hover:text-accent"
-                                aria-label={t('header.searchButton')}
-                            >
-                                <Search className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
 
                     <div className="relative" ref={langMenuRef}>
                         <button
                             onClick={toggleLangMenu}
-                            className="flex items-center gap-1 hover:text-accent px-2 py-1 transition-all duration-200 ease-in-out"
+                            className="flex items-center gap-1 hover:text-accent hover:cursor-pointer px-2 py-1 transition-all duration-200 ease-in-out"
                         >
                             <Image
                                 src={languageOptions.find(opt => opt.locale === currentLocale)?.icon || '/flags/GB.png'}
@@ -213,7 +224,7 @@ const Header = () => {
                                     <button
                                         key={option.locale}
                                         onClick={() => switchLanguage(option.locale)}
-                                        className="w-full flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-200 hover:text-accent transition-all duration-200"
+                                        className="w-full flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-200 hover:text-accent hover:cursor-pointer transition-all duration-200"
                                     >
                                         <Image
                                             src={option.icon}
@@ -231,7 +242,7 @@ const Header = () => {
 
                     <div className="relative">
                         <Link href={`/${currentLocale}/cart`} className="md:flex hidden mx-3">
-                            <ShoppingCart className="w-6 h-6 text-text-primary hover:text-accent transition-all duration-200 ease-in-out transform hover:scale-110" />
+                            <ShoppingCart className="w-6 h-6 text-text-primary hover:text-accent transition-all duration-200 ease-in-out hover:font-semibold hover:px-1" />
                             <span className="absolute -top-2 left-7 w-5 h-5 bg-red-400 text-white rounded-full flex items-center justify-center border-2 text-xs">
                                 {cartQuantity}
                             </span>
@@ -240,7 +251,7 @@ const Header = () => {
 
                     {isAuthenticated && (
                         <div className="relative" ref={userMenuRef} dir="ltr">
-                            <button onClick={toggleUserMenu} className="focus:outline-none">
+                            <button onClick={toggleUserMenu} className="focus:outline-none hover:cursor-pointer">
                                 {profile && profile.photo ? (
                                     <Image
                                         width={40}
@@ -351,7 +362,7 @@ const Header = () => {
                             <Link
                                 key={item.label}
                                 href={`/${currentLocale}/${item.path}`}
-                                className="relative py-2 text-sm font-medium transition-all duration-200 ease-in-out transform hover:scale-105"
+                                className="relative py-2 text-sm font-medium transition-all duration-200 ease-in-out hover:font-semibold hover:px-1"
                                 onClick={toggleMenu}
                             >
                                 <span className={`${isActiveNavItem(item.path) ? 'text-accent' : 'hover:text-accent'}`}>
@@ -382,7 +393,7 @@ const Header = () => {
                         )}
                         <div className="relative py-2">
                             <Link href={`/${currentLocale}/cart`} className="md:hidden flex mx-4">
-                                <ShoppingCart className="w-6 h-6 text-text-primary hover:text-accent transition-all duration-200 ease-in-out transform hover:scale-110" />
+                                <ShoppingCart className="w-6 h-6 text-text-primary hover:text-accent transition-all duration-200 ease-in-out hover:font-semibold hover:px-1" />
                                 <span className={`absolute -top-0 ${currentLocale === 'ar' ? 'right-1' : 'left-7'} w-5 h-5 bg-red-400 text-white rounded-full flex items-center justify-center border-2 text-xs`}>
                                     {cartQuantity}
                                 </span>
