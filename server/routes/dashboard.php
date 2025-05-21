@@ -22,6 +22,7 @@ use App\Http\Controllers\Dashboard\StaffController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
+Route::get('dashboard/login', function () {return view('admin.login.login');})->middleware('web')->name('login');
 Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(function () {
     // logging test route
     Route::get('/test-log', function () {
@@ -36,7 +37,6 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::get('/customer', [LogController::class, 'CustomerLog'])->name('customer');//the customer logs page
         Route::get('/staff', [LogController::class, 'StaffLog'])->name('staff');//the staff logs page
     });
-    Route::get('/login', function () {return view('admin.login.login');})->name('login');
     Route::post('/login', [AuthController::class, 'Login'])->name('login');
     Route::get('/logout', [AuthController::class, 'Logout'])->name('logout');
     Route::post('/logout', [AuthController::class, 'Logout'])->name('logout');

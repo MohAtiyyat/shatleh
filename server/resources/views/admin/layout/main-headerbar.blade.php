@@ -15,8 +15,6 @@
                 <button type="submit" class="nav-link border-0 bg-transparent " role="button">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
-
-
             </form>
         </li>
     </ul>

@@ -48,14 +48,7 @@
                     </td>
 
                     <td>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route($Route . '.show', $record->id) }}"><i class="fas fa-eye"></i> View</a></li>
-                            </ul>
-                        </div>
+                        <a href="{{ route($Route . '.show', $record->id) }}"><i class="fas fa-eye"></i> View</a>
                     </td>
                 </tr>
             @endforeach

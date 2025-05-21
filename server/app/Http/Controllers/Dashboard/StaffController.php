@@ -13,9 +13,17 @@ use Spatie\Permission\Models\Role;
 class StaffController extends Controller
 {
     public function index() {
-        $records = User::with('roles', 'addresses','specialties')->get()->filter(
-            fn ($user) => $user->roles->contains(fn ($role) => in_array($role->name, ['Expert', 'Employee']))
-        );
+        if(auth()->user()->hasRole('Admin')){ 
+            $records = User::with('roles', 'addresses','specialties')->get()->filter(
+                fn ($user) => $user->roles->contains(fn ($role) => in_array($role->name, ['Expert', 'Employee']))
+            );
+        }
+        else {
+            $records = User::with('roles', 'addresses','specialties')->get()->filter(
+                fn ($user) => $user->roles->contains(fn ($role) => in_array($role->name, ['Expert']))
+            );
+        }
+
         return view('admin.Staff.index', compact('records'));
     }
     public function show($id) {

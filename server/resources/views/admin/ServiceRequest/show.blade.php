@@ -125,6 +125,7 @@
                         </div>
                         <!-- Footer -->
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
+                            @if(auth()->user()->hasRole('Admin'))
                             <form method="POST" action="{{ route('dashboard.service-request.assign', $serviceRequest->id) }}" class="mr-3">
                                 @csrf
                                 <div class="input-group">
@@ -143,6 +144,7 @@
                                     </div>
                                 </div>
                             </form>
+                            @endif
                             <form method="POST" action="{{ route('dashboard.service-request.update', $serviceRequest->id) }}">
                                 @csrf
                                 @method('PATCH')
