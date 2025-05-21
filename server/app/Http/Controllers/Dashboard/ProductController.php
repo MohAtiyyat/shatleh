@@ -56,7 +56,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $item = Product::with('categories')->findOrFail($id);
-        $categories = Category::where('parent_id', null)->get();
+        $categories = Category::get();
         return view('admin.Product.createUpdate', compact('item', 'categories'));
     }
 

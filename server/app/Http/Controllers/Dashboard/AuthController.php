@@ -38,7 +38,7 @@ class AuthController extends Controller
         request()->session()->regenerate();
 
 
-        return redirect('/dashboard/home')->with('success', 'Login successful');
+        return redirect('/dashboard')->with('success', 'Login successful');
     }
 
 
