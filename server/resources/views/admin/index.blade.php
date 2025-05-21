@@ -6,155 +6,83 @@
 @section('content')
 <section class="content">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>{{ $number_of_orders ?? 0 }}</h3>
-                        <p>Total Orders</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>{{ $number_of_category ?? 0 }}</h3>
-                        <p>Total Categories</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-list"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>{{ $number_of_messages ?? 0 }}</h3>
-                        <p>Total Messages</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>{{ $Last_request_date?->order_date ?? 'No Order' }}</h3>
-                        <p>Last Order Date</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>{{ $number_of_product ?? 0 }}</h3>
-                        <p>Total Products</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-box"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>{{ $number_of_product_offered ?? 0 }}</h3>
-                        <p>Products Offered</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-warning">
-                    <div class="inner">
-                        <h3>{{ $number_of_Blog ?? 0 }}</h3>
-                        <p>Total Blog Posts</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-blog"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-warning">
-                    <div class="inner">
-                        <h3>{{ $number_of_users ?? 0 }}</h3>
-                        <p>Total Users</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-danger">
-                    <div class="inner">
-                        <h3>{{ $number_of_admins ?? 0 }}</h3>
-                        <p>Total Admins</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <section class="col-lg-7 connectedSortable">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-pie mr-1"></i>
-                            Sales Overview
-                        </h3>
-                        <div class="card-tools">
-                            <ul class="nav nav-pills ml-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content p-0">
-                            <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;">
-                                <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                            </div>
-                            <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                                <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
+       <div class="container">
+            @foreach (collect($data)->chunk(3) as $chunk)
+                <div class="row">
+                    @foreach ($chunk as $key => $value)
+                        <div class="col-lg-4 col-md-6 col-12">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h3 class="card-title">{{ $key }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <caption class="visually-hidden">Details for {{ $key }}</caption>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Item</th>
+                                                <th scope="col">Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if($key === 'products' && isset($value['top products']))
+                                                <!-- Handle 'top products' -->
+                                                @foreach ($value['top products'] as $product)
+                                                    <tr>
+                                                        <td>
+                                                            <a href="{{ url('/dashboard/product/' . $product->id) }}">
+                                                                {{ $product->name_en }}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ $product->sold_quantity }}</td>
+                                                    </tr>
+                                                @endforeach
+                                                <!-- Handle other products data -->
+                                                @foreach ($value as $item => $val)
+                                                    @if($item !== 'top products')
+                                                        <tr>
+                                                            <td>{{ $item }}</td>
+                                                            <td>{{ $val }}</td>
+                                                        </tr>
+                                                    @endif
+                                                @endforeach
+                                            @elseif($key === 'posts' && isset($value['Highest interaction post']))
+                                                <!-- Handle 'posts' with clickable highest interaction post -->
+                                                @foreach ($value as $item => $val)
+                                                    <tr>
+                                                        <td>{{ $item }}</td>
+                                                        <td>
+                                                            @if($item === 'Highest interaction post' && $val)
+                                                                <a href="{{ url('/dashboard/post/' . $val['id']) }}">
+                                                                    {{ $val['title_en'] }}
+                                                                </a>
+                                                            @else
+                                                                {{ $val }}
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @elseif(is_array($value) || is_object($value))
+                                                <!-- Default handling for other tables -->
+                                                @foreach ($value as $item => $val)
+                                                    <tr>
+                                                        <td>{{ $item }}</td>
+                                                        <td>{{ $val }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="2">No iterable data available</td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
-            </section>
+            @endforeach
         </div>
     </div>
 </section>
