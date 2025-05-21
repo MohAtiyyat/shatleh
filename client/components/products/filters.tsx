@@ -197,9 +197,9 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
     };
 
     return (
-        <>
+        <div className="flex flex-col gap-4">
             {/* Filter Dropdowns */}
-            <div className={`flex flex-wrap items-center gap-3 mb-4 justify-center `}>
+            <div className="flex flex-wrap items-center gap-3 justify-center">
                 {/* Category Dropdown */}
                 <div className="relative" ref={dropdownRefs.category}>
                     <button
@@ -508,6 +508,6 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                     </button>
                 </motion.div>
             )}
-        </>
+        </div>
     );
 }

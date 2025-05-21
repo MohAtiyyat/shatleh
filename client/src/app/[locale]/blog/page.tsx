@@ -166,34 +166,26 @@ export default function Home() {
                 <div className="mb-4 mx-8">
                     <Breadcrumb pageName="blog" />
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 ">
                     <div
-                        className={`flex flex-wrap items-center mb-4 ${
-                            currentLocale === 'ar' ? 'flex-row-reverse' : ''
-                        }`}
+                        className={`flex flex-wrap items-center mb-4`   }
                     >
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap ">
                             <SearchBar
                                 searchTerm={searchTerm}
                                 setSearchTerm={setSearchTerm}
                                 onSearch={handleSearch}
                             />
-                            <Filters
-                                filters={filters}
-                                setFilters={setFilters}
-                                currentLocale={currentLocale}
-                            />
-                        </div>
-                        {isAuthenticated && (
+                            {isAuthenticated && (
                             <motion.button
                                 onClick={toggleBookmarkedView}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-full ${
+                                className={`flex items-center gap-2 px-4 py-2 rounded-md mb-5 ${
                                     showBookmarkedOnly
                                         ? 'bg-teal-600 text-white'
                                         : 'bg-white text-teal-600'
-                                } hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm ${
-                                    currentLocale === 'ar' ? 'flex-row-reverse ml-2' : ''
-                                }`}
+                                }
+                                ${currentLocale === 'ar' ? 'mr-10' : 'ml-2'}
+                                 hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm `}
                                 aria-label={
                                     showBookmarkedOnly
                                         ? t('education.showAllPosts', {
@@ -216,6 +208,14 @@ export default function Home() {
                                 </span>
                             </motion.button>
                         )}
+
+                            <Filters
+                                filters={filters}
+                                setFilters={setFilters}
+                                currentLocale={currentLocale}
+                            />
+                        </div>
+                        
                     </div>
                 </div>
                 {error && (
