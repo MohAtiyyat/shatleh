@@ -10,7 +10,8 @@
     "account": "Account",
     "search": "Search",
     "searchButton": "Search",
-    "home": "Home"
+    "home": "Home",
+    "feedback": "Feedback"
   },
   "metadata": {
     "title": "Shatleh",
@@ -49,8 +50,8 @@
     "interestingBlog": "Interesting Blog To Read",
     "customerReview": "Customer Review",
     "readMore": "Read More",
-    "choosePlantsTitle": "We Help Choose The Most Suitable Plants For You",
-    "choosePlantsDescription": "Our selection includes a wide variety of flowers, from classic roses to exotic orchids, as well as a variety of lush indoor and outdoor plants and also offer unique floral arrangements that are perfect for any occasion, whether you're looking to brighten up your home or send a thoughtful gift."
+    "choosePlantsTitle": "We provide agricultural services",
+    "choosePlantsDescription": "We provide high-quality agricultural services, done by experienced professionals to make sure your gardens and plants get the best care. Our focus on details ensures great results and a healthy, beautiful environment."
   },
   "hero": {
     "slide1": {
@@ -444,7 +445,8 @@
     "itemName": "{itemName}",
     "success": "Success",
     "orders": "Orders",
-    "servicerequests": "Service Request"
+    "servicerequests": "Service Request",
+    "feedback": "Feedback"
   },
   "nav": {
     "products": "Products",
@@ -573,5 +575,27 @@
     "confirmDeleteMessage": "Are you sure you want to delete this address?",
     "confirmDeleteConfirm": "Delete",
     "confirmDeleteCancel": "Cancel"
+  },
+  "feedback": {
+    "title": "Share Your Feedback",
+    "name": "Name",
+    "email": "Email",
+    "experience": "How was your browsing experience overall?",
+    "marketNeed": "Do you think the platform meets a real need in the market?",
+    "applicability": "Do you think the idea is applicable in reality?",
+    "featureFeedback": "What did you like most about the platform?",
+    "satisfaction": "How would you rate the UI design and user experience?",
+    "suggestions": "What do you think needs improvement?",
+    "additionalSuggestions": "Do you have any suggestions or ideas that add value?",
+    "selectRating": "Select your rating",
+    "thankYou": "Thank you!",
+    "successMessage": "Your feedback has been successfully submitted. We appreciate your input.",
+    "nameError": "Name is required",
+    "emailError": "Valid email is required",
+    "ratingError": "Rating is required",
+    "selectionError": "Selection is required",
+    "fieldError": "This field is required",
+    "submitting": "Submitting...",
+    "submit": "Submit"
   }
 }

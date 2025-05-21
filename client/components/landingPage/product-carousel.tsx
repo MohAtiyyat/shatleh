@@ -12,6 +12,7 @@ import "swiper/css"
 import "swiper/css/effect-coverflow"
 import "swiper/css/pagination"
 import "swiper/css/navigation"
+import Link from "next/link"
 
 interface ProductCarouselProps {
     products: Product[]
@@ -67,7 +68,7 @@ export default function ProductCarousel({ products, currentLocale, pageName }: P
     }
 
     return (
-        <div className="relative py-4 mt-8 max-w-full overflow-hidden">
+        <div className="relative py-4 mt-2 max-w-full overflow-hidden">
             <div className="max-w-5xl mx-auto">
                 <Swiper
                     {...getSwiperParams()}
@@ -83,8 +84,15 @@ export default function ProductCarousel({ products, currentLocale, pageName }: P
                         </SwiperSlide>
                     ))}
                 </Swiper>
-
+                <div className="flex justify-center">
+                    <Link href="/products">
+                        <button className="bg-[#337a5b] hover:bg-[#0f4229] text-white px-8 py-3 rounded-full transition-colors md:flex hidden ">
+                            {currentLocale === "ar" ? "استعرض جميع المنتجات" : "View All Products"}
+                        </button>   
+                    </Link>
+                </div>
             </div>
+  
 
             <style jsx global>{`
                 .swiper-container {

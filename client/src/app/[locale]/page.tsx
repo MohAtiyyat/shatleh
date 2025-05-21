@@ -8,7 +8,6 @@ import ServicesSection from "../../../components/landingPage/services-section"
 import BlogSection from "../../../components/landingPage/blog-section"
 import CustomerReviewSection from "../../../components/landingPage/customer-review-section"
 import type { Locale } from "../../../lib" 
-import FeedbackForm from "../../../components/landingPage/feedback-form"
 
 export default function Home() {
   const pathname = usePathname()
@@ -33,9 +32,6 @@ export default function Home() {
 
       {/* Customer Review Section */}
       <CustomerReviewSection currentLocale={currentLocale} />
-
-      {/* Feedback Form Section */}
-      <FeedbackForm currentLocale={currentLocale} />
     </main>
   )
 }

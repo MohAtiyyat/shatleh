@@ -122,6 +122,7 @@ const Header = () => {
         { label: t('header.blog'), path: 'blog' },
         { label: t('header.services'), path: 'services' },
         { label: t('header.about'), path: 'about-us' },
+        { label: t('header.feedback'), path: 'feedback' }
     ];
 
     const languageOptions = [
