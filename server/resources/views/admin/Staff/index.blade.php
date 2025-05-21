@@ -7,7 +7,7 @@
     <x-management-table
         title="Staff Management"
         :headers="[
-            '#', 'Name', 'Email', 'Phone', 'Role','spacility', 'Address', 'Banned', 'Actions'
+            '#', 'Name', 'Email', 'Phone', 'Role','spacility', 'Address','Banned', 'Actions'
         ]"
         :items="$records"
         :Route="'dashboard.staff'"
@@ -37,12 +37,17 @@
                         @csrf
                         @method('PATCH')
                         <label class="switch">
-                            <input type="checkbox" onchange="this.form.submit()" {{ $record->is_banned ? 'checked' : '' }} class="form-check-input">
+                            <input type="checkbox" 
+                            @if(!auth()->user()->hasRole('Admin'))
+                                disabled
+                            @endif
+                             onchange="this.form.submit()" {{ $record->is_banned ? 'checked' : '' }} class="form-check-input">
                             <span class="slider round"></span>
                         </label>
                     </form>
                 </td>
                 <td>
+                    @if(auth()->user()->hasRole('Admin'))
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-ellipsis-v"></i>
@@ -60,6 +65,9 @@
                             </li>
                         </ul>
                     </div>
+                    @else
+                        <a  href="{{ route('dashboard.staff.show', $record->id) }}"><i class="fas fa-eye"></i> View</a>
+                    @endif
                 </td>
             </tr>
         @endforeach

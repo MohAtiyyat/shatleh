@@ -37,7 +37,8 @@ class AuthController extends Controller
 
         request()->session()->regenerate();
 
-
+        if(Auth::user()->hasAnyRole('Employee|Expert'))
+            return redirect('/dashboard/order')->with('success', 'Login successful');
         return redirect('/dashboard')->with('success', 'Login successful');
     }
 

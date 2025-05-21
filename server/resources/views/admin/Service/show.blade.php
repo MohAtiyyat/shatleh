@@ -22,11 +22,13 @@
                                        title="Back to Services">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
+                                    @if(auth()->user()->hasRole('Admin'))
                                     <a href="{{ route('dashboard.service.create') }}"
                                        class="btn btn-light btn-sm rounded-pill px-3"
                                        title="Add New Service">
                                         <i class="fas fa-plus mr-1"></i> New
                                     </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -114,6 +116,7 @@
                             <div class="clearfix"></div>
                         </div>
                         <!-- Footer -->
+                        @if(auth()->user()->hasRole('Admin'))
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
                             <a href="{{ route('dashboard.service.edit', $service->id) }}"
                                class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
@@ -130,6 +133,7 @@
                                 </button>
                             </form>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

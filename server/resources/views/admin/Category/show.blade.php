@@ -73,7 +73,7 @@
                     <p>{{ $category->updated_at?->format('Y-m-d H:i') }}</p>
                 </div>
             </div>
-
+            @if(auth()->user()->hasRole('Admin'))
             <div class="mt-4">
                 <a href="{{ route('dashboard.category.create') }}" class="btn btn-success mr-2">
                     <i class="fas fa-plus"></i> Create New
@@ -88,6 +88,7 @@
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </form>
+                @endif
                 <a href="{{ url()->previous() }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
