@@ -49,10 +49,6 @@ export default function HeroSection({ currentLocale }: HeroSectionProps) {
         setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }
 
-    const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
-    }
-
     return (
         <section className="relative h-[90vh] w-full overflow-hidden" dir={currentLocale === "ar" ? "rtl" : "ltr"}>
             <div className="absolute inset-0 bg-black/30 z-10"></div>
@@ -92,19 +88,6 @@ export default function HeroSection({ currentLocale }: HeroSectionProps) {
                     </Link>
                 </div>
             </motion.div>
-
-            <button
-                onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full md:flex hidden  items-center justify-center text-white transition-colors "
-            >
-                <span className="text-2xl ">{currentLocale === "ar" ? ">" : "<"}</span>
-            </button>
-            <button
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full md:flex hidden items-center justify-center text-white transition-colors "
-            >
-                <span className="text-2xl">{currentLocale === "ar" ? "<" : ">"}</span>
-            </button>
 
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2">
                 {heroSlides.map((_, index) => (

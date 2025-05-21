@@ -27,7 +27,7 @@
 
                     {{-- Service Name --}}
                     <td>
-                        <a href="{{ route('dashboard.service', ['search' => $serviceRequest->service->name]) }}">
+                        <a href="{{ route('dashboard.service', ['search' => $serviceRequest->service?->name_en]) }}">
                             {{ $serviceRequest->service?->name_en }}
                         </a>
                     </td>
