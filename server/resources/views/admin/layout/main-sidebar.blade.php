@@ -1,5 +1,5 @@
 <aside class="main-sidebar layout-fixed sidebar-dark-primary elevation-4" style="position: fixed;">
-    <a href="index3.html" class="brand-link">
+    <a href="{{ route('dashboard.home') }}" class="brand-link">
         <span class="brand-text font-weight-light"><b>Shatleh</b> System</span>
     </a>
 

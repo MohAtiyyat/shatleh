@@ -5,7 +5,7 @@ namespace App\Http\Requests\Dashboard\Service;
 use App\Traits\UserRoleTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ShowProductRequest extends FormRequest
+class ShowServiceRequest extends FormRequest
 {
     use UserRoleTrait;
 
