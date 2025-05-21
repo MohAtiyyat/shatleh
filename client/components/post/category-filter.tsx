@@ -81,7 +81,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
     return (
         <>
             {/* Category Dropdown */}
-            <div className={`flex justify-center mb-4 ${currentLocale === 'ar' ? 'ml-10' : 'mr-10'}`}>
+            <div className={`flex justify-center mb-4 mx-5`}>
                 <div className="relative" ref={categoryRef}>
                     <button
                         onClick={toggleDropdown}

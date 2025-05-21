@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BookmarkIcon } from 'lucide-react';
 import BlogCard from '../../../../components/post/blog-card';
-import SearchBar from '../../../../components/post/search-bar';
 import Breadcrumb from '../../../../components/breadcrumb';
 import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
-import { BlogPost} from '../../../../lib/index';
-import { PostFiltersState } from '../../../../lib/index';
-import { fetchBlogPosts, fetchPostCategories } from '../../../../lib/api';
+import SearchBar from '../../../../components/post/search-bar';
+import { BlogPost, PostFiltersState } from '../../../../lib/index';
+import { fetchBlogPosts, fetchPostCategories, fetchBookmarkedPosts, getAuthToken } from '../../../../lib/api';
 
 export default function Home() {
     const t = useTranslations('');
@@ -21,72 +21,74 @@ export default function Home() {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    const [posts, setPosts] = useState<BlogPost[]>([]);
+    const [posts, setPosts] = useState<(BlogPost & { bookmarked?: boolean })[]>([]);
     const [filters, setFilters] = useState<PostFiltersState>({ categories: [] });
     const [error, setError] = useState<string | null>(null);
-    const postsPerPage = 6;
+    const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
 
-    // Fetch posts and categories from backend
+    const fetchData = async () => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const postsData = await fetchBlogPosts(currentLocale);
+            const bookmarkedPosts = await fetchBookmarkedPosts();
+            const bookmarkedPostIds = new Set(bookmarkedPosts.map((post) => post.id));
+
+            const postsWithBookmarks = postsData.map((post) => ({
+                ...post,
+                bookmarked: bookmarkedPostIds.has(post.id),
+            }));
+
+            setPosts(postsWithBookmarks);
+
+            const categoriesData = await fetchPostCategories(currentLocale);
+            const usedCategoryNames = new Set(
+                postsData
+                    .map((post) => (currentLocale === 'ar' ? post.category_ar : post.category_en))
+                    .filter((category): category is string => !!category)
+            );
+
+            const filteredCategories = categoriesData.filter((category) =>
+                usedCategoryNames.has(currentLocale === 'ar' ? category.name.ar : category.name.en)
+            );
+
+            setFilters({ categories: filteredCategories });
+        } catch (err) {
+            setError(t('error.fetchFailed', { default: 'Failed to fetch data' }));
+            console.error('Fetch error:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            try {
-                // Fetch posts
-                const postsData = await fetchBlogPosts(currentLocale);
-                setPosts(postsData);
-
-                // Fetch categories
-                const categoriesData = await fetchPostCategories(currentLocale);
-
-                // Filter categories to only those with associated posts
-                const usedCategoryNames = new Set(
-                    postsData
-                        .map((post) => (currentLocale === 'ar' ? post.category_ar : post.category_en))
-                        .filter((category) => category) // Remove null/undefined
-                );
-
-                const filteredCategories = categoriesData.filter((category) =>
-                    usedCategoryNames.has(currentLocale === 'ar' ? category.name.ar : category.name.en)
-                );
-
-                setFilters({ categories: filteredCategories });
-            } catch (err) {
-                setError(t('error.fetchFailed'));
-                console.error(err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchData();
     }, [currentLocale]);
 
-    // Reset currentPage to 1 when searchTerm or filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm, filters]);
+    }, [searchTerm, filters, showBookmarkedOnly]);
 
     const handleSearch = () => {
         console.log('Search submitted:', searchTerm);
     };
 
-    // Filter posts based on selected categories
-    const filteredPosts = posts.filter((post) => {
-        const postCategory = currentLocale === 'ar' ? post.category_ar : post.category_en;
+    const toggleBookmarkedView = () => {
+        setShowBookmarkedOnly((prev) => !prev);
+    };
 
-        // If no categories are selected, show all posts
+    const filteredPosts = posts.filter((post) => {
+        if (showBookmarkedOnly && !post.bookmarked) {
+            return false;
+        }
+        const postCategory = currentLocale === 'ar' ? post.category_ar : post.category_en;
         if (!filters.categories.some((c) => c.selected)) {
             return true;
         }
-
-        // If the post has no category, exclude it only when specific categories are selected
         if (!postCategory) {
             return false;
         }
-
-        // Include posts matching selected categories
         return filters.categories.some(
             (category) =>
                 category.selected &&
@@ -94,23 +96,21 @@ export default function Home() {
         );
     });
 
-    // Apply search term filtering (case-insensitive)
     const finalPosts = filteredPosts.filter((post) =>
-        (currentLocale === 'ar' ? post.title_ar : post.title_en)
+        ((currentLocale === 'ar' ? post.title_ar : post.title_en) || '')
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-        (currentLocale === 'ar' ? post.content_ar : post.content_en)
+        ((currentLocale === 'ar' ? post.content_ar : post.content_en) || '')
             .toLowerCase()
             .includes(searchTerm.toLowerCase())
     );
 
-    // Calculate pagination
+    const postsPerPage = 6;
     const totalPages = Math.ceil(finalPosts.length / postsPerPage);
     const startIndex = (currentPage - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
     const paginatedPosts = finalPosts.slice(startIndex, endIndex);
 
-    // Animation variants for the container
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -121,7 +121,6 @@ export default function Home() {
         },
     };
 
-    // Animation variants for each BlogCard
     const cardVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -140,7 +139,10 @@ export default function Home() {
         },
     };
 
-    // Skeleton Loader Component
+    const buttonVariants = {
+        idle: { scale: 1, rotate: 0 },
+    };
+
     const SkeletonCard = () => (
         <div className="bg-white rounded-xl overflow-hidden shadow-sm h-[400px] animate-pulse">
             <div className="h-56 w-full bg-gray-300"></div>
@@ -156,16 +158,64 @@ export default function Home() {
         </div>
     );
 
+    const isAuthenticated = !!getAuthToken();
+
     return (
         <div className="min-h-screen bg-[#e8f5e9] overflow-hidden mx-10">
             <main className="container mx-auto px-5 py-2">
                 <div className="mb-4 mx-8">
                     <Breadcrumb pageName="blog" />
                 </div>
-                <div className="mb-3">
-                    <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
-                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
-                        <Filters filters={filters} setFilters={setFilters} currentLocale={currentLocale} />
+                <div className="mb-3 ">
+                    <div
+                        className={`flex flex-wrap items-center mb-4`   }
+                    >
+                        <div className="flex flex-wrap ">
+                            <SearchBar
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                onSearch={handleSearch}
+                            />
+                            {isAuthenticated && (
+                            <motion.button
+                                onClick={toggleBookmarkedView}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-md mb-5 ${
+                                    showBookmarkedOnly
+                                        ? 'bg-teal-600 text-white'
+                                        : 'bg-white text-teal-600'
+                                }
+                                ${currentLocale === 'ar' ? 'mr-10' : 'ml-2'}
+                                 hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm `}
+                                aria-label={
+                                    showBookmarkedOnly
+                                        ? t('education.showAllPosts', {
+                                              default: 'Show All Posts',
+                                          })
+                                        : t('education.showBookmarked', {
+                                              default: 'Show Bookmarked Posts',
+                                          })
+                                }
+                                variants={buttonVariants}
+                                initial="idle"
+                                animate={showBookmarkedOnly ? 'clicked' : 'idle'}
+                                whileHover={{ scale: 1.05 }}
+                            >
+                                <BookmarkIcon className="h-5 w-5" />
+                                <span>
+                                    {showBookmarkedOnly
+                                        ? t('education.showAllPosts', { default: 'Show All Posts' })
+                                        : t('education.showBookmarked', { default: 'Bookmarks' })}
+                                </span>
+                            </motion.button>
+                        )}
+
+                            <Filters
+                                filters={filters}
+                                setFilters={setFilters}
+                                currentLocale={currentLocale}
+                            />
+                        </div>
+                        
                     </div>
                 </div>
                 {error && (
@@ -185,7 +235,9 @@ export default function Home() {
                     animate="visible"
                 >
                     {isLoading ? (
-                        Array.from({ length: 12 }).map((_, index) => <SkeletonCard key={index} />)
+                        Array.from({ length: postsPerPage }).map((_, index) => (
+                            <SkeletonCard key={index} />
+                        ))
                     ) : (
                         <AnimatePresence mode="wait">
                             {paginatedPosts.length > 0 ? (
@@ -198,7 +250,11 @@ export default function Home() {
                                         animate="visible"
                                         exit="exit"
                                     >
-                                        <BlogCard post={post} currentLocale={currentLocale} />
+                                        <BlogCard
+                                            post={post}
+                                            currentLocale={currentLocale}
+                                            setPosts={setPosts}
+                                        />
                                     </motion.div>
                                 ))
                             ) : (
@@ -210,7 +266,13 @@ export default function Home() {
                                     animate="visible"
                                     exit="exit"
                                 >
-                                    {t ('education.noResults')}
+                                    {showBookmarkedOnly
+                                        ? t('education.noBookmarkedPosts', {
+                                              default: 'No bookmarked posts found',
+                                          })
+                                        : t('education.noResults', {
+                                              default: 'No results found',
+                                          })}
                                 </motion.p>
                             )}
                         </AnimatePresence>

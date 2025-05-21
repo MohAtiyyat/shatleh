@@ -237,7 +237,7 @@ export default function ProductsPage() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="col-span-full text-center py-10"
+                            className="flex-1 col-span-full  text-center py-10"
                         >
                             <p className="text-lg text-[#0f4229]">{t('products.noProducts')}</p>
                             <button
@@ -247,8 +247,8 @@ export default function ProductsPage() {
                                     setFilteredProducts(allProducts);
                                 }}
                                 className="mt-4 px-4 py-2 bg-[#43bb67] text-white rounded-md"
-                            >
-                                {t('products.clearFilters')}
+                            >       
+                                {t('products.clearFilters') } 
                             </button>
                         </motion.div>
                     )}

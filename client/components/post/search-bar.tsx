@@ -35,7 +35,7 @@ export default function SearchBar({ searchTerm, setSearchTerm, onSearch }: Searc
       />
       <button
         onClick={onSearch}
-        className={`absolute top-1/2 -translate-y-1/2 bg-[#80ce97] p-2 rounded-full ${currentLocal === "ar" ? "left-1" : "right-1"}   `}
+        className={`absolute top-6  -translate-y-1/2 bg-[#80ce97] p-2 rounded-full ${currentLocal === "ar" ? "left-1" : "right-1"}   `}
       >
         <Search  className="h-5 w-5 text-white" />
       </button>

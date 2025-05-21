@@ -421,7 +421,12 @@
     "postProduct": "منتج المنشور",
     "relatedProducts": "المنتجات ذات الصلة",
     "relatedArticles": "المقالات ذات الصلة",
-    "noRelatedArticles": "لا توجد مقالات ذات صلة"
+    "noRelatedArticles": "لا توجد مقالات ذات صلة",
+    "addBookmark": "إضافة إلى المفضلة",
+    "removeBookmark": "إزالة من المفضلة",
+    "showBookmarked": "عرض المفضلة",
+    "showAllPosts": "عرض جميع المنشورات",
+    "noBookmarkedPosts": "لا توجد منشورات مفضلة"
   },
   "pages": {
     "home": "الرئيسية",
