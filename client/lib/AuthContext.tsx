@@ -28,21 +28,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         const storedUserId = localStorage.getItem('userId');
-        if (token && storedUserId) {
-            setIsAuthenticated(true);
-            setUserId(storedUserId);
-            // Sync cart on initial load for authenticated users
-            import('../lib/store').then(({ useCartStore }) => {
-                useCartStore.getState().syncWithBackend(storedUserId, currentLocale);
-            }).catch((error) => {
-                console.error('Error syncing cart on initial load:', error);
-            });
+        const tokenTimestamp = localStorage.getItem('tokenTimestamp');
+
+        if (token && storedUserId && tokenTimestamp) {
+            const tokenAgeInMs = Date.now() - parseInt(tokenTimestamp, 10);
+            const oneDayInMs = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+
+            if (tokenAgeInMs > oneDayInMs) {
+                // Token is older than 1 day, perform logout
+                logout();
+            } else {
+                setIsAuthenticated(true);
+                setUserId(storedUserId);
+                // Sync cart on initial load for authenticated users
+                import('../lib/store').then(({ useCartStore }) => {
+                    useCartStore.getState().syncWithBackend(storedUserId, currentLocale);
+                }).catch((error) => {
+                    console.error('Error syncing cart on initial load:', error);
+                });
+            }
         }
     }, [currentLocale]);
 
     const login = async (token: string, userId: string) => {
         localStorage.setItem('token', token);
         localStorage.setItem('userId', userId);
+        localStorage.setItem('tokenTimestamp', Date.now().toString()); // Store current timestamp
         setIsAuthenticated(true);
         setUserId(userId);
         try {
@@ -71,6 +82,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
+        localStorage.removeItem('tokenTimestamp'); // Remove timestamp on logout
         setIsAuthenticated(false);
         setUserId(null);
         // Clear cart on logout
