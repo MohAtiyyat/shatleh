@@ -22,12 +22,11 @@
                 $statusClassMap = [
                     1 => ['label' => 'Active', 'class' => 'status-badge status-active'],
                     0 => ['label' => 'Unactive', 'class' => 'status-badge status-inactive'],
-                    2 => ['label' => 'Draft', 'class' => 'status-badge status-draft'],
                 ];
                 $status = $statusClassMap[$service->status] ?? ['label' => 'Unknown', 'class' => 'status-badge'];
                 @endphp
                 <td><span class="{{ $status['class'] }}">{{ $status['label'] }}</span></td>
-                <td>{{ $requested_times[$service->id] ?? 0 }}</td>
+                <td>{{ $requested_time[$service->id] ?? 0 }}</td>
                 <td>
                     @if(auth()->user()->hasRole('Admin'))
                     <div class="dropdown">

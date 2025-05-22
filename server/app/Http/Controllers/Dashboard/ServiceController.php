@@ -8,6 +8,8 @@ use App\Http\Requests\Dashboard\Service\AllServiceRequest;
 use App\Http\Requests\Dashboard\Service\StoreServiceRequest;
 use App\Http\Requests\Dashboard\Service\UpdateServiceRequest;
 use App\Models\Service;
+use App\Models\ServiceRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
@@ -15,8 +17,12 @@ class ServiceController extends Controller
     public function index(AllServiceRequest $request)
     {
         $services = Service::all();
+        $requested_time= ServiceRequest::select('service_id', DB::raw('COUNT(*) as count'))
+        ->groupBy('service_id')
+        ->pluck('count', 'service_id')
+        ->toArray();
 
-        return view('admin.Service.index', compact('services'));
+        return view('admin.Service.index', compact('services', 'requested_time'));
     }
 
     public function create()

@@ -135,7 +135,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::post('/create', [ServiceController::class, 'store'])->name('.store');
             Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('.edit');
             Route::get('/{id}', [ServiceController::class, 'show'])->name('.show');
-            Route::put('/{id}', [ServiceController::class, 'update'])->name('.update');
+            Route::put('/{service}', [ServiceController::class, 'update'])->name('.update');
             Route::delete('/{id}', [ServiceController::class, 'delete'])->name('.destroy');
         });
 

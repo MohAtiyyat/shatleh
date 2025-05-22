@@ -57,7 +57,7 @@
                                     <label>Current Images</label>
                                     <div class="d-flex flex-wrap">
                                         @foreach($item['image'] as $image)
-                                            <img src="{{ $image }}"
+                                            <img src="{{ asset($image) }}"
                                                  alt="Current Image"
                                                  style="max-width: 100px; height: auto; border-radius: 0.35rem; margin: 5px;">
                                         @endforeach
@@ -110,28 +110,26 @@
                         @endif
                     </div>
                 @endforeach
-                @if(!empty($specialties))
-    <div id="specialties-container" class="specialties-container hidden">
-        <label class="specialties-title">Specialties</label>
-        <div class="specialties-list">
-            @foreach($specialties as $specialty)
-                <label class="specialty-item" for="specialty-{{ $specialty->id }}">
-                    <input
-                        class="specialty-checkbox"
-                        type="checkbox"
-                        name="specialties[]"
-                        value="{{ $specialty->id }}"
-                        id="specialty-{{ $specialty->id }}"
-                        @if(isset($item) && $item->specialties->contains($specialty->id)) checked @endif
-                    >
-                    <span>{{ $specialty->name_ar }}</span>
-                </label>
-            @endforeach
-        </div>
-    </div>
-@endif
-
-
+                @if(isset($specialties))
+                    <div id="specialties-container" class="specialties-container hidden">
+                        <label class="specialties-title">Specialties</label>
+                        <div class="specialties-list">
+                            @foreach($specialties as $specialty)
+                                <label class="specialty-item" for="specialty-{{ $specialty->id }}">
+                                    <input
+                                        class="specialty-checkbox"
+                                        type="checkbox"
+                                        name="specialties[]"
+                                        value="{{ $specialty->id }}"
+                                        id="specialty-{{ $specialty->id }}"
+                                        @if(isset($item) && $item->specialties->contains($specialty->id)) checked @endif
+                                    >
+                                    <span>{{ $specialty->name_ar }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
                 <div class="footer">
                     <button type="submit" class="btn btn-primary">
                         {{ $item ? 'Update Item' : 'Create Item' }}
