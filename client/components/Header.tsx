@@ -164,7 +164,7 @@ const Header = () => {
                                 className="relative text-sm font-medium transition-all duration-200 ease-in-out hover:font-semibold hover:px-1"
                                 onClick={() => setIsOpen(false)}
                             >
-                                <span className={`${isActiveNavItem(item.path) ? 'text-accent' : 'hover:text-accent'}`}>
+                                <span className={` text-nowrap ${isActiveNavItem(item.path) ? 'text-accent' : 'hover:text-accent'}`}>
                                     {item.label}
                                 </span>
                                 {isActiveNavItem(item.path) && (
