@@ -64,29 +64,36 @@ export default function ProductDetailsPage() {
         loadCategories();
     }, []);
 
-    // Find category and subcategory for the product
-    useEffect(() => {
-        if (product && categories.length > 0 && product.category_id) {
-            let foundCategory = '';
-            let foundSubcategory = '';
+   // Find category and subcategory for the product
+useEffect(() => {
+    if (product && product.categories && product.categories.length > 0 && categories.length > 0) {
+        let foundCategory = '';
+        let foundSubcategory = '';
 
+        // Iterate over product.categories to find primary category and subcategory
+        product.categories.forEach((productCat) => {
+            // Find matching category or subcategory in fetched categories
             for (const category of categories) {
-                if (category.id === product.category_id) {
+                // Check if the product category is a primary category
+                if (category.id === productCat.id && productCat.parent_id === null) {
                     foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
-                    break;
                 }
-                const subcategory = category.subcategories.find((sub) => sub.id === product.category_id);
+                // Check if the product category is a subcategory
+                const subcategory = category.subcategories.find((sub) => sub.id === productCat.id && productCat.parent_id !== null);
                 if (subcategory) {
                     foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
                     foundSubcategory = currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en;
-                    break;
                 }
             }
+        });
 
-            setCategoryName(foundCategory);
-            setSubcategoryName(foundSubcategory);
-        }
-    }, [product, categories, currentLocale]);
+        setCategoryName(foundCategory);
+        setSubcategoryName(foundSubcategory);
+    } else {
+        setCategoryName('');
+        setSubcategoryName('');
+    }
+}, [product, categories, currentLocale]);
 
     // Fetch reviews on mount
     useEffect(() => {
@@ -135,7 +142,7 @@ export default function ProductDetailsPage() {
                     description_en: product.description_en,
                     description_ar: product.description_ar,
                     price: product.price,
-                    image: product.image,
+                    image: product.image[0],
                 },
                 userId,
                 currentLocale
@@ -163,7 +170,7 @@ export default function ProductDetailsPage() {
                         description_en: product.description_en,
                         description_ar: product.description_ar,
                         price: product.price,
-                        image: product.image,
+                        image: product.image[0],
                     },
                     userId,
                     currentLocale

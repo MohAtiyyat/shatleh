@@ -1,3 +1,4 @@
+// lib/index.ts
 export type Locale = "en" | "ar";
 export interface BlogPost {
     id: number;
@@ -94,7 +95,6 @@ export interface Review {
     created_at: string;
 }
 
-
 export interface Name {
     en: string;
     ar: string;
@@ -105,14 +105,17 @@ export interface Product {
     name_en: string;
     name_ar: string;
     price: string;
-    image: string;
+    image: string | string[];
     description_en: string;
     description_ar: string;
     availability: boolean;
-    sold_quantity: number;
-    category_id?: number | null;
-    category_en?: string | null;
-    category_ar?: string | null;
+    sold_quantity?: number;
+    categories: {
+        id: number;
+        name_en: string;
+        name_ar: string;
+        parent_id: number | null;
+    }[];
     rating?: number;
 }
 
@@ -131,33 +134,6 @@ export interface Service {
     description_ar: string;
     image: string;
 }
-
-
-export interface FilterCategory {
-    id: number;
-    name: Name;
-    selected: boolean;
-    subcategories: {
-        id: number;
-        name: Name;
-        selected: boolean;
-    }[];
-}
-
-export interface FilterRating {
-    id: number;
-    name: Name;
-    stars: number;
-    selected: boolean;
-}
-
-export interface FiltersState {
-    categories: FilterCategory[];
-    availability: FilterRating[];
-    ratings: FilterRating[];
-    bestSelling: boolean;
-}
-
 
 export interface FormErrors {
     cardNumber?: string;
@@ -209,39 +185,38 @@ export interface FormErrors {
     general?: string;
 }
 
-
-
 export interface OrderProduct {
-  id: number;
-  name: Name;
-  price: string;
-  quantity: number;
-  image: string;
-  categories: { id: number; name: string }[];
+    id: number;
+    name: Name;
+    price: string;
+    quantity: number;
+    image: string;
+    categories: { id: number; name: string }[];
 }
 
 export interface OrderAddress {
-  id: number;
-  title: string;
-  city: string;
-  address_line: string;
+    id: number;
+    title: string;
+    city: string;
+    address_line: string;
 }
 
 export interface OrderCoupon {
-  id: number;
-  code: string;
+    id: number;
+    code: string;
 }
 
 export interface Order {
-  id: number;
-  order_code: string;
-  total_price: number;
-  status: string;
-  order_date: string;
-  products: OrderProduct[];
-  address: OrderAddress | null;
-  coupon: OrderCoupon | null;
+    id: number;
+    order_code: string;
+    total_price: number;
+    status: string;
+    order_date: string;
+    products: OrderProduct[];
+    address: OrderAddress | null;
+    coupon: OrderCoupon | null;
 }
+
 export interface ServiceRequest {
     id: number;
     customer_id: string;

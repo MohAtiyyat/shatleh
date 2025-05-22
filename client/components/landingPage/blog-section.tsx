@@ -35,7 +35,7 @@ export default function BlogSection({ currentLocale }: BlogSectionProps) {
       setIsLoading(true);
       setError(null);
       try {
-        const postsData = await fetchBlogPosts(currentLocale);
+        const postsData = await fetchBlogPosts();
         setPosts(postsData.slice(0, 3));
       } catch (err) {
         setError(t('error.fetchFailed'));
