@@ -618,6 +618,7 @@
     "currency": "JOD",
       "noResultsTitle": "No Results Found",
     "noResultsMessage": "Sorry, we couldn’t find any results for your search query. Try a different search term or check out our categories.",
-    "goBack": "Home"
+    "goBack": "Home",
+    "errorTitle": "Error"
   }
 }

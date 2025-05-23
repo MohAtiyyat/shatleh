@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ChevronDown, Search } from 'lucide-react';
 import { search } from '../../../../lib/api';
@@ -21,6 +21,7 @@ interface SearchResults {
 export default function SearchPage() {
     const t = useTranslations('search');
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const currentLocale = pathname.split('/')[1] || 'en';
     const [contentType, setContentType] = useState<string>('all');
     const [results, setResults] = useState<SearchResults>({ products: [], posts: [], services: [] });
@@ -30,16 +31,24 @@ export default function SearchPage() {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [query, setQuery] = useState<string>('');
 
+    // Sync query state with URL search parameter and localStorage
     useEffect(() => {
-        const storedQuery = localStorage.getItem("searchQuery");
-        if (storedQuery) {
-            setQuery(storedQuery);
-        }
-    }, []);
+        const urlQuery = searchParams.get('q') || '';
+        const storedQuery = localStorage.getItem('searchQuery') || '';
 
+        // Prioritize URL query parameter, fallback to localStorage
+        const newQuery = urlQuery || storedQuery;
+        setQuery(newQuery);
+
+        // Update localStorage to stay in sync with URL
+        if (urlQuery && urlQuery !== storedQuery) {
+            localStorage.setItem('searchQuery', urlQuery);
+        }
+    }, [searchParams]);
+
+    // Fetch search results when query or contentType changes
     useEffect(() => {
         const fetchResults = async () => {
-            const query = localStorage.getItem("searchQuery");
             if (!query) {
                 setResults({ products: [], posts: [], services: [] });
                 setLoading(false);
@@ -62,6 +71,7 @@ export default function SearchPage() {
         fetchResults();
     }, [query, contentType, t]);
 
+    // Handle dropdown click outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -77,10 +87,6 @@ export default function SearchPage() {
     const handleContentTypeChange = (type: string) => {
         setContentType(type);
         setIsDropdownOpen(false);
-        const cachedResults = localStorage.getItem(`searchResults_${query}_${type}`);
-        if (cachedResults) {
-            setResults(JSON.parse(cachedResults));
-        }
     };
 
     const contentTypes = [
@@ -92,6 +98,7 @@ export default function SearchPage() {
 
     console.log('Content types:', contentTypes);
     console.log('Current results:', results);
+    console.log('Current query:', query);
 
     return (
         <main className="min-h-screen mx-auto px-4 py-10 max-w-7xl">
@@ -212,4 +219,4 @@ export default function SearchPage() {
             )}
         </main>
     );
-}
+};

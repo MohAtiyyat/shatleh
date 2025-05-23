@@ -26,7 +26,6 @@ class ProductController extends Controller
     {
         try {
             $query = $request->query('q', '');
-            $locale = $request->header('Accept-Language', 'en');
             $contentType = $request->query('type', 'all'); // 'products', 'posts', 'services', or 'all'
 
             if (empty($query)) {
@@ -61,11 +60,11 @@ class ProductController extends Controller
                         'products.sold_quantity',
                     ])
                     ->where('products.status', 'Active')
-                    ->where(function ($q) use ($query, $locale) {
-                        $nameField = $locale === 'ar' ? 'name_ar' : 'name_en';
-                        $descriptionField = $locale === 'ar' ? 'description_ar' : 'description_en';
-                        $q->where($nameField, 'LIKE', "%{$query}%")
-                            ->orWhere($descriptionField, 'LIKE', "%{$query}%");
+                    ->where(function ($q) use ($query) {
+                        $q->where('name_en', 'LIKE', "%{$query}%")
+                            ->orWhere('name_ar', 'LIKE', "%{$query}%")
+                            ->orWhere('description_en', 'LIKE', "%{$query}%")
+                            ->orWhere('description_ar', 'LIKE', "%{$query}%");
                     })
                     ->with(['categories' => function ($query) {
                         $query->select('categories.id', 'categories.name_en', 'categories.name_ar', 'categories.parent_id')
@@ -118,11 +117,11 @@ class ProductController extends Controller
                         'posts.product_id',
                         'posts.image',
                     ])
-                    ->where(function ($q) use ($query, $locale) {
-                        $titleField = $locale === 'ar' ? 'title_ar' : 'title_en';
-                        $contentField = $locale === 'ar' ? 'content_ar' : 'content_en';
-                        $q->where($titleField, 'LIKE', "%{$query}%")
-                            ->orWhere($contentField, 'LIKE', "%{$query}%");
+                    ->where(function ($q) use ($query) {
+                        $q->where('title_en', 'LIKE', "%{$query}%")
+                            ->orWhere('title_ar', 'LIKE', "%{$query}%")
+                            ->orWhere('content_en', 'LIKE', "%{$query}%")
+                            ->orWhere('content_ar', 'LIKE', "%{$query}%");
                     })
                     ->with(['category', 'product']);
 
@@ -158,11 +157,11 @@ class ProductController extends Controller
                         'services.image',
                     ])
                     ->where('services.status', 1)
-                    ->where(function ($q) use ($query, $locale) {
-                        $nameField = $locale === 'ar' ? 'name_ar' : 'name_en';
-                        $descriptionField = $locale === 'ar' ? 'description_ar' : 'description_en';
-                        $q->where($nameField, 'LIKE', "%{$query}%")
-                            ->orWhere($descriptionField, 'LIKE', "%{$query}%");
+                    ->where(function ($q) use ($query) {
+                        $q->where('name_en', 'LIKE', "%{$query}%")
+                            ->orWhere('name_ar', 'LIKE', "%{$query}%")
+                            ->orWhere('description_en', 'LIKE', "%{$query}%")
+                            ->orWhere('description_ar', 'LIKE', "%{$query}%");
                     });
 
                 $services = $servicesQuery->get()->map(function ($service) {
