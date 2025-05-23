@@ -44,7 +44,7 @@ function ServiceCard({ service, index }: ServiceCardProps) {
             >
                 <div className="mb-4 flex justify-center items-center rounded-lg h-[270px] w-full relative">
                     <Image
-                        src={service.image || '/placeholder.png'}
+                        src={process.env.NEXT_PUBLIC_API_URL + service.image || '/placeholder.png'}
                         alt={currentLocale === 'ar' ? service.name_ar : service.name_en}
                         width={300}
                         height={270}

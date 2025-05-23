@@ -51,7 +51,8 @@
     "customerReview": "Customer Review",
     "readMore": "Read More",
     "choosePlantsTitle": "We provide agricultural services",
-    "choosePlantsDescription": "We provide high-quality agricultural services, done by experienced professionals to make sure your gardens and plants get the best care. Our focus on details ensures great results and a healthy, beautiful environment."
+    "choosePlantsDescription": "We provide high-quality agricultural services, done by experienced professionals to make sure your gardens and plants get the best care. Our focus on details ensures great results and a healthy, beautiful environment.",
+    "viewMore": "View More"
   },
   "hero": {
     "slide1": {
@@ -476,7 +477,8 @@
       "fileSize": "Image size must be less than 2MB.",
       "customerRequired": "User authentication is required. Please log in again.",
       "submitFailed": "Failed to submit request. Please try again."
-    }
+    },
+    "requestService": "Request a Service"
   },
   "profile": {
     "title": "Your Profile",

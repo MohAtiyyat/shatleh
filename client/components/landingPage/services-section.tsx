@@ -57,10 +57,10 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
     const loadServices = async () => {
       try {
         const services = await fetchServices();
-        setServicesData(services.length ? services : mockServicesData);
+        setServicesData(services.slice(0, 3).length ? services.slice(0, 3) : mockServicesData);
       } catch (error) {
         console.error('Error fetching services:', error);
-        setServicesData(mockServicesData);
+        setServicesData(mockServicesData.slice(0, 3));
       }
     };
     loadServices();
@@ -74,6 +74,11 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
       scale: 1,
       transition: { duration: 0.2, ease: 'easeOut', type: 'spring', stiffness: 100 },
     },
+  };
+
+  const trimDescription = (description: string) => {
+    const maxLength = 150;
+    return description.length > maxLength ? `${description.slice(0, maxLength - 3)}...` : description;
   };
 
   return (
@@ -104,7 +109,7 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {servicesData.map((service) => (
-          <Link href={`/${currentLocale}/services?service_id=${service.id}`} key={service.id} className='relative'>
+          <Link href={`/${currentLocale}/services/${service.id}`} key={service.id} className='relative'>
             <motion.div
               className={`rounded-xl p-6 flex flex-col items-center h-full transition-colors duration-300 ${
                 service.id === 2 ? 'bg-[var(--accent-color)] text-white' : 'bg-white'
@@ -126,12 +131,22 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
                 {currentLocale === 'ar' ? service.name_ar : service.name_en}
               </h4>
               <p className={`text-center flex-1 ${service.id === 2 ? '' : 'text-gray-700'}`}>
-                {currentLocale === 'ar' ? service.description_ar : service.description_en}
+                {trimDescription(currentLocale === 'ar' ? service.description_ar : service.description_en)}
               </p>
             </motion.div>
           </Link>
         ))}
       </div>
+
+      <div className="text-center mt-6">
+        <Link href={`/${currentLocale}/services`} className="inline-block">
+          <button className="px-6 py-3 bg-[var(--accent-color)] text-white font-medium rounded-full shadow-md transition-transform duration-300 hover:scale-105">
+            {t('home.viewMore')}
+          </button>
+        </Link>
+      </div>
+
     </motion.section>
   );
 }
+
