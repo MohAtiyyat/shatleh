@@ -76,6 +76,11 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
     },
   };
 
+  const trimDescription = (description: string) => {
+    const maxLength = 150;
+    return description.length > maxLength ? `${description.slice(0, maxLength - 3)}...` : description;
+  };
+
   return (
     <motion.section
       ref={servicesRef}
@@ -104,7 +109,7 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {servicesData.map((service) => (
-          <Link href={`/${currentLocale}/services?service_id=${service.id}`} key={service.id} className='relative'>
+          <Link href={`/${currentLocale}/services/${service.id}`} key={service.id} className='relative'>
             <motion.div
               className={`rounded-xl p-6 flex flex-col items-center h-full transition-colors duration-300 ${
                 service.id === 2 ? 'bg-[var(--accent-color)] text-white' : 'bg-white'
@@ -126,7 +131,7 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
                 {currentLocale === 'ar' ? service.name_ar : service.name_en}
               </h4>
               <p className={`text-center flex-1 ${service.id === 2 ? '' : 'text-gray-700'}`}>
-                {currentLocale === 'ar' ? service.description_ar : service.description_en}
+                {trimDescription(currentLocale === 'ar' ? service.description_ar : service.description_en)}
               </p>
             </motion.div>
           </Link>
@@ -144,3 +149,4 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
     </motion.section>
   );
 }
+
