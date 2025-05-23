@@ -168,9 +168,9 @@
   },
   "about": {
     "title": "About Us",
-    "description":"At Shatleh, we believe that gardening is not just a hobby it’s a way of life. We are a Jordanian platform that helps people who love home gardening and small gardens. We offer plants, fertilizers, and eco-friendly pesticides, as well as professional agricultural services by certified engineers, such as garden design, tree trimming, and consultations.",
-    "description-2":"We also share easy educational content to help people learn and grow plants at home with confidence and knowledge.",
-    "above-text":"With Shatleh, we plant the love of gardening in every home."
+    "description": "At Shatleh, we believe that gardening is not just a hobby it’s a way of life. We are a Jordanian platform that helps people who love home gardening and small gardens. We offer plants, fertilizers, and eco-friendly pesticides, as well as professional agricultural services by certified engineers, such as garden design, tree trimming, and consultations.",
+    "description-2": "We also share easy educational content to help people learn and grow plants at home with confidence and knowledge.",
+    "above-text": "With Shatleh, we plant the love of gardening in every home."
   },
   "pagination": {
     "prev": "Previous",
@@ -602,5 +602,22 @@
     "fieldError": "This field is required",
     "submitting": "Submitting...",
     "submit": "Submit"
+  },
+  "search": {
+    "title": "Search results for \"{query}\"",
+    "filter": "Filter",
+    "filterOptions": "Filter options",
+    "all": "All",
+    "products": "Products",
+    "posts": "Posts",
+    "services": "Services",
+    "loading": "Loading...",
+    "error": "An error occurred while fetching search results.",
+    "noResults": "No results found.",
+    "category": "Category",
+    "currency": "JOD",
+      "noResultsTitle": "No Results Found",
+    "noResultsMessage": "Sorry, we couldn’t find any results for your search query. Try a different search term or check out our categories.",
+    "goBack": "Home"
   }
 }

@@ -1,25 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Add useEffect
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../../../lib/AuthContext';
-import { login } from '../../../../lib/api'; 
-
+import { login } from '../../../../lib/api';
 
 export default function Login() {
     const t = useTranslations('login');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { login: authLogin } = useAuth(); // Rename to avoid naming conflict
+    const { login: authLogin, isAuthenticated } = useAuth(); // Add isAuthenticated
     const currentLocale = pathname.split('/')[1] || 'ar';
     const redirectPath = searchParams.get('redirect') || '/';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push(`/${currentLocale}${redirectPath}`);
+        }
+    }, [isAuthenticated, router, currentLocale, redirectPath]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,7 +37,7 @@ export default function Login() {
                 email,
                 password,
                 language: currentLocale,
-            }); // Use the API login function
+            });
 
             const { token, user } = response;
 

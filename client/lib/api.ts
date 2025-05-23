@@ -216,13 +216,20 @@ interface CheckoutResponse {
     message: string;
 }
 interface OrdersResponse {
-  data: Order[];
-  message: string;
+    data: Order[];
+    message: string;
 }
-
+interface SearchResponse {
+    data: {
+        products: Product[];
+        posts: BlogPost[];
+        services: Service[];
+    };
+    message: string;
+}
 interface ServiceRequestsResponse {
-  data: ServiceRequest[];
-  message: string;
+    data: ServiceRequest[];
+    message: string;
 }
 
 interface ApiErrorResponse {
@@ -398,6 +405,23 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
     }
 };
 
+export const search = async (query: string, contentType: string = 'all'): Promise<SearchResponse> => {
+    try {
+        const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}&type=${contentType}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            next: { revalidate: 30 }
+        });
+        
+        return await handleResponse<SearchResponse>(response);
+    } catch (error) {
+        console.error('Error performing search:', error);
+        throw new Error(error instanceof Error ? error.message : 'Search failed');
+    }
+};
 
 export const fetchProfile = async (): Promise<Profile> => {
     const token = getAuthToken();
@@ -784,50 +808,50 @@ export const fetchPostCategories = async (locale: string): Promise<PostFilterCat
 };
 
 export const fetchOrders = async (locale: string): Promise<Order[]> => {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-  try {
-    const response = await fetch(`${API_URL}/api/orders`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-        'Accept-Language': locale, // Pass locale for language-specific responses
-      },
-    });
-    const data = await handleResponse<OrdersResponse>(response);
-    return data.data;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch orders');
-  }
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/orders`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale, // Pass locale for language-specific responses
+            },
+        });
+        const data = await handleResponse<OrdersResponse>(response);
+        return data.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch orders');
+    }
 };
 export const cancelOrder = async (orderId: string, locale: string): Promise<void> => {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/${orderId}/cancel`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-        'Accept-Language': locale,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to cancel order');
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
     }
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to cancel order');
-  }
+
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/${orderId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to cancel order');
+        }
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to cancel order');
+    }
 };
 
 export const fetchCoupons = async (): Promise<Coupon[]> => {
@@ -889,23 +913,23 @@ export const checkout = async (data: CheckoutRequest): Promise<CheckoutResponse>
     }
 };
 export const fetchServiceRequests = async (locale: string): Promise<ServiceRequest[]> => {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-  try {
-    const response = await fetch(`${API_URL}/api/service-requests`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-        'Accept-Language': locale, // Pass locale for language-specific responses
-      },
-    });
-    const data = await handleResponse<ServiceRequestsResponse>(response);
-    return data.data;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch service requests');
-  }
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/service-requests`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale, // Pass locale for language-specific responses
+            },
+        });
+        const data = await handleResponse<ServiceRequestsResponse>(response);
+        return data.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch service requests');
+    }
 };

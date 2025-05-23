@@ -106,10 +106,11 @@ const Header = () => {
         }
     };
 
-    const handleSearch = (e: React.FormEvent) => {
+const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            router.push(`/${currentLocale}/search?q=${encodeURIComponent(searchQuery.trim())}`);
+            localStorage.setItem('searchQuery', searchQuery);
+            router.push(`/search?q=${searchQuery}`);
             setSearchQuery('');
             setIsSearchOpen(false);
             searchInputRef.current?.blur();
