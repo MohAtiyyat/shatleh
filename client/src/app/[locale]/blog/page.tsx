@@ -31,7 +31,7 @@ export default function Home() {
         setError(null);
 
         try {
-            const postsData = await fetchBlogPosts(currentLocale);
+            const postsData = await fetchBlogPosts();
             const bookmarkedPosts = await fetchBookmarkedPosts();
             const bookmarkedPostIds = new Set(bookmarkedPosts.map((post) => post.id));
 

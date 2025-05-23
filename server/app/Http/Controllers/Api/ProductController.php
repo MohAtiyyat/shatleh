@@ -8,15 +8,24 @@ use App\Models\Product;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    public function allProducts(): JsonResponse
+    /**
+     * Fetch all products, optionally filtered by category IDs.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function allProducts(Request $request): JsonResponse
     {
         try {
-            $products = Product::query()
+            // Get category_ids from query parameter (e.g., ?category_ids=1,2,3)
+            $categoryIds = $request->query('category_ids') ? array_map('intval', explode(',', $request->query('category_ids'))) : null;
+
+            $query = Product::query()
                 ->select([
                     'products.id',
                     'products.name_en',
@@ -27,21 +36,56 @@ class ProductController extends Controller
                     'products.description_ar',
                     'products.availability',
                     'products.sold_quantity',
-                    DB::raw('MIN(categories.name_en) as category_en'),
-                    DB::raw('MIN(categories.name_ar) as category_ar'),
-                    DB::raw('MIN(categories.id) as category_id'),
                 ])
-                ->leftJoin('category_products', 'products.id', '=', 'category_products.product_id')
-                ->leftJoin('categories', 'category_products.category_id', '=', 'categories.id')
-                ->where('products.status', "Active")
-                ->groupBy('products.id')
+                ->where('products.status', 'Active');
+
+            // Apply category filtering if category_ids are provided
+            if ($categoryIds) {
+                $query->join('category_products', 'products.id', '=', 'category_products.product_id')
+                    ->whereIn('category_products.category_id', $categoryIds)
+                    ->distinct(); // Ensure no duplicate products
+            }
+
+            $products = $query
+                ->with(['categories' => function ($query) {
+                    $query->select('categories.id', 'categories.name_en', 'categories.name_ar', 'categories.parent_id')
+                        ->with(['subcategories' => function ($subQuery) {
+                            $subQuery->select('id', 'name_en', 'name_ar', 'parent_id');
+                        }]);
+                }])
                 ->withCount(['reviews as rating' => function ($query) {
                     $query->select(DB::raw('ROUND(COALESCE(AVG(rating), 0), 1)'));
                 }])
                 ->get();
 
+            // Transform the response to match the frontend Product type
+            $transformedProducts = $products->map(function ($product) {
+                $categories = $product->categories->map(function ($category) {
+                    return [
+                        'id' => $category->id,
+                        'name_en' => $category->name_en,
+                        'name_ar' => $category->name_ar,
+                        'parent_id' => $category->parent_id,
+                    ];
+                });
+
+                return [
+                    'id' => $product->id,
+                    'name_en' => $product->name_en,
+                    'name_ar' => $product->name_ar,
+                    'price' => $product->price,
+                    'image' => $product->image,
+                    'description_en' => $product->description_en,
+                    'description_ar' => $product->description_ar,
+                    'availability' => $product->availability,
+                    'sold_quantity' => $product->sold_quantity,
+                    'categories' => $categories, // Include all categories
+                    'rating' => $product->rating,
+                ];
+            });
+
             return response()->json([
-                'data' => $products,
+                'data' => $transformedProducts,
             ]);
         } catch (Exception $e) {
             Log::error('Error fetching products: ' . $e->getMessage());
@@ -49,6 +93,11 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * Fetch top-selling products.
+     *
+     * @return JsonResponse
+     */
     public function top_sellers(): JsonResponse
     {
         try {
@@ -63,24 +112,50 @@ class ProductController extends Controller
                     'products.description_ar',
                     'products.availability',
                     'products.sold_quantity',
-                    DB::raw('MIN(categories.name_en) as category'),
-                    DB::raw('MIN(categories.name_ar) as categoryAr'),
-                    DB::raw('MIN(categories.id) as category_id'),
                 ])
-                ->leftJoin('category_products', 'products.id', '=', 'category_products.product_id')
-                ->leftJoin('categories', 'category_products.category_id', '=', 'categories.id')
-                ->where('products.status', "Active")
-                ->where('products.availability',true)
-                ->groupBy('products.id')
+                ->where('products.status', 'Active')
+                ->where('products.availability', true)
                 ->orderBy('sold_quantity', 'desc')
                 ->take(5)
+                ->with(['categories' => function ($query) {
+                    $query->select('categories.id', 'categories.name_en', 'categories.name_ar', 'categories.parent_id')
+                        ->with(['subcategories' => function ($subQuery) {
+                            $subQuery->select('id', 'name_en', 'name_ar', 'parent_id');
+                        }]);
+                }])
                 ->withCount(['reviews as rating' => function ($query) {
                     $query->select(DB::raw('ROUND(COALESCE(AVG(rating), 0), 1)'));
                 }])
                 ->get();
 
+            // Transform the response to match the frontend Product type
+            $transformedProducts = $products->map(function ($product) {
+                $categories = $product->categories->map(function ($category) {
+                    return [
+                        'id' => $category->id,
+                        'name_en' => $category->name_en,
+                        'name_ar' => $category->name_ar,
+                        'parent_id' => $category->parent_id,
+                    ];
+                });
+
+                return [
+                    'id' => $product->id,
+                    'name_en' => $product->name_en,
+                    'name_ar' => $product->name_ar,
+                    'price' => $product->price,
+                    'image' => $product->image,
+                    'description_en' => $product->description_en,
+                    'description_ar' => $product->description_ar,
+                    'availability' => $product->availability,
+                    'sold_quantity' => $product->sold_quantity,
+                    'categories' => $categories, // Include all categories
+                    'rating' => $product->rating,
+                ];
+            });
+
             return response()->json([
-                'data' => $products,
+                'data' => $transformedProducts,
             ]);
         } catch (Exception $e) {
             Log::error('Error fetching top sellers: ' . $e->getMessage());
@@ -88,14 +163,22 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * Fetch all categories with their subcategories.
+     *
+     * @return JsonResponse
+     */
     public function categories(): JsonResponse
     {
         try {
             $categories = Category::query()
                 ->whereNull('parent_id')
-                ->with('subcategories:id,name_en,name_ar,parent_id')
+                ->with(['subcategories' => function ($query) {
+                    $query->select('id', 'name_en', 'name_ar', 'parent_id');
+                }])
+                ->select('id', 'name_en', 'name_ar')
                 ->get();
-            
+
             return response()->json([
                 'data' => $categories,
             ]);

@@ -27,78 +27,6 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
     },
   };
 
-  const mockData: Product[] = [
-    {
-      id: 1,
-      name_en: 'Basil',
-      name_ar: 'ريحان',
-      price: '3',
-      image: '/rayhan.webp',
-      description_en: 'Fresh basil plant for culinary use.',
-      description_ar: 'نبات ربيحان طازج للاستخدام في الطهي.',
-      availability: true,
-      sold_quantity: 0,
-      category_en: 'Supplies',
-      category_ar: 'مستلزمات',
-      rating: 4.5,
-    },
-    {
-      id: 2,
-      name_en: 'Lavender',
-      name_ar: 'لافندر',
-      price: '5',
-      image: '/lavander.webp',
-      description_en: 'Calming lavender plant for relaxation.',
-      description_ar: 'نبات لافندر مهدئ للاسترخاء.',
-      availability: true,
-      sold_quantity: 0,
-      category_en: 'Supplies',
-      category_ar: 'مستلزمات',
-      rating: 4.5,
-    },
-    {
-      id: 3,
-      name_en: 'Carpet',
-      name_ar: 'سجادة',
-      price: '3.5',
-      image: '/sjadeh.webp',
-      description_en: 'Decorative carpet plant for gardens.',
-      description_ar: 'نبات سجادة زخرفي للحدائق.',
-      availability: true,
-      sold_quantity: 0,
-      category_en: 'Supplies',
-      category_ar: 'مستلزمات',
-      rating: 4.5,
-    },
-    {
-      id: 4,
-      name_en: 'Damask Rose',
-      name_ar: 'ورد دمشقي',
-      price: '5',
-      image: '/jori.jpg',
-      description_en: 'Fragrant damask rose for beauty.',
-      description_ar: 'ورد دمشقي عطري للجمال.',
-      availability: true,
-      sold_quantity: 0,
-      category_en: 'Supplies',
-      category_ar: 'مستلزمات',
-      rating: 4.7,
-    },
-    {
-      id: 5,
-      name_en: 'Mint',
-      name_ar: 'نعناع',
-      price: '1.5',
-      image: '/na3nah.jpg',
-      description_en: 'Refreshing mint plant for teas.',
-      description_ar: 'نبات نعناع منعش للشاي.',
-      availability: true,
-      sold_quantity: 0,
-      category_en: 'Supplies',
-      category_ar: 'مستلزمات',
-      rating: 4.3,
-    },
-  ];
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -106,7 +34,6 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
         const topProducts = await fetchTopProducts();
         setProducts(topProducts);
       } catch (err) {
-        setProducts(mockData); // Fallback to mock data
         console.error('Error fetching top products:', err);
       }
     };

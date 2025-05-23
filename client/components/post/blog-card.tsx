@@ -38,11 +38,11 @@ export default function BlogCard({ post, currentLocale, setPosts }: BlogCardProp
                     )
                 );
             }
-        } catch (error: any) {
-            if (error.message.includes('Authentication required') || error.message.includes('No authentication token found')) {
+        } catch (error: unknown) {
+            if (error instanceof Error && (error.message.includes('Authentication required') || error.message.includes('No authentication token found'))) {
                 router.push(`/${currentLocale}/login?redirect=/blog`);
             } else {
-                console.error('Bookmark error:', error.message);
+                console.error('Bookmark error:', error);
             }
         } finally {
             setIsLoading(false);

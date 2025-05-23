@@ -38,7 +38,7 @@ export default function PostPage() {
       setError(null);
 
       try {
-        const postsData = await fetchBlogPosts(currentLocale);
+        const postsData = await fetchBlogPosts();
         const selectedPost = postsData.find((p) => p.id.toString() === postId);
         if (!selectedPost) {
           setError(t('error.postNotFound'));
@@ -67,8 +67,9 @@ export default function PostPage() {
 
   const { allProducts } = useProducts();
   const relatedCategory = post?.category_id;
+  console.log('All Products:', allProducts);
   const relatedProducts = allProducts
-    .filter((product) => product.category_id === relatedCategory)
+    .filter((product) => product.categories && product.categories.length > 0 && product.categories[0].id  === relatedCategory)
     .slice(0, 3);
   const postProduct = allProducts.find((product) => product.id === post?.product_id || 0);
 
@@ -294,8 +295,9 @@ export default function PostPage() {
                                   </p>
                                   <p className="text-xs text-[#1a5418] uppercase font-medium">
                                     {currentLocale === 'ar'
-                                      ? product.category_ar
-                                      : product.category_en}
+                                      ? product.categories &&  product.categories[0].name_ar
+                                      : product.categories && product.categories[0].name_en}
+                                      
                                   </p>
                                 </div>
                               </div>

@@ -347,6 +347,40 @@ export const fetchCategories = async (): Promise<Category[]> => {
     }
 };
 
+// Fetch all products, optionally filtered by category IDs
+export const fetchAllProducts = async (category_ids?: number[]): Promise<Product[]> => {
+    try {
+        // Construct query parameters for category filtering
+        const query = category_ids && category_ids.length > 0 ? `?category_ids=${category_ids.join(',')}` : '';
+        const response = await fetch(`${API_URL}/api/all_products${query}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<ProductsResponse>(response);
+        console.log('Fetched products:', data);
+        return data.data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        // Return mock products as fallback, ensuring type consistency
+        return mockProducts.map((product) => ({
+            ...product,
+            price: product.price.toString(),
+            availability: !!product.availability,
+            categories: product.categories
+                ? product.categories.map((category) => ({
+                    id: category.id,
+                    name_en: category.name_en || '',
+                    name_ar: category.name_ar || '',
+                    parent_id: null,
+                }))
+                : [],
+            rating: product.rating || undefined,
+        }));
+    }
+};
 export const fetchTopProducts = async (): Promise<Product[]> => {
     try {
         const response = await fetch(`${API_URL}/api/top_sellers`, {
@@ -355,6 +389,7 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },
+            next: { revalidate: 86400 }
         });
         const data = await handleResponse<ProductsResponse>(response);
         return data.data;
@@ -363,30 +398,6 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
     }
 };
 
-export const fetchAllProducts = async (): Promise<Product[]> => {
-    try {
-        const response = await fetch(`${API_URL}/api/all_products`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
-        });
-        const data = await handleResponse<ProductsResponse>(response);
-        return data.data;
-    } catch (error) {
-        console.error('Error fetching all products:', error);
-        return mockProducts.map((product) => ({
-            ...product,
-            price: product.price.toString(),
-            availability: !!product.availability,
-            category_id: product.category_id || null,
-            category_en: product.category_en || null,
-            category_ar: product.category_ar || null,
-            rating: product.rating || undefined,
-        }));
-    }
-};
 
 export const fetchProfile = async (): Promise<Profile> => {
     const token = getAuthToken();
@@ -691,7 +702,7 @@ export const submitProductReview = async (data: ReviewRequest, locale: string): 
         throw new Error(error instanceof Error ? error.message : 'Failed to submit review');
     }
 };
-export const fetchBlogPosts = async (locale: string): Promise<BlogPost[]> => {
+export const fetchBlogPosts = async (): Promise<BlogPost[]> => {
     try {
         const response = await fetch(`${API_URL}/api/blog`, {
             method: 'GET',

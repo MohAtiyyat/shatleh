@@ -37,7 +37,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
 
     const label = !product.availability
         ? t('products.outOfStockLabel')
-        : product.sold_quantity > 10
+        : product.sold_quantity && product.sold_quantity > 10
             ? t('products.topSellingLabel')
             : null;
 
@@ -61,7 +61,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                         description_en: product.description_en,
                         description_ar: product.description_ar,
                         price: product.price,
-                        image: product.image,
+                        image: product.image[0],
                     },
                     userId,
                     currentLocale
