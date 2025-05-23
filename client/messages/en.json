@@ -622,5 +622,18 @@
     "noResultsMessage": "Sorry, we couldn’t find any results for your search query. Try a different search term or check out our categories.",
     "goBack": "Home",
     "errorTitle": "Error"
+  },
+  "rateOrder": {
+    "rateOrder": "Rate Order",
+    "close": "Close",
+    "rateAllProducts": "Please rate all products",
+    "submitRatings": "Submit Ratings",
+    "submitting": "Submitting...",
+    "submitFailed": "Failed to submit ratings",
+    "skip": "Skip",
+    "skipping": "Skipping...",
+    "skipFailed": "Failed to skip rating",
+    "progress": "Progress",
+    "starRating": "Star Rating"
   }
 }
