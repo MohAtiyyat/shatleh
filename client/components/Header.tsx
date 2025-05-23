@@ -131,12 +131,6 @@ const handleSearch = (e: React.FormEvent) => {
         { locale: 'ar', label: 'العربية', icon: '/flags/SA.png' },
     ];
 
-    const getInitials = () => {
-        if (!profile) return '';
-        const firstInitial = profile.first_name.charAt(0).toUpperCase();
-        const lastInitial = profile.last_name.charAt(0).toUpperCase();
-        return `${firstInitial}${lastInitial}`;
-    };
 
     const isActiveNavItem = (path: string) => {
         const basePath = `/${currentLocale}/${path}`;
@@ -264,7 +258,12 @@ const handleSearch = (e: React.FormEvent) => {
                                     />
                                 ) : (
                                     <div className="w-10 h-10 rounded-full border bg-[var(--primary-bg)] flex items-center justify-center text-text-primary font-medium hover:scale-105 transition-all duration-200">
-                                        {getInitials()}
+                                        <Image 
+                                        src="/user.svg" 
+                                        alt="User profile" 
+                                        width={40} height={40}
+                                        className="w-10 h-10 rounded-full hover:scale-105 transition-all duration-200"
+                                        />
                                     </div>
                                 )}
                             </button>
