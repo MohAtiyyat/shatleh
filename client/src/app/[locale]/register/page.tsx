@@ -1,21 +1,21 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react'; // Add useEffect
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
-import {  useAuth } from '../../../../lib/AuthContext';
-import { register } from '../../../../lib/api';   // Import register function
+import { useAuth } from '../../../../lib/AuthContext';
+import { register } from '../../../../lib/api';
 
 export default function SignUp() {
     const t = useTranslations('signup');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { login } = useAuth();
+    const { login, isAuthenticated } = useAuth(); // Add isAuthenticated
     const currentLocale = pathname.split('/')[1] || 'ar';
     const redirectPath = searchParams.get('redirect') || '/';
     const phoneRef = useRef<string | null>(null);
@@ -29,13 +29,20 @@ export default function SignUp() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push(`/${currentLocale}${redirectPath}`);
+        }
+    }, [isAuthenticated, router, currentLocale, redirectPath]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     };
 
     const handlePhoneChange = (value: string) => {
         phoneRef.current = value;
-        console.log('Phone input:', value); // Debug log
+        console.log('Phone input:', value);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +61,7 @@ export default function SignUp() {
                 ? parsePhoneNumberFromString(`+${phoneRef.current}`)
                 : null;
             if (!phoneNumber || !phoneNumber.isValid()) {
-                console.log('Invalid phone number:', phoneRef.current); // Debug log
+                console.log('Invalid phone number:', phoneRef.current);
                 setError(t('invalidPhone'));
                 setLoading(false);
                 return;
@@ -72,10 +79,10 @@ export default function SignUp() {
                 ip_country_id: '12',
             };
 
-            console.log('Data to send:', dataToSend); // Debug log
+            console.log('Data to send:', dataToSend);
 
-            const response = await register(dataToSend); // Use the API register function
-            console.log('Response:', response); // Debug log
+            const response = await register(dataToSend);
+            console.log('Response:', response);
 
             const { token, user } = response;
 

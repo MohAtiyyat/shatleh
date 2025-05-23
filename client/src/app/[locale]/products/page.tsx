@@ -60,9 +60,7 @@ export default function ProductsPage() {
     useEffect(() => {
         const loadCategories = async () => {
             try {
-                console.log('Attempting to fetch categories...');
                 const fetchedCategories = await fetchCategories();
-                console.log('Categories fetched:', fetchedCategories);
                 setCategories(fetchedCategories);
                 setFilters(initializeFilters(fetchedCategories));
             } catch (error) {
