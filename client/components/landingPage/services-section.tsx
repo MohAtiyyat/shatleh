@@ -57,10 +57,10 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
     const loadServices = async () => {
       try {
         const services = await fetchServices();
-        setServicesData(services.length ? services : mockServicesData);
+        setServicesData(services.slice(0, 3).length ? services.slice(0, 3) : mockServicesData);
       } catch (error) {
         console.error('Error fetching services:', error);
-        setServicesData(mockServicesData);
+        setServicesData(mockServicesData.slice(0, 3));
       }
     };
     loadServices();
@@ -132,6 +132,15 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
           </Link>
         ))}
       </div>
+
+      <div className="text-center mt-6">
+        <Link href={`/${currentLocale}/services`} className="inline-block">
+          <button className="px-6 py-3 bg-[var(--accent-color)] text-white font-medium rounded-full shadow-md transition-transform duration-300 hover:scale-105">
+            {t('home.viewMore')}
+          </button>
+        </Link>
+      </div>
+
     </motion.section>
   );
 }
