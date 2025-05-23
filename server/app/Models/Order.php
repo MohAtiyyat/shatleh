@@ -18,6 +18,7 @@ class Order extends Model
         'coupon_id',
         'payment_id',
         'status',
+        'skipped_rating',
         'cart_id',
         'delivery_cost',
         'delivery_date'
@@ -52,5 +53,7 @@ class Order extends Model
                     ->withTimestamps()
                     ->withTrashed();
     }
-
+    public function reviews(){
+        return $this->hasMany(Review::class);
+    }
 }

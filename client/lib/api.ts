@@ -145,18 +145,6 @@ interface ReviewsResponse {
     };
     message: string;
 }
-
-interface ReviewRequest {
-    product_id: number;
-    rating: number;
-    text: string;
-    customer_id: string;
-}
-
-interface ReviewResponse {
-    data: Review;
-    message: string;
-}
 interface subcategories {
     id: number;
     name_en: string;
@@ -703,14 +691,57 @@ export const fetchProductReviews = async (productId: number): Promise<{ reviews:
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch product reviews');
     }
 };
-
-export const submitProductReview = async (data: ReviewRequest, locale: string): Promise<Review> => {
+export const fetchOrders = async (locale: string): Promise<Order[]> => {
     const token = getAuthToken();
     if (!token) {
         throw new Error('No authentication token found');
     }
     try {
-        const response = await fetch(`${API_URL}/api/products/reviews`, {
+        const response = await fetch(`${API_URL}/api/orders`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<OrdersResponse>(response);
+        return data.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch orders');
+    }
+};
+
+export const fetchUnratedOrders = async (locale: string): Promise<Order[]> => {
+    const token = getAuthToken();
+    if (!token) {
+        return [];
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/orders/unrated`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<OrdersResponse>(response);
+        return data.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch unrated orders');
+    }
+};
+
+export const submitOrderRatings = async (orderId: number, ratings: { product_id: number; rating: number }[], locale: string): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/orders/${orderId}/ratings`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -718,12 +749,32 @@ export const submitProductReview = async (data: ReviewRequest, locale: string): 
                 Authorization: `Bearer ${token}`,
                 'Accept-Language': locale,
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify({ ratings }),
         });
-        const result = await handleResponse<ReviewResponse>(response);
-        return result.data;
+        await handleResponse(response);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Failed to submit review');
+        throw new Error(error instanceof Error ? error.message : 'Failed to submit ratings');
+    }
+};
+
+export const skipOrderRating = async (orderId: number, locale: string): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/orders/${orderId}/skip-rating`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+        await handleResponse(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to skip rating');
     }
 };
 export const fetchBlogPosts = async (): Promise<BlogPost[]> => {
@@ -807,27 +858,7 @@ export const fetchPostCategories = async (locale: string): Promise<PostFilterCat
     }
 };
 
-export const fetchOrders = async (locale: string): Promise<Order[]> => {
-    const token = getAuthToken();
-    if (!token) {
-        throw new Error('No authentication token found');
-    }
-    try {
-        const response = await fetch(`${API_URL}/api/orders`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`,
-                'Accept-Language': locale, // Pass locale for language-specific responses
-            },
-        });
-        const data = await handleResponse<OrdersResponse>(response);
-        return data.data;
-    } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Failed to fetch orders');
-    }
-};
+
 export const cancelOrder = async (orderId: string, locale: string): Promise<void> => {
     const token = getAuthToken();
     if (!token) {
