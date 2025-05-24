@@ -28,8 +28,9 @@
                         <div class="row">
                             <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Customer Name</h5>
-                                <p class="text-dark font-weight-semibold">{{ $order->customer->user->first_name }} {{ $order->customer->user->last_name }}</p>
+                                <p class="text-dark font-weight-semibold">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</p>
                             </div>
+                            @if($order->is_gift)
                             <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Recipient Name</h5>
                                 <p class="text-dark">{{ $order->first_name }} {{ $order->last_name }}</p>
@@ -38,6 +39,7 @@
                                 <h5 class="text-muted font-weight-semibold mb-2">Recipient Phone</h5>
                                 <p class="text-dark">{{ $order->phone_number }}</p>
                             </div>
+                            @endif
                             <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Status</h5>
                                 <span class="badge badge-pill {{ $order->status == 'delivered' ? 'badge-success' : ($order->status == 'cancelled' ? 'badge-danger' : 'badge-warning') }} px-3 py-2">
@@ -46,7 +48,11 @@
                             </div>
                             <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Payment Info</h5>
+                                @if($order->payment)
                                 @include('admin.Order.payment-popout', ['payment' => $order->payment])
+                                @else
+                                    <p class="text-dark">No payment information available.</p>
+                                @endif
                             </div>
                             <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
