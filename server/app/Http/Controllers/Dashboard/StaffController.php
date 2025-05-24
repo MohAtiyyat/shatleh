@@ -101,7 +101,7 @@ class StaffController extends Controller
         if ($staff) {
             $staff->update(['is_banned' => !$staff->is_banned]);
 
-            $this->logAction(auth()->id(), 'toggle_ban_staff', 'Staff ' . ($staff->is_banned ? 'banned' : 'unbanned') . ': ' . $staff->name, LogsTypes::WARNING->value);
+            $this->logAction(auth()->id(), 'toggle_ban_staff', 'Staff ' . ($staff->is_banned ? 'banned' : 'unbanned') . ': ' . $staff->first_name . ' ' . $staff->last_name, LogsTypes::WARNING->value);
             return redirect()->route('dashboard.staff')->with('success', __('Staff banned successfully.'));
         }
 

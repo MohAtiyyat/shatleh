@@ -89,9 +89,10 @@ class CustomerController extends Controller
 
     public function toggleBan(Customer $customer)
     {
+        
         $customer->user->update(['is_banned' => !$customer->user->is_banned]);
 
-        $this->logAction(auth()->id(), 'toggle_ban_customer', $customer->user->is_banned ? 'Banned customer: ' : 'Unbanned customer: ' . $customer->user->name . ' (Id: ' . $customer->user->id . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'toggle_ban_customer', ($customer->user? 'Banned customer: ' : 'Unbanned customer: ') . $customer->user->first_name . ' ' . $customer->user->last_name . ' (Id: ' . $customer->user->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer ban status updated.');
     }
 
