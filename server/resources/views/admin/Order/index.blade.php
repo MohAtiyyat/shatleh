@@ -17,7 +17,7 @@
             @foreach ($order as $record)
                 <tr>
                     <td>{{ $record->id }}</td>
-                    <td>{{ $record->customer->user->first_name ?? '' }} {{ $record->customer->user->last_name ?? '' }}</td>
+                    <td>{{ $record->customer->first_name ?? '' }} {{ $record->customer->last_name ?? '' }}</td>
                     <td>
                         {{ $record->employee ? $record->employee->first_name . ' ' . $record->employee->last_name : 'N/A' }}
                     </td>
