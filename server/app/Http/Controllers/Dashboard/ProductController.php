@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Product\AllProductRequest;
 use App\Http\Requests\Dashboard\Product\DeleteProductRequest;
@@ -10,11 +11,13 @@ use App\Http\Requests\Dashboard\Product\StoreProductRequest;
 use App\Http\Requests\Dashboard\Product\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    use HelperTrait;
     public function index(AllProductRequest $request)
     {
         $products = Product::all();
@@ -50,6 +53,7 @@ class ProductController extends Controller
             $product->categories()->sync($request->input('categories'));
         }
 
+        $this->logAction(auth()->id(), 'create_product', 'Product created: ' . $data['name_en'] . ' (ID: ' . $product->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.product')->with('success', 'Product created successfully.');
     }
 
@@ -97,8 +101,10 @@ class ProductController extends Controller
                 $product->categories()->sync($request->input('categories'));
             }
 
+            $this->logAction(auth()->id(), 'update_product', 'Product updated: ' . $data['name_en'] . ' (ID: ' . $product->id . ')', LogsTypes::INFO->value);
             return redirect()->route('dashboard.product')->with('success', 'Product updated successfully.');
         } catch (\Exception $e) {
+            $this->logAction(auth()->id(), 'update_product_error', 'Error updating product: ' . $e->getMessage(), LogsTypes::ERROR->value);
             return redirect()->back()->withErrors(['error' => 'Failed to update product: ' . $e->getMessage()]);
         }
     }
@@ -124,6 +130,7 @@ class ProductController extends Controller
         }
         $product->delete();
 
+        $this->logAction(auth()->id(), 'delete_product', 'Product deleted: ' . $product->name_en . ' (ID: ' . $product->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.product')->with('success', 'Product deleted successfully.');
     }
 

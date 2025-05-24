@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Product\DeleteProductRequest;
 use App\Http\Requests\Dashboard\Service\AllServiceRequest;
@@ -9,11 +11,13 @@ use App\Http\Requests\Dashboard\Service\StoreServiceRequest;
 use App\Http\Requests\Dashboard\Service\UpdateServiceRequest;
 use App\Models\Service;
 use App\Models\ServiceRequest;
+use App\Traits\HelperTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
+    use HelperTrait;
     public function index(AllServiceRequest $request)
     {
         $services = Service::all();
@@ -45,6 +49,7 @@ class ServiceController extends Controller
 
         Service::create($data);
 
+        $this->logAction(auth()->id(), 'create_service', 'Service created: ' . $data['name'] . ' (ID: ' . $data['id'] . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.service')->with('success', 'Service created successfully.');
     }
 
@@ -76,9 +81,10 @@ class ServiceController extends Controller
 
             $service->update($data);
 
-
+            $this->logAction(auth()->id(), 'update_service', 'Service updated: ' . $data['name'] . ' (ID: ' . $service->id . ')', LogsTypes::INFO->value);
             return redirect()->route('dashboard.service')->with('success', 'Service updated successfully.');
         } catch (\Exception $e) {
+            $this->logAction(auth()->id(), 'update_service_error', 'Error updating service: ' . $e->getMessage(), LogsTypes::ERROR->value);
             return redirect()->back()->withErrors(['error' => 'Failed to update service: ' . $e->getMessage()]);
         }
     }
@@ -100,6 +106,7 @@ class ServiceController extends Controller
         }
         $service->delete();
 
+        $this->logAction(auth()->id(), 'delete_service', 'Service deleted: ' . $service->name . ' (ID: ' . $service->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.service')->with('success', 'Service deleted successfully.');
     }
 

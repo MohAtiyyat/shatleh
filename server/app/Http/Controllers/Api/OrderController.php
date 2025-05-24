@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Review;
+use App\Traits\HelperTrait;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    use HelperTrait;
     /**
      * Fetch all orders for the authenticated user.
      *
@@ -100,6 +104,12 @@ class OrderController extends Controller
             $order->status = 'cancelled';
             $order->save();
 
+            $this->logAction(
+                $user->id,
+                'order_cancelled',
+                'Order cancelled successfully: Order ID ' . $order->id,
+                LogsTypes::INFO->value
+            );
             return response()->json([
                 'message' => 'Order cancelled successfully',
             ]);
@@ -111,6 +121,13 @@ class OrderController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
+            $this->logAction(
+                Auth::id(),
+                'order_cancel_error',
+                'Failed to cancel order: ' . $e,
+                LogsTypes::ERROR->value
+            );
+            
             return response()->json([
                 'error' => 'Failed to cancel order',
                 'message' => 'An unexpected error occurred while cancelling the order.',
