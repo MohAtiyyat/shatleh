@@ -11,7 +11,7 @@ import Filters from '../../../../components/post/category-filter';
 import Pagination from '../../../../components/pagination';
 import SearchBar from '../../../../components/post/search-bar';
 import { BlogPost, PostFiltersState } from '../../../../lib/index';
-import { fetchBlogPosts, fetchPostCategories, fetchBookmarkedPosts, getAuthToken } from '../../../../lib/api';
+import { fetchBlogPosts, fetchPostCategories, getAuthToken } from '../../../../lib/api';
 
 export default function Home() {
     const t = useTranslations('');
@@ -21,7 +21,7 @@ export default function Home() {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
-    const [posts, setPosts] = useState<(BlogPost & { bookmarked?: boolean })[]>([]);
+    const [posts, setPosts] = useState<(BlogPost & { bookmarked: boolean })[]>([]);
     const [filters, setFilters] = useState<PostFiltersState>({ categories: [] });
     const [error, setError] = useState<string | null>(null);
     const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
@@ -32,15 +32,7 @@ export default function Home() {
 
         try {
             const postsData = await fetchBlogPosts();
-            const bookmarkedPosts = await fetchBookmarkedPosts();
-            const bookmarkedPostIds = new Set(bookmarkedPosts.map((post) => post.id));
-
-            const postsWithBookmarks = postsData.map((post) => ({
-                ...post,
-                bookmarked: bookmarkedPostIds.has(post.id),
-            }));
-
-            setPosts(postsWithBookmarks);
+            setPosts(postsData);
 
             const categoriesData = await fetchPostCategories(currentLocale);
             const usedCategoryNames = new Set(
@@ -167,9 +159,7 @@ export default function Home() {
                     <Breadcrumb pageName="blog" />
                 </div>
                 <div className="mb-3 ">
-                    <div
-                        className={`flex flex-wrap items-center mb-4`   }
-                    >
+                    <div className={`flex flex-wrap items-center mb-4`}>
                         <div className="flex flex-wrap ">
                             <SearchBar
                                 searchTerm={searchTerm}
@@ -177,45 +167,43 @@ export default function Home() {
                                 onSearch={handleSearch}
                             />
                             {isAuthenticated && (
-                            <motion.button
-                                onClick={toggleBookmarkedView}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-md mb-5 ${
-                                    showBookmarkedOnly
-                                        ? 'bg-teal-600 text-white'
-                                        : 'bg-white text-teal-600'
-                                }
-                                ${currentLocale === 'ar' ? 'mr-10' : 'ml-2'}
-                                 hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm `}
-                                aria-label={
-                                    showBookmarkedOnly
-                                        ? t('education.showAllPosts', {
-                                              default: 'Show All Posts',
-                                          })
-                                        : t('education.showBookmarked', {
-                                              default: 'Show Bookmarked Posts',
-                                          })
-                                }
-                                variants={buttonVariants}
-                                initial="idle"
-                                animate={showBookmarkedOnly ? 'clicked' : 'idle'}
-                                whileHover={{ scale: 1.05 }}
-                            >
-                                <BookmarkIcon className="h-5 w-5" />
-                                <span>
-                                    {showBookmarkedOnly
-                                        ? t('education.showAllPosts', { default: 'Show All Posts' })
-                                        : t('education.showBookmarked', { default: 'Bookmarks' })}
-                                </span>
-                            </motion.button>
-                        )}
-
+                                <motion.button
+                                    onClick={toggleBookmarkedView}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-md mb-5 ${
+                                        showBookmarkedOnly
+                                            ? 'bg-teal-600 text-white'
+                                            : 'bg-white text-teal-600'
+                                    }
+                                    ${currentLocale === 'ar' ? 'mr-10' : 'ml-2'}
+                                    hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm`}
+                                    aria-label={
+                                        showBookmarkedOnly
+                                            ? t('education.showAllPosts', {
+                                                  default: 'Show All Posts',
+                                              })
+                                            : t('education.showBookmarked', {
+                                                  default: 'Show Bookmarked Posts',
+                                              })
+                                    }
+                                    variants={buttonVariants}
+                                    initial="idle"
+                                    animate={showBookmarkedOnly ? 'clicked' : 'idle'}
+                                    whileHover={{ scale: 1.05 }}
+                                >
+                                    <BookmarkIcon className="h-5 w-5" />
+                                    <span>
+                                        {showBookmarkedOnly
+                                            ? t('education.showAllPosts', { default: 'Show All Posts' })
+                                            : t('education.showBookmarked', { default: 'Bookmarks' })}
+                                    </span>
+                                </motion.button>
+                            )}
                             <Filters
                                 filters={filters}
                                 setFilters={setFilters}
                                 currentLocale={currentLocale}
                             />
                         </div>
-                        
                     </div>
                 </div>
                 {error && (

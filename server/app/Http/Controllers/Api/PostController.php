@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -12,22 +11,33 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('category')->get()->map(function ($post) {
-            return [
-                'id' => $post->id,
-                'title_en' => $post->title_en,
-                'title_ar' => $post->title_ar,
-                'content_en' => $post->content_en,
-                'content_ar' => $post->content_ar,
-                'category_id' => $post->category_id,
-                'category_en' => $post->category ? $post->category->name_en : null,
-                'category_ar' => $post->category ? $post->category->name_ar : null,
-                'product_id' => $post->product_id,
-                'product_en' => $post->product ? $post->product->name_en : null,
-                'product_ar' => $post->product ? $post->product->name_ar : null,
-                'image' => $post->image ? asset('storage/' . $post->image) : null,
-            ];
-        });
+        $userId = Auth::id();
+
+        $posts = Post::with('category')
+            ->select('posts.*')
+            ->when($userId, function ($query) use ($userId) {
+                $query->selectRaw('EXISTS(SELECT 1 FROM bookmarks WHERE bookmarks.post_id = posts.id AND bookmarks.user_id = ?) as bookmarked', [$userId]);
+            }, function ($query) {
+                $query->selectRaw('0 as bookmarked');
+            })
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title_en' => $post->title_en,
+                    'title_ar' => $post->title_ar,
+                    'content_en' => $post->content_en,
+                    'content_ar' => $post->content_ar,
+                    'category_id' => $post->category_id,
+                    'category_en' => $post->category ? $post->category->name_en : null,
+                    'category_ar' => $post->category ? $post->category->name_ar : null,
+                    'product_id' => $post->product_id,
+                    'product_en' => $post->product ? $post->product->name_en : null,
+                    'product_ar' => $post->product ? $post->product->name_ar : null,
+                    'image' => $post->image ? asset('storage/' . $post->image) : null,
+                    'bookmarked' => (bool) $post->bookmarked,
+                ];
+            });
 
         return response()->json($posts);
     }

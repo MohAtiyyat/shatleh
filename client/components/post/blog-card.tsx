@@ -11,9 +11,9 @@ import { toggleBookmark } from '../../lib/api';
 import { useRouter } from 'next/navigation';
 
 interface BlogCardProps {
-    post: BlogPost & { bookmarked?: boolean };
+    post: BlogPost & { bookmarked: boolean };
     currentLocale: 'en' | 'ar';
-    setPosts?: React.Dispatch<React.SetStateAction<(BlogPost & { bookmarked?: boolean })[]>>;
+    setPosts?: React.Dispatch<React.SetStateAction<(BlogPost & { bookmarked: boolean })[]>>;
 }
 
 export default function BlogCard({ post, currentLocale, setPosts }: BlogCardProps) {

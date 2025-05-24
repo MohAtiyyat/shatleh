@@ -20,8 +20,6 @@ Route::prefix('api')->group(function () {
     Route::get('/services', [ServiceController::class, 'index'])->name('api.services');
     Route::get('/categories', [ProductController::class, 'categories'])->name('api.categories');
     Route::get('/products/{productId}/reviews', [ReviewController::class, 'getTopReviews'])->name('api.reviews.index');
-    Route::get('/blog', [PostController::class, 'index'])->name('api.blog.index');
-    Route::get('/blog/{id}', [PostController::class, 'show'])->name('api.blog.show');
     Route::get('/coupons', [CouponController::class, 'index'])->name('api.coupons.index');
     Route::get('/search', [ProductController::class, 'search'])->name('api.search');
 
@@ -60,5 +58,9 @@ Route::prefix('api')->group(function () {
 
         // Service requests
         Route::get('/service-requests', [ProfileController::class, 'getServiceRequests'])->name('api.service_requests.index');
+
+        //blogs
+        Route::get('/blog', [PostController::class, 'index'])->name('api.blog.index');
+        Route::get('/blog/{id}', [PostController::class, 'show'])->name('api.blog.show');
     });
 });

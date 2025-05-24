@@ -777,38 +777,23 @@ export const skipOrderRating = async (orderId: number, locale: string): Promise<
         throw new Error(error instanceof Error ? error.message : 'Failed to skip rating');
     }
 };
-export const fetchBlogPosts = async (): Promise<BlogPost[]> => {
+export const fetchBlogPosts = async (): Promise<(BlogPost & { bookmarked: boolean })[]> => {
+    const token = getAuthToken();
     try {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${API_URL}/api/blog`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-            },
+            headers,
         });
-        return await handleResponse<BlogPost[]>(response);
+        return await handleResponse<(BlogPost & { bookmarked: boolean })[]>(response);
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch blog posts');
-    }
-};
-
-export const fetchBookmarkedPosts = async (): Promise<BlogPost[]> => {
-    const token = getAuthToken();
-    if (!token) {
-        return []; // Return empty array for unauthenticated users
-    }
-    try {
-        const response = await fetch(`${API_URL}/api/bookmarks`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return await handleResponse<BlogPost[]>(response);
-    } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Failed to fetch bookmarked posts');
     }
 };
 
