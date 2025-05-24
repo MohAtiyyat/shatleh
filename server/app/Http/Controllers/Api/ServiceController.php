@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ServiceRequest;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -12,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 
 class ServiceController extends Controller
 {
+    use HelperTrait;
     /**
      * Fetch all active services.
      *
@@ -69,6 +73,12 @@ class ServiceController extends Controller
             'status' => 'pending',
         ]);
 
+        $this->logAction(
+            $user->id,
+            'create_service_request',
+            'Service request created for service ID ' . $data['service_id'] . ' by customer ID ' . $data['customer_id'],
+            LogsTypes::INFO->value,
+        );
         return response()->json([
             'data' => $serviceRequest,
             'message' => 'Service request created successfully',

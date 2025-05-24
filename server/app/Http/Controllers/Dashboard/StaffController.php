@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Staff\StoreStaffRequest;
 use App\Http\Requests\Dashboard\Staff\UpdateStaffRequest;
+use App\Models\Log;
 use App\Models\Specialty;
 use App\Models\User;
+use App\Traits\HelperTrait;
 use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Role;
 
 class StaffController extends Controller
 {
+    use HelperTrait;
     public function index() {
         if(auth()->user()->hasRole('Admin')){ 
             $records = User::with('roles', 'addresses','specialties')->get()->filter(
@@ -37,6 +42,8 @@ class StaffController extends Controller
     public function create() {
         $roles = Role::select('name')->whereIn('name', ['Expert', 'Employee'])->get();
         $specialties = Specialty::select('id', 'name_ar')->get();
+
+        $this->logAction(auth()->id(), 'create_staff', 'Accessed staff creation page', LogsTypes::INFO->value);
         return view('admin.Staff.createUpdate', compact('roles', 'specialties'));
     }
 
@@ -73,24 +80,32 @@ class StaffController extends Controller
             } else {
                 $staff->specialties()->detach(); // Remove specialties if role changed
             }
+            $this->logAction(auth()->id(), 'update_staff', 'Staff updated: ' . $staff->name, LogsTypes::INFO->value);
             return redirect()->route('dashboard.staff')->with('success', __('Staff updated successfully.'));
         }
+        $this->logAction(auth()->id(), 'update_staff', 'Staff update failed: Staff not found with ID ' . $id, LogsTypes::ERROR->value);
         return redirect()->route('dashboard.staff')->with('error', __('Staff not found.'));
     }
     public function delete($id) {
         $staff = \App\Models\User::find($id);
         if ($staff) {
             $staff->delete();
+            $this->logAction(auth()->id(), 'delete_staff', 'Staff deleted: ' . $staff->name, LogsTypes::WARNING->value);
             return redirect()->route('dashboard.staff')->with('success', __('Staff deleted successfully.'));
         }
+        $this->logAction(auth()->id(), 'delete_staff', 'Staff deletion failed: Staff not found with ID ' . $id, LogsTypes::ERROR->value);
         return redirect()->route('dashboard.staff')->with('error', __('Staff not found.'));
     }
     public function ban($id) {
         $staff = User::find($id);
         if ($staff) {
             $staff->update(['is_banned' => !$staff->is_banned]);
+
+            $this->logAction(auth()->id(), 'toggle_ban_staff', 'Staff ' . ($staff->is_banned ? 'banned' : 'unbanned') . ': ' . $staff->first_name . ' ' . $staff->last_name, LogsTypes::WARNING->value);
             return redirect()->route('dashboard.staff')->with('success', __('Staff banned successfully.'));
         }
+
+        $this->logAction(auth()->id(), 'toggle_ban_staff', 'Staff ban failed: Staff not found with ID ' . $id, LogsTypes::ERROR->value);
         return redirect()->route('dashboard.staff')->with('error', __('Staff not found.'));
     }
 
@@ -98,8 +113,10 @@ class StaffController extends Controller
         $staff = User::find($id);
         if ($staff) {
             $staff->update(['password' => bcrypt('1234')]);
+            $this->logAction(auth()->id(), 'reset_staff_password', 'Staff password reset: ' . $staff->name, LogsTypes::INFO->value);
             return redirect()->route('dashboard.staff')->with('success', __('Staff password reset successfully.'));
         }
+        $this->logAction(auth()->id(), 'reset_staff_password', 'Staff password reset failed: Staff not found with ID ' . $id, LogsTypes::ERROR->value);
         return redirect()->route('dashboard.staff')->with('error', __('Staff not found.'));
     }
 }

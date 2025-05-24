@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\ProductShop\StoreProductShopRequest;
 use App\Http\Requests\Dashboard\ProductShop\UpdateProductShopRequest;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ProductShopController extends Controller
 {
+    use HelperTrait;
     public function index()
     {
         $records = DB::table('product_shops')
@@ -49,6 +53,7 @@ class ProductShopController extends Controller
             'updated_at' => now(),
         ]);
 
+        $this->logAction(auth()->id(), 'create_product_shop', 'Product shop created: ' . $request->product_id . ' in shop: ' . $request->shop_id, LogsTypes::INFO->value);
         return redirect()->route('dashboard.productShop')->with('success', 'Product shop record created successfully.');
     }
 
@@ -115,6 +120,7 @@ class ProductShopController extends Controller
             'updated_at' => now(),
         ]);
 
+        $this->logAction(auth()->id(), 'update_product_shop', 'Product shop updated: ' . $request->product_id . ' in shop: ' . $request->shop_id, LogsTypes::INFO->value);
         return redirect()->route('dashboard.productShop')->with('success', 'Product shop record updated successfully.');
     }
     public function delete($id)
@@ -132,6 +138,7 @@ class ProductShopController extends Controller
             'deleted_at' => now(),
         ]);
 
+        $this->logAction(auth()->id(), 'delete_product_shop', 'Product shop deleted: ' . $record->product_id . ' in shop: ' . $record->shop_id, LogsTypes::WARNING->value);
         return redirect()->route('dashboard.productShop')->with('success', 'Product shop record deleted successfully.');
     }
 }

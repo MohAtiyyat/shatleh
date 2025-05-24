@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Coupon;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +16,7 @@ use Carbon\Carbon;
 
 class CheckoutController extends Controller
 {
+    use HelperTrait;
     /**
      * Handle the checkout process.
      *
@@ -91,6 +95,13 @@ class CheckoutController extends Controller
 
             DB::commit();
 
+            $this->logAction(
+                $request->customer_id,
+                'checkout',
+                'Order placed successfully: Order ID ' . $order->id,
+                LogsTypes::INFO->value
+            );
+
             return response()->json([
                 'data' => [
                     'order_id' => $order->id,
@@ -102,6 +113,12 @@ class CheckoutController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            $this->logAction(
+                $request->customer_id,
+                'checkout_error',
+                'Failed to place order: ' . $e,
+                LogsTypes::ERROR->value
+            );
             return response()->json([
                 'error' => 'Failed to process checkout',
                 'message' => $e->getMessage(),

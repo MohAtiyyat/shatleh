@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\ServiceRequest;
 use App\Models\User;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +20,7 @@ use function PHPSTORM_META\map;
 
 class ProfileController extends Controller
 {
+    use HelperTrait;
     public function getProfile()
     {
         $user = Auth::user();
@@ -286,6 +290,12 @@ class ProfileController extends Controller
         $order->status = 'cancelled';
         $order->save();
 
+        $this->logAction(
+            Auth::id(),
+            'order_cancelled',
+            'Order cancelled successfully: Order ID ' . $order->id,
+            LogsTypes::INFO->value
+        );
         return response()->json(['message' => 'Order cancelled successfully'], 200);
     }
 

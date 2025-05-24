@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Post\StorePostRequest;
 use App\Http\Requests\Dashboard\Post\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Log;
 use App\Models\User;
 use App\Models\Product;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    use HelperTrait;
     public function index(Request $request)
     {
         $sort = $request->query('sort', 'id');
@@ -55,6 +60,7 @@ class PostController extends Controller
 
         Post::create($data + ['user_id' => auth()->id()]);
 
+        $this->logAction(auth()->id(), 'create_post', 'Post created: ' . $data['title_en'] . ' (ID: ' . $data['id'] . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.post.index')->with('success', 'Post created successfully.');
     }
 
@@ -82,6 +88,7 @@ class PostController extends Controller
 
         $post->update($data);
 
+        $this->logAction(auth()->id(), 'update_post', 'Post updated: ' . $data['title_en'] . ' (ID: ' . $post->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.post.index')->with('success', 'Post updated successfully.');
     }
 
@@ -93,6 +100,7 @@ class PostController extends Controller
         }
         $post->delete();
 
+        $this->logAction(auth()->id(), 'delete_post', 'Post deleted: ' . $post->title_en . ' (ID: ' . $post->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.post.index')->with('success', 'Post deleted successfully.');
     }
 
