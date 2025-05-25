@@ -37,7 +37,9 @@ class ShopController extends Controller
     public function create()
     {
         $addresses = Address::pluck('title', 'id')->toArray();
-        return view('admin.Shop.createUpdate', compact('addresses'));
+        $countries = \App\Models\Country::pluck('name_en', 'id');
+
+        return view('admin.Shop.createUpdate', compact('addresses','countries'));    
     }
 
     public function store(StoreShopRequest $request)
