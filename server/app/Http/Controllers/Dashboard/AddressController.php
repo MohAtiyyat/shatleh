@@ -27,14 +27,21 @@ class AddressController extends Controller
         $address = Address::findOrFail($id);
         return response()->json($address, 200);
     }
+    public function create()
+    {
+        $contries = \App\Models\Country::pluck('name_en', 'id');
+
+        return view('admin.address.createUpdate')->with([
+            'countries' => $contries]);
+    }
     public function store(StoreAddressRequest $request)
     {
         $data = $request->validated();
 
         Address::create($data);
 
-        $this->logAction(auth()->id(), 'create_address', 'Address created: ' . $data['title'] . ' (ID: ' . $data['id'] . ')', LogsTypes::INFO->value);
-        return response()->json(['message' => 'Address created successful'], 200);
+        $this->logAction(auth()->user()->id, 'create_address', 'Address created: ' . $data['title'] , LogsTypes::INFO->value);
+        return redirect()->back()->with(['message' => 'Address created successful'], 200);
     }
 
     public function update(UpdateAddressRequest $request)

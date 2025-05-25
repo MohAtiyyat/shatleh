@@ -15,6 +15,13 @@ use function PHPUnit\Framework\isEmpty;
 class AuthController extends Controller
 
 {
+    public function showLoginForm()
+    {
+        if(Auth::check() && Auth::user()->hasAnyRole('Admin|Expert|Employee')){ 
+            return redirect('/dashboard');
+        }
+        return view('admin.login.login');
+    }
     public function Login(LoginRequest $request)
     {
         if(Auth::check()){
