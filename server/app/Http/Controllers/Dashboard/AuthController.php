@@ -18,6 +18,9 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if(Auth::check() && Auth::user()->hasAnyRole('Admin|Expert|Employee')){ 
+                if(Auth::user()->hasAnyRole('Employee|Expert'))
+                    return redirect('/dashboard/order')->with('success', 'Login successful');
+
             return redirect('/dashboard');
         }
         return view('admin.login.login');

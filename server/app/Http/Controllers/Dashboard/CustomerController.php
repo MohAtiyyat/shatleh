@@ -7,6 +7,7 @@ use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Customer\StoreCustomerRequest;
 use App\Http\Requests\Dashboard\Customer\UpdateCustomerRequest;
+use App\Mail\NewPassword;
 use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
@@ -14,6 +15,8 @@ use App\Models\User;
 use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class CustomerController extends Controller
 {
@@ -98,9 +101,12 @@ class CustomerController extends Controller
 
     public function resetPassword(Customer $customer)
     {
-        // Reset password via email(will be done later)
-        $customer->user->update(['password' => Hash::make('1234')]);
-        
+
+        $newPassword = Str::random(8); // You can generate a random password here if needed
+        $customer->user->update(['password' => bcrypt($newPassword)]);
+        Mail::to($customer->user->email)->send(new NewPassword(newPassword: $newPassword, lang: $customer->user->lang));
+
+
         $this->logAction(auth()->id(), 'reset_password_customer', 'Password reset for customer: ' . $customer->user->name . ' (Id: ' . $customer->user->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Password reset successfully.');
     }
