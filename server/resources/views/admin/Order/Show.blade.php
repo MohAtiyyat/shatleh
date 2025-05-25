@@ -55,6 +55,14 @@
                                 @endif
                             </div>
                             <div class="col-12 col-sm-6 mb-4">
+                                <h5 class="text-muted font-weight-semibold mb-2">Products</h5>
+                                @if($order->products && $order->products->count() > 0)
+                                    @include('admin.Order.products-popout', ['order' => $order])
+                                @else
+                                    <p class="text-dark">No products available.</p>
+                                @endif
+                            </div>
+                            <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Address</h5>
                                 @if ($order->address)
                                     @include('/components/address-popout', [
@@ -149,6 +157,15 @@
     }
     .clearfix {
         clear: both;
+    }
+    .table {
+        background-color: #ffffff;
+    }
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    .modal-lg {
+        max-width: 800px;
     }
 </style>
 @endsection

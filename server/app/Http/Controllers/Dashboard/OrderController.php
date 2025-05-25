@@ -32,7 +32,7 @@ class OrderController extends Controller
     }
 
     public function show(Order $order){
-        $order = Order::with('customer' , 'employee' , 'address' , 'payment')->find($order->id);
+        $order = Order::with('customer', 'employee', 'address', 'payment', 'orderDetails.product')->findOrFail($order->id);
         return view('admin.Order.show' , compact('order'));
     }
 }
