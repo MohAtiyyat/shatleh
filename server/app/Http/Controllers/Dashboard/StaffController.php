@@ -7,11 +7,14 @@ use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Staff\StoreStaffRequest;
 use App\Http\Requests\Dashboard\Staff\UpdateStaffRequest;
+use App\Mail\NewPassword;
 use App\Models\Log;
 use App\Models\Specialty;
 use App\Models\User;
 use App\Traits\HelperTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
 class StaffController extends Controller
@@ -112,8 +115,10 @@ class StaffController extends Controller
     public function resetPassword($id) {
         $staff = User::find($id);
         if ($staff) {
-            $staff->update(['password' => bcrypt('1234')]);
-            $this->logAction(auth()->id(), 'reset_staff_password', 'Staff password reset: ' . $staff->name, LogsTypes::INFO->value);
+            $newPassword = Str::random(8); // You can generate a random password here if needed
+            $staff->update(['password' => bcrypt($newPassword)]);
+
+            Mail::to($staff->email)->send(new NewPassword(newPassword: $newPassword, lang: $staff->lang));            $this->logAction(auth()->id(), 'reset_staff_password', 'Staff password reset: ' . $staff->name, LogsTypes::INFO->value);
             return redirect()->route('dashboard.staff')->with('success', __('Staff password reset successfully.'));
         }
         $this->logAction(auth()->id(), 'reset_staff_password', 'Staff password reset failed: Staff not found with ID ' . $id, LogsTypes::ERROR->value);

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification - Shatleh</title>
+    <title>New Password - Shatleh</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,7 +32,7 @@
         .content {
             text-align: center;
         }
-        .otp {
+        .password {
             font-size: 24px;
             font-weight: bold;
             color: #2e7d32;
@@ -60,14 +60,15 @@
     <div class="container">
         <div class="header">
             <img src="{{ asset('images/shatleh-email-header.png') }}" alt="Shatleh Logo">
-            <h2>Email Verification</h2>
+            <h2>New Password</h2>
         </div>
         <div class="content">
-            <p>Thank you for joining Shatleh, your trusted partner in agriculture!</p>
-            <p>Please use the following One-Time Password (OTP) to verify your email address:</p>
-            <div class="otp">{{ $otp }}</div>
-            <p>This OTP is valid for the next 10 minutes.</p>
-            <p>If you did not request this verification, please ignore this email.</p>
+            <p>Thank you for using Shatleh, your trusted partner in agriculture!</p>
+            <p>Your password has been reset. Please use the following new password to log in:</p>
+            <div class="password">{{ $newPassword }}</div>
+            {{-- <p>For security, we recommend changing this password after logging in.</p> --}}
+            <p>If you did not request a password reset, please contact our support team immediately.</p>
+            {{-- <a href="{{ url('/login') }}" class="button">Log In Now</a> --}}
         </div>
         <div class="footer">
             <p>© {{ date('Y') }} Shatleh. All rights reserved.</p>
@@ -82,7 +83,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد البريد الإلكتروني - شتلة</title>
+    <title>كلمة المرور الجديدة - شتلة</title>
     <style>
         body {
             font-family: 'Tajawal', Arial, sans-serif;
@@ -112,7 +113,7 @@
         .content {
             text-align: center;
         }
-        .otp {
+        .password {
             font-size: 24px;
             font-weight: bold;
             color: #2e7d32;
@@ -140,14 +141,15 @@
     <div class="container">
         <div class="header">
             <img src="{{ asset('images/shatleh-email-header.png') }}" alt="شعار شتلة">
-            <h2>تأكيد البريد الإلكتروني</h2>
+            <h2>كلمة المرور الجديدة</h2>
         </div>
         <div class="content">
-            <p>شكرًا لانضمامك إلى شتلة، شريكك الموثوق في الزراعة!</p>
-            <p>يرجى استخدام كلمة المرور لمرة واحدة (OTP) التالية لتأكيد بريدك الإلكتروني:</p>
-            <div class="otp">{{ $otp }}</div>
-            <p>كلمة المرور هذه صالحة لمدة 10 دقائق فقط.</p>
-            <p>إذا لم تطلب هذا التأكيد، يرجى تجاهل هذا البريد الإلكتروني.</p>
+            <p>شكرًا لاستخدامك شتلة، شريكك الموثوق في الزراعة!</p>
+            <p>تم إعادة تعيين كلمة المرور الخاصة بك. يرجى استخدام كلمة المرور الجديدة التالية لتسجيل الدخول:</p>
+            <div class="password">{{ $newPassword }}</div>
+            {{-- <p>لأغراض الأمان، نوصي بتغيير كلمة المرور هذه بعد تسجيل الدخول.</p> --}}
+            <p>إذا لم تطلب إعادة تعيين كلمة المرور، يرجى التواصل مع فريق الدعم الخاص بنا على الفور.</p>
+            {{-- <a href="{{ url('/login') }}" class="button">تسجيل الدخول الآن</a> --}}
         </div>
         <div class="footer">
             <p>© {{ date('Y') }} شتلة. جميع الحقوق محفوظة.</p>
