@@ -33,6 +33,7 @@ class OrderController extends Controller
 
     public function show(Order $order){
         $order = Order::with('customer' , 'employee' , 'address' , 'payment')->find($order->id);
+        dd($order);
         return view('admin.Order.show' , compact('order'));
     }
 }
