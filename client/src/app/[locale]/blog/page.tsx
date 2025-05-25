@@ -13,6 +13,7 @@ import SearchBar from '../../../../components/post/search-bar';
 import { BlogPost, PostFiltersState } from '../../../../lib/index';
 import { fetchBlogPosts, fetchPostCategories, fetchBookmarkedPosts, getAuthToken } from '../../../../lib/api';
 
+
 export default function Home() {
     const t = useTranslations('');
     const pathname = usePathname();
@@ -25,6 +26,12 @@ export default function Home() {
     const [filters, setFilters] = useState<PostFiltersState>({ categories: [] });
     const [error, setError] = useState<string | null>(null);
     const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Moved to state
+
+    // Set isAuthenticated on client side
+    useEffect(() => {
+        setIsAuthenticated(!!getAuthToken());
+    }, []);
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -32,7 +39,10 @@ export default function Home() {
 
         try {
             const postsData = await fetchBlogPosts();
-            const bookmarkedPosts = await fetchBookmarkedPosts();
+            let bookmarkedPosts: BlogPost[] = [];
+            if (isAuthenticated) {
+                bookmarkedPosts = await fetchBookmarkedPosts();
+            }
             const bookmarkedPostIds = new Set(bookmarkedPosts.map((post) => post.id));
 
             const postsWithBookmarks = postsData.map((post) => ({
@@ -64,7 +74,7 @@ export default function Home() {
 
     useEffect(() => {
         fetchData();
-    }, [currentLocale]);
+    }, [currentLocale, isAuthenticated]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -158,64 +168,49 @@ export default function Home() {
         </div>
     );
 
-    const isAuthenticated = !!getAuthToken();
-
     return (
         <div className="min-h-screen bg-[#e8f5e9] overflow-hidden mx-10">
             <main className="container mx-auto px-5 py-2">
                 <div className="mb-4 mx-8">
                     <Breadcrumb pageName="blog" />
                 </div>
-                <div className="mb-3 ">
-                    <div
-                        className={`flex flex-wrap items-center mb-4`   }
-                    >
-                        <div className="flex flex-wrap ">
+                <div className="mb-3">
+                    <div className={`flex flex-wrap items-center mb-4`}>
+                        <div className="flex flex-wrap">
                             <SearchBar
                                 searchTerm={searchTerm}
                                 setSearchTerm={setSearchTerm}
                                 onSearch={handleSearch}
                             />
                             {isAuthenticated && (
-                            <motion.button
-                                onClick={toggleBookmarkedView}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-md mb-5 ${
-                                    showBookmarkedOnly
-                                        ? 'bg-teal-600 text-white'
-                                        : 'bg-white text-teal-600'
-                                }
-                                ${currentLocale === 'ar' ? 'mr-10' : 'ml-2'}
-                                 hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm `}
-                                aria-label={
-                                    showBookmarkedOnly
-                                        ? t('education.showAllPosts', {
-                                              default: 'Show All Posts',
-                                          })
-                                        : t('education.showBookmarked', {
-                                              default: 'Show Bookmarked Posts',
-                                          })
-                                }
-                                variants={buttonVariants}
-                                initial="idle"
-                                animate={showBookmarkedOnly ? 'clicked' : 'idle'}
-                                whileHover={{ scale: 1.05 }}
-                            >
-                                <BookmarkIcon className="h-5 w-5" />
-                                <span>
-                                    {showBookmarkedOnly
-                                        ? t('education.showAllPosts', { default: 'Show All Posts' })
-                                        : t('education.showBookmarked', { default: 'Bookmarks' })}
-                                </span>
-                            </motion.button>
-                        )}
-
+                                <motion.button
+                                    onClick={toggleBookmarkedView}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-md mb-5 ${showBookmarkedOnly ? 'bg-teal-600 text-white' : 'bg-white text-teal-600'
+                                        } ${currentLocale === 'ar' ? 'mr-10' : 'ml-2'} hover:bg-teal-600 hover:text-white transition-colors shadow-sm font-medium text-sm`}
+                                    aria-label={
+                                        showBookmarkedOnly
+                                            ? t('education.showAllPosts', { default: 'Show All Posts' })
+                                            : t('education.showBookmarked', { default: 'Show Bookmarked Posts' })
+                                    }
+                                    variants={buttonVariants}
+                                    initial="idle"
+                                    animate={showBookmarkedOnly ? 'clicked' : 'idle'}
+                                    whileHover={{ scale: 1.05 }}
+                                >
+                                    <BookmarkIcon className="h-5 w-5" />
+                                    <span>
+                                        {showBookmarkedOnly
+                                            ? t('education.showAllPosts', { default: 'Show All Posts' })
+                                            : t('education.showBookmarked', { default: 'Bookmarks' })}
+                                    </span>
+                                </motion.button>
+                            )}
                             <Filters
                                 filters={filters}
                                 setFilters={setFilters}
                                 currentLocale={currentLocale}
                             />
                         </div>
-                        
                     </div>
                 </div>
                 {error && (
@@ -254,6 +249,7 @@ export default function Home() {
                                             post={post}
                                             currentLocale={currentLocale}
                                             setPosts={setPosts}
+                                            pageName="blog"
                                         />
                                     </motion.div>
                                 ))
@@ -267,12 +263,8 @@ export default function Home() {
                                     exit="exit"
                                 >
                                     {showBookmarkedOnly
-                                        ? t('education.noBookmarkedPosts', {
-                                              default: 'No bookmarked posts found',
-                                          })
-                                        : t('education.noResults', {
-                                              default: 'No results found',
-                                          })}
+                                        ? t('education.noBookmarkedPosts', { default: 'No bookmarked posts found' })
+                                        : t('education.noResults', { default: 'No results found' })}
                                 </motion.p>
                             )}
                         </AnimatePresence>

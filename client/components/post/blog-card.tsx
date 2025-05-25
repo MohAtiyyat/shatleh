@@ -14,9 +14,10 @@ interface BlogCardProps {
     post: BlogPost & { bookmarked?: boolean };
     currentLocale: 'en' | 'ar';
     setPosts?: React.Dispatch<React.SetStateAction<(BlogPost & { bookmarked?: boolean })[]>>;
+    pageName?: string;
 }
 
-export default function BlogCard({ post, currentLocale, setPosts }: BlogCardProps) {
+export default function BlogCard({ post, currentLocale, setPosts, pageName }: BlogCardProps) {
     const t = useTranslations();
     const router = useRouter();
     const title = currentLocale === 'ar' ? post.title_ar : post.title_en;
@@ -42,7 +43,7 @@ export default function BlogCard({ post, currentLocale, setPosts }: BlogCardProp
             }
         } catch (error: unknown) {
             if (error instanceof Error && (error.message.includes('Authentication required') || error.message.includes('No authentication token found'))) {
-                router.push(`/${currentLocale}/login?redirect=/blog`);
+                router.push(`/${currentLocale}/login?redirect=/${pageName}`);
             } else {
                 console.error('Bookmark error:', error);
             }
@@ -51,12 +52,11 @@ export default function BlogCard({ post, currentLocale, setPosts }: BlogCardProp
         }
     };
 
-    // Animation variants for the bookmark button
     const buttonVariants = {
         idle: { scale: 1, rotate: 0 },
         clicked: {
-            scale: [1, 1.2, 0.9, 1], // Pulse effect
-            rotate: [0, 5, -5, 0], // Slight shake
+            scale: [1, 1.2, 0.9, 1],
+            rotate: [0, 5, -5, 0],
             transition: {
                 duration: 0.3,
                 ease: 'easeInOut',
@@ -84,9 +84,8 @@ export default function BlogCard({ post, currentLocale, setPosts }: BlogCardProp
                     <motion.button
                         onClick={handleBookmarkToggle}
                         disabled={isLoading}
-                        className={`absolute top-2 ${currentLocale === 'ar' ? 'left-2' : 'right-2'} p-2 rounded-full ${
-                            post.bookmarked ? 'bg-teal-600 text-white' : 'bg-white text-teal-600'
-                        } hover:bg-teal-600 hover:text-white transition-colors shadow-sm`}
+                        className={`absolute top-2 ${currentLocale === 'ar' ? 'left-2' : 'right-2'} p-2 rounded-full ${post.bookmarked ? 'bg-teal-600 text-white' : 'bg-white text-teal-600'
+                            } hover:bg-teal-600 hover:text-white transition-colors shadow-sm`}
                         aria-label={
                             post.bookmarked
                                 ? t('education.removeBookmark', { default: 'Remove from Bookmarks' })

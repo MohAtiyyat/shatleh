@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ChevronDown, Search } from 'lucide-react';
-import { search } from '../../../../lib/api';
+import { search, fetchBookmarkedPosts, getAuthToken } from '../../../../lib/api';
 import type { Product, BlogPost, Service } from '../../../../lib';
 import BlogCard from '../../../../components/post/blog-card';
 import ServiceCard from '../../../../components/service/service-card';
@@ -14,7 +14,7 @@ import Link from 'next/link';
 
 interface SearchResults {
     products: Product[];
-    posts: BlogPost[];
+    posts: (BlogPost & { bookmarked?: boolean })[]; // Updated to include bookmarked property
     services: Service[];
 }
 
@@ -22,7 +22,7 @@ export default function SearchPage() {
     const t = useTranslations('search');
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const currentLocale = pathname.split('/')[1] || 'en';
+    const currentLocale = (pathname.split('/')[1] || 'en') as 'en' | 'ar';
     const [contentType, setContentType] = useState<string>('all');
     const [results, setResults] = useState<SearchResults>({ products: [], posts: [], services: [] });
     const [loading, setLoading] = useState(true);
@@ -30,23 +30,25 @@ export default function SearchPage() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [query, setQuery] = useState<string>('');
+    const [posts, setPosts] = useState<(BlogPost & { bookmarked?: boolean })[]>([]);
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Moved to state
 
+    // Set isAuthenticated on client side
+    useEffect(() => {
+        setIsAuthenticated(!!getAuthToken());
+    }, []);
     // Sync query state with URL search parameter and localStorage
     useEffect(() => {
         const urlQuery = searchParams.get('q') || '';
         const storedQuery = localStorage.getItem('searchQuery') || '';
-
-        // Prioritize URL query parameter, fallback to localStorage
         const newQuery = urlQuery || storedQuery;
         setQuery(newQuery);
-
-        // Update localStorage to stay in sync with URL
         if (urlQuery && urlQuery !== storedQuery) {
             localStorage.setItem('searchQuery', urlQuery);
         }
     }, [searchParams]);
 
-    // Fetch search results when query or contentType changes
+    // Fetch search results and merge bookmark status for posts
     useEffect(() => {
         const fetchResults = async () => {
             if (!query) {
@@ -60,7 +62,23 @@ export default function SearchPage() {
             try {
                 const data = await search(query, contentType);
                 console.log('Search API response:', data);
-                setResults(data.data);
+
+                // Fetch bookmarked posts if authenticated
+                let postsWithBookmarks = data.data.posts;
+                if (isAuthenticated) {
+                    const bookmarkedPosts = await fetchBookmarkedPosts();
+                    const bookmarkedPostIds = new Set(bookmarkedPosts.map((post) => post.id));
+                    postsWithBookmarks = data.data.posts.map((post: BlogPost) => ({
+                        ...post,
+                        bookmarked: bookmarkedPostIds.has(post.id),
+                    }));
+                }
+
+                setResults({
+                    ...data.data,
+                    posts: postsWithBookmarks,
+                });
+                setPosts(postsWithBookmarks);
             } catch (err) {
                 setError(t('error'));
                 console.error('Search error:', err);
@@ -69,7 +87,7 @@ export default function SearchPage() {
             }
         };
         fetchResults();
-    }, [query, contentType, t]);
+    }, [query, contentType, t, isAuthenticated]);
 
     // Handle dropdown click outside
     useEffect(() => {
@@ -88,6 +106,7 @@ export default function SearchPage() {
         setContentType(type);
         setIsDropdownOpen(false);
     };
+
 
     const contentTypes = [
         { id: 'all', label: t('all') },
@@ -168,7 +187,7 @@ export default function SearchPage() {
                         <div className="mb-8">
                             <h2 className="text-xl font-semibold mb-4">{t('products')}</h2>
                             {results.products.length > 0 ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6">
                                     {results.products.map((product, index) => (
                                         <ProductCard
                                             key={product.id}
@@ -186,13 +205,15 @@ export default function SearchPage() {
                     {(contentType === 'all' || contentType === 'posts') && (
                         <div className="mb-8">
                             <h2 className="text-xl font-semibold mb-4">{t('posts')}</h2>
-                            {results.posts.length > 0 ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                    {results.posts.map((post) => (
+                            {posts.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6">
+                                    {posts.map((post) => (
                                         <BlogCard
                                             key={post.id}
                                             post={post}
                                             currentLocale={currentLocale as 'en' | 'ar'}
+                                            setPosts={setPosts}
+                                            pageName='search'
                                         />
                                     ))}
                                 </div>
@@ -205,7 +226,7 @@ export default function SearchPage() {
                         <div className="mb-8">
                             <h2 className="text-xl font-semibold mb-4">{t('services')}</h2>
                             {results.services.length > 0 ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6">
                                     {results.services.map((service, index) => (
                                         <ServiceCard key={service.id} service={service} index={index} />
                                     ))}
@@ -219,4 +240,4 @@ export default function SearchPage() {
             )}
         </main>
     );
-};
+}
