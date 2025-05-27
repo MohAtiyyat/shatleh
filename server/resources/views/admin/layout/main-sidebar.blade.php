@@ -4,7 +4,7 @@
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar" style="position: sticky; top: 0; height: 100vh; overflow-y: auto;">
+    <div class="sidebar" style="position: sticky; top: 0; height: 90vh; overflow-y: auto;">
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -118,7 +118,7 @@
                         <p>Service Requests</p>
                     </a>
                 </li>
-                @if (auth()->user()->hasAnyRole('Admin'))
+                @if (auth()->user()->hasRole('Admin'))
                 <li class="nav-item">
                     <a href="{{ route('dashboard.review.index') }}" class="nav-link @yield('Review_Show')">
                         <ion-icon class="nav-icon" name="chatbubble-outline"></ion-icon>
