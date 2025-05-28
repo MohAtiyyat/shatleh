@@ -85,7 +85,7 @@
         transition: all 0.3s;
     }
     .btn-primary {
-        background-color: #007bff;
+        background-color: #28a745;
         border: none;
         color: white;
     }
@@ -139,29 +139,79 @@
         word-break: break-all;
     }
     .new-image-preview {
-        border: 2px dashed #007bff;
+        border: 2px dashed #28a745;
         padding: 5px;
         background: #f8f9fa;
     }
     .category-checkboxes {
-        padding: 10px;
+        padding: 15px;
         border: 1px solid #ddd;
-        border-radius: 5px;
+        border-radius: 8px;
         background: #f9f9f9;
-    }
-    .subcategory-checkboxes {
-        padding-left: 20px;
-        margin-top: 5px;
+        margin-bottom: 10px;
     }
     .category-checkboxes label {
-        display: block;
-        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
         cursor: pointer;
         font-size: 14px;
+        color: #333;
+        transition: color 0.3s ease;
     }
     .category-checkboxes input[type="checkbox"] {
-        margin-right: 8px;
-        vertical-align: middle;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #28a745;
+        border-radius: 4px;
+        margin-right: 10px;
+        position: relative;
+        outline: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    .category-checkboxes input[type="checkbox"]:checked {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    .category-checkboxes input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ffc107;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .category-checkboxes input[type="checkbox"]:hover {
+        border-color: #218838;
+    }
+    .category-checkboxes input[type="checkbox"]:focus {
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+    }
+    .category-checkboxes input[type="checkbox"]:disabled {
+        border-color: #ccc;
+        background-color: #f1f1f1;
+        cursor: not-allowed;
+    }
+    .subcategory-checkboxes {
+        padding-left: 25px;
+        margin-top: 8px;
+        border-left: 2px solid #e6f4ea;
+    }
+    .subcategory-checkboxes label {
+        font-weight: 400;
+        color: #555;
+    }
+    .category-checkboxes label:hover {
+        color: #28a745;
+    }
+    .main-category-checkbox + label {
+        font-weight: 500;
     }
 </style>
 @endsection
@@ -248,10 +298,10 @@
                     @foreach($mainCategories as $mainCategory)
                         <div>
                             <label for="main-category-{{ $mainCategory->id }}">
-                                <input type="checkbox" 
+                                <input type="checkbox"
                                        id="main-category-{{ $mainCategory->id }}"
-                                       name="categories[]" 
-                                       value="{{ $mainCategory->id }}" 
+                                       name="categories[]"
+                                       value="{{ $mainCategory->id }}"
                                        class="main-category-checkbox"
                                        data-category-id="{{ $mainCategory->id }}"
                                        {{ in_array($mainCategory->id, $selectedCategoryIds) ? 'checked' : '' }}>
@@ -264,9 +314,9 @@
                                 @endphp
                                 @foreach($subCategories as $subCategory)
                                     <label for="sub-category-{{ $subCategory->id }}">
-                                        <input type="checkbox" 
+                                        <input type="checkbox"
                                                id="sub-category-{{ $subCategory->id }}"
-                                               name="categories[]" 
+                                               name="categories[]"
                                                value="{{ $subCategory->id }}"
                                                {{ in_array($subCategory->id, $selectedCategoryIds) ? 'checked' : '' }}>
                                         {{ $subCategory->name_ar }} / {{ $subCategory->name_en }}
@@ -407,4 +457,4 @@
         });
     });
 </script>
-@endsection 
+@endsection
