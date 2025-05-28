@@ -23,7 +23,7 @@ class AuthController extends Controller
 
             return redirect('/dashboard');
         }
-        return view('admin.login.login');
+        return view('admin.Login.login');
     }
     public function Login(LoginRequest $request)
     {
@@ -49,6 +49,11 @@ class AuthController extends Controller
 
         if(Auth::user()->hasAnyRole('Employee|Expert'))
             return redirect('/dashboard/order')->with('success', 'Login successful');
+        else if(Auth::user()->hasRole('Customer')){
+            Auth::logout();
+            return redirect('/dashboard/login')->with('error', 'You are not allowed to access this area');
+        }
+
         return redirect('/dashboard')->with('success', 'Login successful');
     }
 
