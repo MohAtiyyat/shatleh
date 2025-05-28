@@ -42,7 +42,7 @@ const initializeFilters = (categories: Category[]): FiltersState => ({
 });
 
 export default function ProductsPage() {
-    const t = useTranslations('');
+const t = useTranslations('');
     const pathname = usePathname();
     const router = useRouter();
     const currentLocale = pathname.split('/')[1] as 'en' | 'ar';
@@ -56,7 +56,7 @@ export default function ProductsPage() {
     const productsPerPage = 12;
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-    // Fetch categories on mount
+ // Fetch categories on mount
     useEffect(() => {
         const loadCategories = async () => {
             try {
@@ -106,20 +106,10 @@ export default function ProductsPage() {
                     ratings: prev.ratings.map((r) => ({ ...r, selected: false })),
                     bestSelling: false,
                 };
-                // Update category IDs for backend filtering
-                updateCategoryIds(updatedFilters);
                 return updatedFilters;
             });
-            localStorage.removeItem('selectedCategory');
         }
     }, [categories]);
-
-    // Clear localStorage on unmount
-    useEffect(() => {
-        return () => {
-            localStorage.removeItem('selectedCategory');
-        };
-    }, []);
 
     // Debounce search term
     useEffect(() => {
@@ -146,6 +136,21 @@ export default function ProductsPage() {
         // Update ProductContext with selected category IDs
         setCategoryIds(selectedCategoryIds);
     };
+    // Update category IDs for backend filtering
+    useEffect(() => {
+        const selectedCategoryIds: number[] = [];
+        filters.categories.forEach((category) => {
+            if (category.selected) {
+                selectedCategoryIds.push(category.id);
+            }
+            category.subcategories.forEach((sub) => {
+                if (sub.selected) {
+                    selectedCategoryIds.push(sub.id);
+                }
+            });
+        });
+        setCategoryIds(selectedCategoryIds);
+    }, [filters.categories, setCategoryIds]);
 
     // Trigger category ID update when filters change
     useEffect(() => {
@@ -267,6 +272,7 @@ export default function ProductsPage() {
                             <button
                                 onClick={() => {
                                     setFilters(initializeFilters(categories));
+                                    localStorage.removeItem('selectedCategory');
                                     setSearchTerm('');
                                     setCategoryIds([]); // Reset category filters in context
                                 }}

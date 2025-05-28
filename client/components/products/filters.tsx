@@ -123,13 +123,15 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                                 subcategories: updatedSubcategories,
                             };
                         }
-                        // Clear main category and all subcategories
+
+
                         return {
                             ...category,
                             selected: false,
                             subcategories: category.subcategories.map((sub) => ({ ...sub, selected: false })),
-                        };
-                    }
+                        }
+                    };
+                    localStorage.removeItem('selectedCategory');
                     return category;
                 }),
             }));
@@ -154,6 +156,8 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
             ratings: prev.ratings.map((r) => ({ ...r, selected: false })),
             bestSelling: false,
         }));
+        localStorage.removeItem('selectedCategory');
+
     };
 
     // Get count of selected filters
@@ -273,8 +277,8 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                 <button
                     onClick={toggleBestSelling}
                     className={`flex items-center justify-center px-4 py-2 border rounded-md min-w-[150px] ${filters.bestSelling
-                            ? 'bg-[#80ce97] text-white border-[#80ce97]'
-                            : 'bg-white text-[#0f4229] border-[#80ce97]'
+                        ? 'bg-[#80ce97] text-white border-[#80ce97]'
+                        : 'bg-white text-[#0f4229] border-[#80ce97]'
                         }`}
                     aria-label={t('products.bestSelling')}
                 >
