@@ -238,7 +238,7 @@ class ProfileController extends Controller
                 'address',
                 'coupon'
             ])
-            ->get()
+            ->get()->sortByDesc('created_at')
             ->map(function ($order) {
                 return [
                     'id' => $order->id,
@@ -305,7 +305,7 @@ class ProfileController extends Controller
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        $serviceRequests = ServiceRequest::where('customer_id', $user->id)->get()->map(function ($serviceRequest) {
+        $serviceRequests = ServiceRequest::where('customer_id', $user->id)->get()->sortByDesc('created_at')->map(function ($serviceRequest) {
             return [
                 'id' => $serviceRequest->id,
                 'service' => $serviceRequest->service ? [
