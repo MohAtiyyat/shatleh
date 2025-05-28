@@ -209,7 +209,7 @@ export default function BillingDetails({
                 )}
             </motion.div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 my-2">
                 <input
                     type="checkbox"
                     id="isGift"
@@ -227,7 +227,7 @@ export default function BillingDetails({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.6 }}
-                    className="space-y-4 mt-4"
+                    className="space-y-4 mt-4 my-4"
                 >
                     <div className="grid grid-cols-2 gap-4">
                         <div>
