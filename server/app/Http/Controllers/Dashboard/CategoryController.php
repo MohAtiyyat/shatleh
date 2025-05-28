@@ -45,9 +45,9 @@ class CategoryController extends Controller
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('categories', 'public');
         }
-        Category::create($data);
+        $category = Category::create($data);
         
-        $this->logAction(auth()->id(), 'create_category', 'Category created: ' . $data['name_ar'] . ' (ID: ' . $data['id'] . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'create_category', 'Category created: ' . $category->name_ar . ' (ID: ' . $category->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.category')->with('success', 'Category created successfully.');
     }
 

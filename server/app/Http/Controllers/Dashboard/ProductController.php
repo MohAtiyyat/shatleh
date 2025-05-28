@@ -53,7 +53,7 @@ class ProductController extends Controller
             $product->categories()->sync($request->input('categories'));
         }
 
-        $this->logAction(auth()->id(), 'create_product', 'Product created: ' . $data['name_en'] . ' (ID: ' . $product->id . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'create_product', 'Product created: ' . $product->name_en . ' (ID: ' . $product->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.product')->with('success', 'Product created successfully.');
     }
 

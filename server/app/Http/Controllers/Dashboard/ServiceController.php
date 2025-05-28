@@ -47,9 +47,10 @@ class ServiceController extends Controller
             $data['image'] = $imagePaths;
         }
 
-        Service::create($data);
+        
+       $service = Service::create($data);
 
-        $this->logAction(auth()->id(), 'create_service', 'Service created: ' . $data['name'] . ' (ID: ' . $data['id'] . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'create_service', 'Service created: ' . $service->name_en . ' (ID: ' . $service->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.service')->with('success', 'Service created successfully.');
     }
 

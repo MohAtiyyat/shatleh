@@ -58,9 +58,9 @@ class PostController extends Controller
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        Post::create($data + ['user_id' => auth()->id()]);
+        $post = Post::create($data + ['user_id' => auth()->id()]);
 
-        $this->logAction(auth()->id(), 'create_post', 'Post created: ' . $data['title_en'] . ' (ID: ' . $data['id'] . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'create_post', 'Post created: ' . $post->title_en . ' (ID: ' . $post->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.post.index')->with('success', 'Post created successfully.');
     }
 
