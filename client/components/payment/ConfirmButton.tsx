@@ -251,6 +251,12 @@ export default function ConfirmButton({
                 return true;
             }
         }
+        // If payment method is cash and gift fields are filled, disable cash payment
+        if (formData.paymentMethod === 'cash' && (formData.giftFirstName?.trim() || formData.giftLastName?.trim() || formData.giftPhoneNumber?.trim())) {
+            console.log('Disabled: Cash payment not allowed with gift fields');
+            return true;
+        }
+
 
         // If payment method is cash, no further checks needed
         if (formData.paymentMethod === 'cash') {

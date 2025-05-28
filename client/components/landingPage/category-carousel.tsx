@@ -6,10 +6,8 @@
     import { Swiper, SwiperSlide } from "swiper/react"
     import { EffectCoverflow, Pagination } from "swiper/modules"
     import type { Category, Locale } from "../../lib"
-    // Import Swiper core and types
     import { SwiperOptions, Swiper as SwiperClass } from "swiper/types"
 
-    // Import Swiper styles
     import "swiper/css"
     import "swiper/css/effect-coverflow"
     import "swiper/css/pagination"
