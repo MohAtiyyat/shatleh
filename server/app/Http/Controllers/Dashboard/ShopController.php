@@ -55,9 +55,9 @@ class ShopController extends Controller
             $data['image'] = Storage::url($imagePath);
         }
 
-        Shop::create($data);
+        $shop = Shop::create($data);
 
-        $this->logAction(auth()->id(), 'create_shop', 'Shop created: ' . $data['name'] . ' (ID: ' . $data['id'] . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'create_shop', 'Shop created: ' . $shop->name . ' (ID: ' . $shop->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.shop')->with('success', 'Shop created successfully.');
     }
 

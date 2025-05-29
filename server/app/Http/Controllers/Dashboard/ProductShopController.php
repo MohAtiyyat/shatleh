@@ -42,18 +42,20 @@ class ProductShopController extends Controller
 
     public function store(StoreProductShopRequest $request)
     {
-        $request->all();
+        $data =$request->validated();
+        $data['employee_id'] = auth()->user()->id;
 
         DB::table('product_shops')->insert([
-            'product_id' => $request->product_id,
-            'shop_id' => $request->shop_id,
-            'employee_id' => auth()->user()->id,
-            'cost' => $request->cost,
+            'product_id' => $data['product_id'],
+            'shop_id' => $data['shop_id'],
+            'employee_id' => $data['employee_id'],
+            'cost' => $data['cost'],
             'created_at' => now(),
-            'updated_at' => now(),
+            'updated_at'=> now()
         ]);
 
-        $this->logAction(auth()->id(), 'create_product_shop', 'Product shop created: ' . $request->product_id . ' in shop: ' . $request->shop_id, LogsTypes::INFO->value);
+
+        $this->logAction(auth()->id(), 'create_product_shop', 'Product shop created: ' . $data->product_id . ' in shop: ' . $data->shop_id, LogsTypes::INFO->value);
         return redirect()->route('dashboard.productShop')->with('success', 'Product shop record created successfully.');
     }
 

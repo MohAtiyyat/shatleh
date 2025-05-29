@@ -46,9 +46,9 @@ class CouponController extends Controller
             'country_id' => 'required|exists:countries,id',
         ]);
 
-        Coupon::create($validated);
+        $coupon = Coupon::create($validated);
 
-        $this->logAction(auth()->id(), 'create_coupon', 'Coupon created: ' . $validated['title'] . ' (Id: ' . $validated['id'] . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'create_coupon', 'Coupon created: ' . $coupon->title . ' (Id: ' . $coupon->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.coupon.index')->with('success', 'Coupon created successfully');
     }
 
