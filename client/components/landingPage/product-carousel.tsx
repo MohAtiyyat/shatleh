@@ -21,7 +21,6 @@ interface ProductCarouselProps {
 }
 
 export default function ProductCarousel({ products, currentLocale, pageName }: ProductCarouselProps) {
-    console.log("products", products)
     const [activeIndex, setActiveIndex] = useState(2)
     console.log("activeIndex", activeIndex)
     const [screenSize, setScreenSize] = useState<'small' | 'medium' | 'large'>('medium')

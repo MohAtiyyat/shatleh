@@ -308,7 +308,6 @@ export const logoutApi = async (token: string): Promise<void> => {
 
 export const fetchCategories = async (): Promise<Category[]> => {
     try {
-        console.log('Fetching categories from:', `${API_URL}/api/categories`);
         const response = await fetch(`${API_URL}/api/categories`, {
             method: 'GET',
             headers: {
@@ -334,7 +333,6 @@ export const fetchCategories = async (): Promise<Category[]> => {
             })),
             image: category.subcategories.length > 0 ? category.subcategories[0].name_en : '',
         }));
-        console.log('Transformed categories:', transformedCategories);
         return transformedCategories;
     } catch (error) {
         console.error('Failed to fetch categories:', error);
@@ -355,7 +353,6 @@ export const fetchAllProducts = async (category_ids?: number[]): Promise<Product
             },
         });
         const data = await handleResponse<ProductsResponse>(response);
-        console.log('Fetched products:', data);
         return data.data;
     } catch (error) {
         console.error('Error fetching products:', error);

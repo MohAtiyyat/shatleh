@@ -194,7 +194,6 @@ const t = useTranslations('');
         if (filters.bestSelling) {
             result = result.filter((product) => (product.sold_quantity || 0) > 10);
             if (result.length === 0) {
-                console.log('No best-selling products found');
             } else {
                 result = result.sort((a, b) => (b.sold_quantity || 0) - (a.sold_quantity || 0));
             }
@@ -210,7 +209,7 @@ const t = useTranslations('');
 
     // Handle search submission
     const handleSearch = () => {
-        console.log('Search submitted:', searchTerm);
+        
     };
 
     // Get current page products

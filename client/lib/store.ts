@@ -181,7 +181,6 @@ export const useCartStore = create<CartState>()(
                     set({ isLoading: true, error: null });
                     try {
                         const data = await fetchCart(userId, locale);
-                        console.log('Fetched cart items:', data);
                         const mappedItems: CartItem[] = data.map((item) => ({
                             id: item.id,
                             product_id: item.product_id,
@@ -220,8 +219,6 @@ export const useCartStore = create<CartState>()(
                                 locale
                             );
                         }
-
-                        console.log('Cart synced successfully:', mergedItems);
                     } catch (error) {
                         console.error('Error syncing with backend:', error);
                         set({ error: getErrorMessage(error) });
