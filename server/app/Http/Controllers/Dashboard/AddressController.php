@@ -31,7 +31,7 @@ class AddressController extends Controller
     {
         $contries = \App\Models\Country::pluck('name_en', 'id');
 
-        return view('admin.address.createUpdate')->with([
+        return view('admin.Address.createUpdate')->with([
             'countries' => $contries]);
     }
     public function store(StoreAddressRequest $request)

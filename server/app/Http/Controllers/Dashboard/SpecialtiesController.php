@@ -15,11 +15,11 @@ class SpecialtiesController extends Controller
     use HelperTrait;
     public function index(){
         $specialties = Specialty::with('expert')->withCount('expert')->get();
-        return view('admin.specialties.index' , compact('specialties' ));
+        return view('admin.Specialties.index' , compact('specialties' ));
     }
 
     public function create(){
-        return view('admin.specialties.createUpdate');
+        return view('admin.Specialties.createUpdate');
     }
 
     public function store(StoreSpecialtyRequest $request) {
@@ -31,7 +31,7 @@ class SpecialtiesController extends Controller
 
     public function edit($id){
         $specialty = Specialty::find($id);
-        return view('admin.specialties.createUpdate' , compact('specialty'));
+        return view('admin.Specialties.createUpdate' , compact('specialty'));
     }
 
     public function update(UpdateSpecialtyRequest $request, $id) {

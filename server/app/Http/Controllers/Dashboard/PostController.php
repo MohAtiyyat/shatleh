@@ -47,7 +47,7 @@ class PostController extends Controller
     {
         $categories = Category::where('parent_id', null)->get();
         $products = Product::all();
-        return view('admin.post.createUpdate', compact('categories', 'products'));
+        return view('admin.Post.createUpdate', compact('categories', 'products'));
     }
 
     public function store(StorePostRequest $request)
@@ -69,7 +69,7 @@ class PostController extends Controller
         $post = Post::with(['category', 'user', 'product'])->findOrFail($id);
         $categories = Category::where('parent_id', null)->get();
         $products = Product::all();
-        return view('admin.post.createUpdate', compact('post', 'categories', 'products'));
+        return view('admin.Post.createUpdate', compact('post', 'categories', 'products'));
     }
 
     public function update(UpdatePostRequest $request, $id)
@@ -107,6 +107,6 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::with(['category', 'user', 'product'])->findOrFail($id);
-        return view('admin.post.show', compact('post'));
+        return view('admin.Post.show', compact('post'));
     }
 }

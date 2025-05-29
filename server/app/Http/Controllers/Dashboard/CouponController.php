@@ -28,7 +28,7 @@ class CouponController extends Controller
     public function create()
     {
         $countries = Country::all();
-        return view('admin.coupon.createUpdate', compact('countries'));
+        return view('admin.Coupon.createUpdate', compact('countries'));
     }
 
     /**

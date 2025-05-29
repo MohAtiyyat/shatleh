@@ -25,7 +25,7 @@ class CartController extends Controller
         });
         
 
-        return view('admin.cart.index', compact('records', 'total_price'));
+        return view('admin.Cart.index', compact('records', 'total_price'));
     }
 
     public function show($id)
@@ -33,6 +33,6 @@ class CartController extends Controller
         $cart = Cart::where('customer_id', $id)->with(['product'])->get();
         $user = User::find($id);
         
-        return view('admin.cart.show', compact('cart', 'user'));
+        return view('admin.Cart.show', compact('cart', 'user'));
     }
 }
