@@ -75,7 +75,7 @@ export default function BlogCard({ post, currentLocale, setPosts, pageName }: Bl
             >
                 <div className="relative">
                     <Image
-                        src={post.image || '/placeholder.svg'}
+                        src={post.image || '/7.svg'}
                         width={400}
                         height={300}
                         alt={title}

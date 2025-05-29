@@ -24,7 +24,7 @@ interface ProductCardProps {
     pageName: string;
 }
 
-function ProductCard({ product, index, pageName }: ProductCardProps) {
+function ProductCard({ product, pageName }: ProductCardProps) {
     const t = useTranslations('');
     const pathname = usePathname();
     const currentLocale = pathname.split('/')[1] || 'ar';
