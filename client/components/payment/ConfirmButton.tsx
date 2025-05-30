@@ -143,9 +143,6 @@ export default function ConfirmButton({
                 delivery_cost: 2, // Hardcoded from PaymentDetails
             };
 
-            // Log checkout data for debugging
-            console.log('Checkout data:', checkoutData);
-
             // Send checkout request
             const response = await checkout(checkoutData);
 
@@ -184,15 +181,8 @@ export default function ConfirmButton({
             };
             localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
 
-            // Log for debugging
-            console.log('Checkout items:', items);
-            console.log('Checkout total:', total.toFixed(2));
-            console.log('Checkout order:', response.data);
-            console.log('Stored lastOrder:', lastOrder);
-
             // Clear cart
             await clearCart(userId, currentLocale);
-            console.log('Cart cleared, current items:', useCartStore.getState().items);
 
             // Clear coupon data
             if (couponApplied) {
@@ -212,55 +202,33 @@ export default function ConfirmButton({
 
     // Check if confirm button should be enabled
     const isConfirmDisabled = () => {
-        // Log state for debugging
-        console.log('isConfirmDisabled state:', {
-            isProcessing,
-            itemsCount: items.length,
-            defaultAddress,
-            isGift: formData.isGift,
-            giftFields: {
-                giftFirstName: formData.giftFirstName,
-                giftLastName: formData.giftLastName,
-                giftPhoneNumber: formData.giftPhoneNumber,
-            },
-            paymentMethod: formData.paymentMethod,
-            cardFields: {
-                cardNumber: formData.cardNumber,
-                cardHolder: formData.cardHolder,
-                expiryDate: formData.expiryDate,
-                cvv: formData.cvv,
-            },
-        });
 
         // Disable if processing or cart is empty
         if (isProcessing || items.length === 0) {
-            console.log('Disabled: Processing or empty cart');
+
             return true;
         }
 
         // Disable if no valid default address
         if (!defaultAddress) {
-            console.log('Disabled: Invalid or missing default address');
+
             return true;
         }
 
         // If gift option is enabled, require gift fields
         if (formData.isGift) {
             if (!formData.giftFirstName?.trim() || !formData.giftLastName?.trim() || !formData.giftPhoneNumber?.trim()) {
-                console.log('Disabled: Missing gift fields');
                 return true;
             }
         }
         // If payment method is cash and gift fields are filled, disable cash payment
         if (formData.paymentMethod === 'cash' && (formData.giftFirstName?.trim() || formData.giftLastName?.trim() || formData.giftPhoneNumber?.trim())) {
-            console.log('Disabled: Cash payment not allowed with gift fields');
             return true;
         }
 
 
         // If payment method is cash, no further checks needed
         if (formData.paymentMethod === 'cash') {
-            console.log('Enabled: Cash payment selected');
             return false;
         }
 
@@ -269,11 +237,8 @@ export default function ConfirmButton({
 
         }
         if (!formData.cardNumber?.trim() || !formData.cardHolder?.trim() || !formData.expiryDate?.trim() || !formData.cvv?.trim()) {
-            console.log('Disabled: Missing credit card fields');
             return true;
         }
-
-        console.log('Enabled: All conditions met');
         return false;
     };
 

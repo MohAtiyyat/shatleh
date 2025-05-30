@@ -26,14 +26,12 @@ export default function BlogCard({ post, currentLocale, setPosts, pageName }: Bl
     const [isLoading, setIsLoading] = useState(false);
 
     const handleBookmarkToggle = async (e: React.MouseEvent) => {
-        console.log('Bookmark button clicked');
         e.preventDefault();
         e.stopPropagation();
         if (isLoading) return;
         setIsLoading(true);
         try {
             const newBookmarkStatus = await toggleBookmark(post.id);
-            console.log('Bookmark status updated:', newBookmarkStatus);
             if (setPosts) {
                 setPosts((prevPosts) =>
                     prevPosts.map((p) =>
@@ -75,7 +73,7 @@ export default function BlogCard({ post, currentLocale, setPosts, pageName }: Bl
             >
                 <div className="relative">
                     <Image
-                        src={post.image || '/placeholder.svg'}
+                        src={post.image || '/7.svg'}
                         width={400}
                         height={300}
                         alt={title}

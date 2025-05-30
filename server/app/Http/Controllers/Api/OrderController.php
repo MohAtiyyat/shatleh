@@ -30,14 +30,15 @@ class OrderController extends Controller
             $user = Auth::user();
             $orders = Order::where('customer_id', $user->id)
                 ->with(['products', 'address'])
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             $formattedOrders = $orders->map(function ($order) use ($request) {
                 return [
                     'id' => $order->id,
                     'order_code' => $order->order_code,
-                    'order_date' => $order->order_date
-                        ? $order->order_date->toIso8601String()
+                    'order_date' => $order->created_at
+                        ? $order->created_at->toIso8601String()
                         : now()->toIso8601String(), // Fallback to current timestamp
                     'total_price' => $order->total_price,
                     'status' => $order->status,
@@ -127,7 +128,7 @@ class OrderController extends Controller
                 'Failed to cancel order: ' . $e,
                 LogsTypes::ERROR->value
             );
-            
+
             return response()->json([
                 'error' => 'Failed to cancel order',
                 'message' => 'An unexpected error occurred while cancelling the order.',

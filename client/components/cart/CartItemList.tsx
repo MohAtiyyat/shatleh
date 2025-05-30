@@ -28,7 +28,6 @@ function CartItemList() {
     const pathname = usePathname();
     const currentLocale: 'en' | 'ar' = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
     const { items } = useCartStore();
-    console.log(items);
 
     if (items.length === 0) {
         return (

@@ -33,7 +33,6 @@ export default function SuccessPage() {
                 try {
                     const parsedOrder: LastOrder = JSON.parse(storedOrder);
                     setOrderData(parsedOrder);
-                    console.log('Loaded lastOrder:', parsedOrder);
                 } catch (err) {
                     console.error('Error parsing lastOrder:', err);
                 }
