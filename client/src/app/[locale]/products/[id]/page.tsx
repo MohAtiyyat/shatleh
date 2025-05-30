@@ -17,6 +17,7 @@ import { Category, Review } from '../../../../../lib/index';
 import ExpandableDescription from '../../../../../components/productsDetails/expandable-description';
 import { ProductTabs } from '../../../../../components/productsDetails/product-tabs';
 import Image from 'next/image';
+import ProductImagesCarousel from '../../../../../components/productsDetails/ProductImageSwiper';
 
 export default function ProductDetailsPage() {
     const t = useTranslations('');
@@ -309,15 +310,11 @@ export default function ProductDetailsPage() {
                 <div className="flex flex-col md:flex-row gap-8">
                     <div className="md:w-1/2 lg:w-5/12">
                         <Breadcrumb pageName={'products'} product={currentLocale === 'en' ? product.name_en : product.name_ar} />
-                        <div className="rounded-lg overflow-hidden">
-                            <Image
-                                src={`${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`}
-                                alt={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
-                                width={700}
-                                height={400}
-                                className="w-[700px] h-[400px] object-contain rounded-lg"
-                            />
-                        </div>
+                        <ProductImagesCarousel
+                        images={Array.isArray(product.image) ? product.image : [product.image]}
+                        productName={currentLocale === 'en' ? product.name_en : product.name_ar}
+                        locale={currentLocale}
+                        />
                     </div>
 
                     <div className="md:w-1/2 lg:w-7/12 mt-6">
