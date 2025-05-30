@@ -16,7 +16,7 @@ import { fetchCategories, fetchProductReviews } from '../../../../../lib/api';
 import { Category, Review } from '../../../../../lib/index';
 import ExpandableDescription from '../../../../../components/productsDetails/expandable-description';
 import { ProductTabs } from '../../../../../components/productsDetails/product-tabs';
-import ProductImageSwiper from '../../../../../components/productsDetails/ProductImageSwiper';
+import Image from 'next/image';
 
 export default function ProductDetailsPage() {
     const t = useTranslations('');
@@ -58,36 +58,36 @@ export default function ProductDetailsPage() {
         loadCategories();
     }, []);
 
-   // Find category and subcategory for the product
-useEffect(() => {
-    if (product && product.categories && product.categories.length > 0 && categories.length > 0) {
-        let foundCategory = '';
-        let foundSubcategory = '';
+    // Find category and subcategory for the product
+    useEffect(() => {
+        if (product && product.categories && product.categories.length > 0 && categories.length > 0) {
+            let foundCategory = '';
+            let foundSubcategory = '';
 
-        // Iterate over product.categories to find primary category and subcategory
-        product.categories.forEach((productCat) => {
-            // Find matching category or subcategory in fetched categories
-            for (const category of categories) {
-                // Check if the product category is a primary category
-                if (category.id === productCat.id && productCat.parent_id === null) {
-                    foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
+            // Iterate over product.categories to find primary category and subcategory
+            product.categories.forEach((productCat) => {
+                // Find matching category or subcategory in fetched categories
+                for (const category of categories) {
+                    // Check if the product category is a primary category
+                    if (category.id === productCat.id && productCat.parent_id === null) {
+                        foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
+                    }
+                    // Check if the product category is a subcategory
+                    const subcategory = category.subcategories.find((sub) => sub.id === productCat.id && productCat.parent_id !== null);
+                    if (subcategory) {
+                        foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
+                        foundSubcategory = currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en;
+                    }
                 }
-                // Check if the product category is a subcategory
-                const subcategory = category.subcategories.find((sub) => sub.id === productCat.id && productCat.parent_id !== null);
-                if (subcategory) {
-                    foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
-                    foundSubcategory = currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en;
-                }
-            }
-        });
+            });
 
-        setCategoryName(foundCategory);
-        setSubcategoryName(foundSubcategory);
-    } else {
-        setCategoryName('');
-        setSubcategoryName('');
-    }
-}, [product, categories, currentLocale]);
+            setCategoryName(foundCategory);
+            setSubcategoryName(foundSubcategory);
+        } else {
+            setCategoryName('');
+            setSubcategoryName('');
+        }
+    }, [product, categories, currentLocale]);
 
     // Fetch reviews on mount
     useEffect(() => {
@@ -180,7 +180,7 @@ useEffect(() => {
         }
     };
 
-   
+
 
 
     // Split description into lines
@@ -233,7 +233,7 @@ useEffect(() => {
                                 ))}
                             </div>
                         </div>
-                       
+
                     </div>
                     {isReviewsLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -310,9 +310,12 @@ useEffect(() => {
                     <div className="md:w-1/2 lg:w-5/12">
                         <Breadcrumb pageName={'products'} product={currentLocale === 'en' ? product.name_en : product.name_ar} />
                         <div className="rounded-lg overflow-hidden">
-                            <ProductImageSwiper
-                                images={Array.isArray(product.image) ? product.image : [product.image]}
-                                altText={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
+                            <Image
+                                src={`${process.env.NEXT_PUBLIC_API_URL}${product.image[0]}`}
+                                alt={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
+                                width={700}
+                                height={400}
+                                className="w-[700px] h-[400px] object-contain rounded-lg"
                             />
                         </div>
                     </div>

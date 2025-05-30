@@ -27,11 +27,11 @@ interface AddressFormProps {
     setMode: (mode: 'add' | 'edit') => void;
 }
 
-export default function AddressForm({ onClose, onSave, initialAddress, mode,  }: AddressFormProps) {
+export default function AddressForm({ onClose, onSave, initialAddress, mode }: AddressFormProps) {
     const t = useTranslations('addresses');
     const [formData, setFormData] = useState({
         title: initialAddress?.title || '',
-        country_id: initialAddress?.country_id || 0,
+        country_id: initialAddress?.country_id || 1, // Pre-select Jordan (ID: 1)
         city: initialAddress?.city || '',
         address_line: initialAddress?.address_line || '',
     });
@@ -44,8 +44,8 @@ export default function AddressForm({ onClose, onSave, initialAddress, mode,  }:
             try {
                 // Replace with actual API call to fetch countries
                 const mockCountries = [
-                    { id: 1, name: 'United States' },
-                    { id: 2, name: 'Jordan' },
+                    { id: 1, name: 'Jordan' },
+                    { id: 2, name: 'United States' },
                     // Add more as needed
                 ];
                 setCountries(mockCountries);
@@ -114,11 +114,9 @@ export default function AddressForm({ onClose, onSave, initialAddress, mode,  }:
                         name="country_id"
                         value={formData.country_id}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-700"
+                        className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-700 bg-gray-100 cursor-not-allowed"
+                        disabled
                     >
-                        <option value={0} disabled>
-                            {t('selectCountry')}
-                        </option>
                         {countries.map((country) => (
                             <option key={country.id} value={country.id}>
                                 {country.name}
