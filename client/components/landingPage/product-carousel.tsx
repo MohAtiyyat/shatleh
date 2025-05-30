@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { EffectCoverflow, Pagination } from "swiper/modules"
-import { SwiperOptions, Swiper as SwiperClass } from "swiper/types"
+import { SwiperOptions,  } from "swiper/types"
 import ProductCard from "../products/product-card"
 import type { Product, Locale } from "../../lib"
 
@@ -21,8 +21,6 @@ interface ProductCarouselProps {
 }
 
 export default function ProductCarousel({ products, currentLocale, pageName }: ProductCarouselProps) {
-    const [activeIndex, setActiveIndex] = useState(2)
-    console.log("activeIndex", activeIndex)
     const [screenSize, setScreenSize] = useState<'small' | 'medium' | 'large'>('medium')
 
     useEffect(() => {
@@ -72,7 +70,6 @@ export default function ProductCarousel({ products, currentLocale, pageName }: P
                 <Swiper
                     {...getSwiperParams()}
                     modules={[EffectCoverflow, Pagination]}
-                    onSlideChange={(swiper: SwiperClass) => setActiveIndex(swiper.activeIndex)}
                     className="swiper-container"
                 >
                     {products.map((product, index) => (

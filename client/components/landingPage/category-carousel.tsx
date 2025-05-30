@@ -6,7 +6,7 @@
     import { Swiper, SwiperSlide } from "swiper/react"
     import { EffectCoverflow, Pagination } from "swiper/modules"
     import type { Category, Locale } from "../../lib"
-    import { SwiperOptions, Swiper as SwiperClass } from "swiper/types"
+    import { SwiperOptions,  } from "swiper/types"
 
     import "swiper/css"
     import "swiper/css/effect-coverflow"
@@ -19,8 +19,6 @@
     }
 
     export default function CategoryCarousel({ categories, currentLocale }: CategoryCarouselProps) {
-        const [activeIndex, setActiveIndex] = useState(3)
-        console.log("activeIndex", activeIndex)
         const [screenSize, setScreenSize] = useState<'small' | 'medium' | 'large'>('medium')
 
         useEffect(() => {
@@ -74,7 +72,6 @@
                     <Swiper
                         {...getSwiperParams()}
                         modules={[EffectCoverflow, Pagination]}
-                        onSlideChange={(swiper: SwiperClass) => setActiveIndex(swiper.activeIndex)}
                         className="swiper-container"
                     >
                         {categories.map((category, index) => (
