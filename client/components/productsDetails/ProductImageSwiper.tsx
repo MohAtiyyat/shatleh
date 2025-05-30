@@ -12,7 +12,7 @@ interface ProductImagesCarouselProps {
   locale: string;
 }
 
-export default function ProductImagesCarousel({ images, productName, locale }: ProductImagesCarouselProps) {
+export default function ProductImagesCarousel({ images, productName }: ProductImagesCarouselProps) {
   const t = useTranslations('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [direction, setDirection] = useState(0);

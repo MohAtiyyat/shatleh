@@ -16,7 +16,6 @@ import { fetchCategories, fetchProductReviews } from '../../../../../lib/api';
 import { Category, Review } from '../../../../../lib/index';
 import ExpandableDescription from '../../../../../components/productsDetails/expandable-description';
 import { ProductTabs } from '../../../../../components/productsDetails/product-tabs';
-import Image from 'next/image';
 import ProductImagesCarousel from '../../../../../components/productsDetails/ProductImageSwiper';
 
 export default function ProductDetailsPage() {
