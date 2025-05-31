@@ -165,7 +165,9 @@
     "submitReview": "إرسال المراجعة",
     "submitting": "جارٍ الإرسال...",
     "submitReviewFailed": "فشل في إرسال المراجعة",
-    "noReviews": "لا توجد مراجعات بعد"
+    "noReviews": "لا توجد مراجعات بعد",
+    "previousImage": "الصورة السابقة",
+    "nextImage": "الصورة التالية"
   },
   "about": {
     "title": "من نحن",

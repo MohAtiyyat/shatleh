@@ -165,7 +165,9 @@
     "submitting": "Submitting...",
     "submitReviewFailed": "Failed to submit review",
     "noReviews": "No reviews yet",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "previousImage": "Previous Image",
+    "nextImage": "Next Image"
   },
   "about": {
     "title": "About Us",
