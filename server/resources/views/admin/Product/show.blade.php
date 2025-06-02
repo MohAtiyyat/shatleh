@@ -114,6 +114,10 @@
                                             <h5 class="text-muted font-weight-semibold mb-2">Sold Quantity</h5>
                                             <p class="text-dark mb-0">{{ $product->sold_quantity ?? 0 }}</p>
                                         </div>
+                                        <div class="col-12 col-sm-6 mb-4">
+                                            <h5 class="text-muted font-weight-semibold mb-2">Rating</h5>
+                                            <p class="text-dark mb-0">{{ $ratingSum ?? 0 }}</p>
+                                        </div>
                                         <div class="col-12 mb-4">
                                             <h5 class="text-muted font-weight-semibold mb-2">Categories</h5>
                                             <p class="text-dark">

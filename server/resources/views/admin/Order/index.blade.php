@@ -7,7 +7,7 @@
     <x-management-table
         title="Order Management"
         :headers="[
-            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Status', 'Payment Info', 'Address', 'Actions'
+            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Assigned To', 'Status', 'Payment Info', 'Address', 'Actions'
         ]"
         :items="$order"
         :Route="'dashboard.order'"
@@ -23,6 +23,21 @@
                     </td>
                     <td>{{ $record->first_name ?? 'N/A' }} {{ $record->last_name ?? '' }}</td>
                     <td>{{ $record->phone_number ?? 'N/A' }}</td>
+                    <td>
+                        @if ($record->expert)
+                            {{ $record->expert->first_name }} {{ $record->expert->last_name }}
+                        @else
+                            <form method="POST" action="{{ route($Route . '.assign', $record->id) }}">
+                                @csrf
+                                <select name="expert_id" onchange="this.form.submit()" class="form-select">
+                                    <option value="">Select Expert</option>
+                                    @foreach($experts as $id => $name)
+                                        <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        @endif
+                    </td>
                     <td>
                         <form action="{{ route($Route . '.updateStatus', $record->id) }}" method="POST">
                             @csrf

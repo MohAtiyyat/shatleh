@@ -15,6 +15,7 @@ class Order extends Model
         'total_price',
         'customer_id',// store the user_id
         'employee_id',
+        'assigned_to',
         'coupon_id',
         'payment_id',
         'status',
@@ -58,5 +59,9 @@ class Order extends Model
     }
     public function orderDetails(){
         return $this->hasMany(OrderDetail::class, 'order_id', 'id');
+    }
+    public function expert()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 }
