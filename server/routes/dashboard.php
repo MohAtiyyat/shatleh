@@ -24,14 +24,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('dashboard/login', [AuthController::class, 'showLoginForm'])->middleware('web')->name('login');
 Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(function () {
-    // logging test route
-    Route::get('/test-log', function () {
-        \Log::channel('mysql')->info('Test log entry', [
-            'user_id' => 29,
-            'action' => 'logout',
-        ]);
-        return 'Log entry created';
-    });
+
     Route::prefix('logs')->name('logs.')->group(function () {
         Route::get('/', [LogController::class, 'index'])->name('index');//the index page has two buttons customer and staff
         Route::get('/customer', [LogController::class, 'CustomerLog'])->name('customer');//the customer logs page
