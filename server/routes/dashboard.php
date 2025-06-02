@@ -141,6 +141,9 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
 
         Route::name('order')->prefix('order')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('');
+             Route::post('{order}/assign', [OrderController::class, 'assign'])
+                ->name('.assign')
+                ->whereNumber('order');
             Route::get('/{order}', [OrderController::class, 'show'])->name('.show');
             Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
         });

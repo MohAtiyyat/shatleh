@@ -6,7 +6,7 @@
 @section('content')
     <x-management-table
         title="Service Request Management"
-        :headers="['#', 'Customer Name', 'Service Name', 'Assign To Expert','Status', 'Managed By Employee','Address', 'Action']"
+        :headers="['#', 'Customer Name', 'Service Name', 'Assigned To','Status', 'Managed By Employee','Address', 'Action']"
         :items="$serviceRequests"
         :Route="'dashboard.service-request'"
     >
