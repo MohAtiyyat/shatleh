@@ -7,7 +7,10 @@ use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegiseterRequest;
+use App\Http\Requests\Api\CheckMobileRequest;
+use App\Http\Requests\Api\OTP\VerifyOtpRequest;
 use App\Http\Requests\Dashboard\auth\LogoutRequest;
+use App\Models\OTP;
 use App\Models\User;
 use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
@@ -66,5 +69,43 @@ class AuthController extends Controller
 
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'logged out'], 200);
+    }
+
+    public function checkMobile(CheckMobileRequest $request)
+    {
+        $data = $request->validated();
+
+        return response()->json([
+            'message' => 'Mobile number is valid',
+            'mobile' => $data['mobile']
+        ], 200);
+    }
+    public function sendOtp(CheckMobileRequest $request)
+    {
+        $data = $request->validated();
+
+        $otp = rand(1000, 9999);
+        OTP::create([
+            'mobile' => $data['mobile'],
+            'otp' => $otp,
+            'expires_at' => now()->addMinutes(5),
+        ]); 
+        return response()->json(['message' => 'OTP sent successfully', 'mobile' => $data['mobile']], 200);
+    }
+
+    public function verifyOtp(VerifyOtpRequest $request)
+    {
+        $data = $request->validated();
+
+        $otpRecord = OTP::where('mobile', $data['mobile'])
+            ->where('otp', $data['otp'])
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (!$otpRecord) {
+            return response()->json(['message' => 'Invalid or expired OTP'], 400);
+        }
+
+        return response()->json(['message' => 'OTP verified successfully'], 200);
     }
 }
