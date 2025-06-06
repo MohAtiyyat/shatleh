@@ -13,7 +13,7 @@ class Order extends Model
         'order_code',
         'address_id',
         'total_price',
-        'customer_id',// store the user_id
+        'customer_id',
         'employee_id',
         'coupon_id',
         'payment_id',
@@ -21,8 +21,13 @@ class Order extends Model
         'skipped_rating',
         'cart_id',
         'delivery_cost',
-        'delivery_date'
-        ];
+        'delivery_date',
+        'payment_method', // Add payment_method to fillable
+        'first_name',
+        'last_name',
+        'phone_number',
+        'is_gift',
+    ];
 
     public function customer()
     {
@@ -34,15 +39,18 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function address(){
+    public function address()
+    {
         return $this->belongsTo(Address::class);
     }
 
-    public function coupon(){
+    public function coupon()
+    {
         return $this->belongsTo(Coupon::class);
     }
 
-    public function payment(){
+    public function payment()
+    {
         return $this->belongsTo(PaymentInfo::class);
     }
 
@@ -53,10 +61,14 @@ class Order extends Model
                     ->withTimestamps()
                     ->withTrashed();
     }
-    public function reviews(){
+
+    public function reviews()
+    {
         return $this->hasMany(Review::class);
     }
-    public function orderDetails(){
+
+    public function orderDetails()
+    {
         return $this->hasMany(OrderDetail::class, 'order_id', 'id');
     }
 }

@@ -648,28 +648,26 @@ export const updateCartItem = async (data: CartUpdateRequest, locale: string): P
     }
 };
 
-export const clearCart = async (customerId: string, locale: string): Promise<CartClearResponse> => {
-    const token = getAuthToken();
+export const clearCart = async (customerId: string, locale: string, token: string | null): Promise<CartClearResponse> => {
     if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("No authentication token found");
     }
     try {
         const response = await fetch(`${API_URL}/api/cart/clear`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
+                "Content-Type": "application/json",
+                Accept: "application/json",
                 Authorization: `Bearer ${token}`,
-                'Accept-Language': locale,
+                "Accept-Language": locale,
             },
             body: JSON.stringify({ customer_id: customerId }),
         });
         return handleResponse<CartClearResponse>(response);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Failed to clear cart');
+        throw new Error(error instanceof Error ? error.message : "Failed to clear cart");
     }
 };
-
 export const fetchProductReviews = async (productId: number): Promise<{ reviews: Review[]; averageRating: number }> => {
     try {
         const response = await fetch(`${API_URL}/api/products/${productId}/reviews`, {
@@ -920,8 +918,8 @@ export const applyCoupon = async (code: string, countryId: number | null): Promi
     }
 };
 
-export const checkout = async (data: CheckoutRequest): Promise<CheckoutResponse> => {
-    const token = getAuthToken();
+// src/lib/api.ts
+export const checkout = async (data: CheckoutRequest, token: string | null): Promise<CheckoutResponse> => {
     if (!token) {
         throw new Error('No authentication token found');
     }

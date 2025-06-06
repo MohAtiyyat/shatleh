@@ -360,6 +360,7 @@
     "couponCode": "كود الخصم",
     "enterCoupon": "ادخل كود الخصم الخاص بك",
     "selecatAddress": "حدد عنوانًا",
+    "error": "حدث خطاء في جلب تفاصيل الطلب",
     "errors": {
       "invalidCardNumber": "يرجى إدخال رقم بطاقة مكون من 16 رقمًا",
       "cardHolderRequired": "يرجى إدخال اسم حامل البطاقة",
@@ -378,7 +379,8 @@
       "giftLastNameRequired": "اسم العائلة للمستلم للهدية مطلوب",
       "invalidGiftPhone": "رقم هاتف المستلم للهدية غير صالح",
       "addressRequired": "يرجى اختيار عنوان.",
-      "addressChangeFailed": "فشل تحديث العنوان الافتراضي. يرجى المحاولة مرة أخرى."
+      "addressChangeFailed": "فشل تحديث العنوان الافتراضي. يرجى المحاولة مرة أخرى.",
+      "orderProcessingFailed": "فشل في معالجة الطلب. يرجى المحاولة مرة أخرى."
     }
   },
   "payments": {

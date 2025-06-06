@@ -361,6 +361,7 @@
     "couponCode": "Coupon Code",
     "enterCoupon": "Enter your coupon code",
     "selectAddress": "Select an address",
+    "error": "An error occurred during fetching the order details",
     "errors": {
       "invalidCardNumber": "Please enter a valid 16-digit card number",
       "cardHolderRequired": "Please enter the cardholder's name",
@@ -379,7 +380,8 @@
       "giftLastNameRequired": "Gift recipient's last name is required",
       "invalidGiftPhone": "Invalid gift recipient's phone number",
       "addressRequired": "Please select an address.",
-      "addressChangeFailed": "Failed to update the default address. Please try again."
+      "addressChangeFailed": "Failed to update the default address. Please try again.",
+      "orderProcessingFailed": "An error occurred while processing your order. Please try again."
     }
   },
   "payments": {

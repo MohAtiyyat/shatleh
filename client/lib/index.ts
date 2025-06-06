@@ -149,6 +149,7 @@ export interface UserData {
     first_name: string;
     last_name: string;
     phone_number: string;
+    email: string;
 }
 
 export interface Address {
@@ -226,4 +227,44 @@ export interface ServiceRequest {
     image: string | null;
     status: string;
     created_at: string;
+}
+
+export interface LastOrder {
+    orderId: string;
+    items: {
+        id: string;
+        name_ar: string;
+        name_en: string;
+        quantity: number;
+        price: string;
+    }[];
+    total: string;
+    orderDate: string;
+    couponApplied: boolean;
+    couponDiscount: number;
+    billing: {
+        first_name: string;
+        last_name: string;
+        phone_number: string;
+        address_line: string;
+        city: string;
+        country: string;
+    };
+    gift: {
+        firstName: string;
+        lastName: string;
+        phoneNumber: string;
+    } | null;
+}
+export interface CheckoutRequest {
+    customer_id: string;
+    address_id: number;
+    items: { product_id: number; price: string; quantity: number }[];
+    is_gift?: boolean;
+    gift_first_name?: string;
+    gift_last_name?: string;
+    gift_phone_number?: string;
+    coupon_id?: number | null;
+    total: number;
+    delivery_cost: number;
 }

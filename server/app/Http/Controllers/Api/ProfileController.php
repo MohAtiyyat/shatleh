@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,8 +44,7 @@ class ProfileController extends Controller
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone_number' => 'required|string|max:20',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // 2MB
-            'current_password' => 'nullable|string|required_with:new_password',
-            'new_password' => 'nullable|string|min:8|required_with:current_password',
+
         ]);
 
         if ($validator->fails()) {
@@ -69,12 +67,7 @@ class ProfileController extends Controller
             $data['photo'] = null;
         }
 
-        if ($request->filled('current_password') && $request->filled('new_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
-                return response()->json(['errors' => ['current_password' => ['Current password is incorrect']]], 422);
-            }
-            $data['password'] = Hash::make($request->new_password);
-        }
+
 
         $user->update($data);
 
