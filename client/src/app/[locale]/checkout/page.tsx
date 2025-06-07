@@ -46,7 +46,7 @@ export default function CheckoutPage() {
         const token = localStorage.getItem('token');
         const storedUserId = localStorage.getItem('userId');
         if (!token || !storedUserId) {
-            router.push(`/${currentLocale}/login?redirect=${encodeURIComponent(pathname)}`);
+            router.push(`/${currentLocale}/login?redirect=/checkout`);
             return;
         }
 
