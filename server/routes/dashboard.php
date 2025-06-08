@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\CartController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\CouponController;
 use App\Http\Controllers\Dashboard\CustomerController;
+use App\Http\Controllers\Dashboard\IndexController;
 use App\Http\Controllers\Dashboard\LogController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\PaymentController;
@@ -21,27 +22,20 @@ use App\Http\Controllers\Dashboard\StaffController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
+Route::get('dashboard/login', [AuthController::class, 'showLoginForm'])->middleware('web')->name('login');
 Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(function () {
-    Route::get('/home', function () {return view('admin.index');})->name('home');
-    // logging test route
-    Route::get('/test-log', function () {
-        \Log::channel('mysql')->info('Test log entry', [
-            'user_id' => 29,
-            'action' => 'logout',
-        ]);
-        return 'Log entry created';
-    });
+
     Route::prefix('logs')->name('logs.')->group(function () {
         Route::get('/', [LogController::class, 'index'])->name('index');//the index page has two buttons customer and staff
         Route::get('/customer', [LogController::class, 'CustomerLog'])->name('customer');//the customer logs page
         Route::get('/staff', [LogController::class, 'StaffLog'])->name('staff');//the staff logs page
     });
-    Route::get('/login', function () {return view('admin.login.login');})->name('login');
     Route::post('/login', [AuthController::class, 'Login'])->name('login');
     Route::get('/logout', [AuthController::class, 'Logout'])->name('logout');
     Route::post('/logout', [AuthController::class, 'Logout'])->name('logout');
 
     Route::middleware(['auth:web', 'check-banned','role:Admin|Expert|Employee'])->group(function () {
+        Route::get('/', [IndexController::class,'index'])->name('home');
         Route::prefix('product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('product');
             Route::get('/create', [ProductController::class, 'create'])->name('product.create');
@@ -114,7 +108,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
         Route::prefix('service-request')->name('service-request.')->group(function () {
 
             Route::resource('/', ServiceRequestController::class)
-                ->only(['index', 'update'])
+                ->only(['index', 'update', 'show'])
                 ->parameter('', 'service_request');
 
             Route::post('{service_request}/assign', [ServiceRequestController::class, 'assign'])
@@ -134,12 +128,15 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::post('/create', [ServiceController::class, 'store'])->name('.store');
             Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('.edit');
             Route::get('/{id}', [ServiceController::class, 'show'])->name('.show');
-            Route::put('/{id}', [ServiceController::class, 'update'])->name('.update');
+            Route::put('/{service}', [ServiceController::class, 'update'])->name('.update');
             Route::delete('/{id}', [ServiceController::class, 'delete'])->name('.destroy');
         });
 
         Route::name('order')->prefix('order')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('');
+             Route::post('{order}/assign', [OrderController::class, 'assign'])
+                ->name('.assign')
+                ->whereNumber('order');
             Route::get('/{order}', [OrderController::class, 'show'])->name('.show');
             Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
         });
@@ -154,7 +151,7 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
             Route::get('/', [ReviewController::class, 'index'])->name('index');
             Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
             Route::delete('/{id}', [ReviewController::class, 'delete'])->name('delete');
-        });        
+        });
 
     });
 });

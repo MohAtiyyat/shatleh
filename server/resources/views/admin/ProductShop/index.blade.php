@@ -11,6 +11,7 @@
         ]"
         :items="$records"
         :Route="'dashboard.productShop'"
+        :createRoles="'Admin|Employee'"
     >
     <x-slot name="rows">
         @foreach ($records as $record)
@@ -23,6 +24,7 @@
                 <td>{{ \Carbon\Carbon::parse($record->created_at)->toDateString() }}</td>
                 <td>{{ \Carbon\Carbon::parse($record->updated_at)->toDateString() }}</td>
                 <td>
+                    @if (auth()->user()->hasAnyRole('Admin|Employee'))
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-ellipsis-v"></i>
@@ -40,6 +42,9 @@
                             </li>
                         </ul>
                     </div>
+                    @else
+                    <a href="{{ route('dashboard.productShop.show', $record->id) }}"><i class="fas fa-eye"></i> View</a>
+                    @endif
                 </td>
             </tr>
         @endforeach

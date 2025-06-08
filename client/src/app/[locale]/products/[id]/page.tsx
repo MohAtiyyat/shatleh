@@ -12,12 +12,11 @@ import Breadcrumb from '../../../../../components/breadcrumb';
 import { useProducts } from '../../../../../lib/ProductContext';
 import { useAuth } from '../../../../../lib/AuthContext';
 import { formatPrice, getRelatedProducts } from '../../../../../lib/utils';
-import { fetchCategories, fetchProductReviews, submitProductReview } from '../../../../../lib/api';
+import { fetchCategories, fetchProductReviews } from '../../../../../lib/api';
 import { Category, Review } from '../../../../../lib/index';
-import { motion } from 'framer-motion';
 import ExpandableDescription from '../../../../../components/productsDetails/expandable-description';
 import { ProductTabs } from '../../../../../components/productsDetails/product-tabs';
-import ProductImageSwiper from '../../../../../components/productsDetails/ProductImageSwiper';
+import ProductImagesCarousel from '../../../../../components/productsDetails/ProductImageSwiper';
 
 export default function ProductDetailsPage() {
     const t = useTranslations('');
@@ -29,7 +28,7 @@ export default function ProductDetailsPage() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { items, addItem, updateQuantity, isLoading: isCartLoading } = useCartStore();
     const { allProducts, isLoading } = useProducts();
-    const { userId, isAuthenticated } = useAuth();
+    const { userId } = useAuth();
     const [isAdding, setIsAdding] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
     const [categoryName, setCategoryName] = useState<string>('');
@@ -38,11 +37,6 @@ export default function ProductDetailsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [averageRating, setAverageRating] = useState<number>(0);
     const [isReviewsLoading, setIsReviewsLoading] = useState(true);
-    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-    const [rating, setRating] = useState<number>(0);
-    const [reviewText, setReviewText] = useState<string>('');
-    const [ratingError, setRatingError] = useState<string>('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Find the product
     const product = allProducts.find((p) => p.id === productId);
@@ -66,25 +60,32 @@ export default function ProductDetailsPage() {
 
     // Find category and subcategory for the product
     useEffect(() => {
-        if (product && categories.length > 0 && product.category_id) {
+        if (product && product.categories && product.categories.length > 0 && categories.length > 0) {
             let foundCategory = '';
             let foundSubcategory = '';
 
-            for (const category of categories) {
-                if (category.id === product.category_id) {
-                    foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
-                    break;
+            // Iterate over product.categories to find primary category and subcategory
+            product.categories.forEach((productCat) => {
+                // Find matching category or subcategory in fetched categories
+                for (const category of categories) {
+                    // Check if the product category is a primary category
+                    if (category.id === productCat.id && productCat.parent_id === null) {
+                        foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
+                    }
+                    // Check if the product category is a subcategory
+                    const subcategory = category.subcategories.find((sub) => sub.id === productCat.id && productCat.parent_id !== null);
+                    if (subcategory) {
+                        foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
+                        foundSubcategory = currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en;
+                    }
                 }
-                const subcategory = category.subcategories.find((sub) => sub.id === product.category_id);
-                if (subcategory) {
-                    foundCategory = currentLocale === 'ar' ? category.name.ar : category.name.en;
-                    foundSubcategory = currentLocale === 'ar' ? subcategory.name.ar : subcategory.name.en;
-                    break;
-                }
-            }
+            });
 
             setCategoryName(foundCategory);
             setSubcategoryName(foundSubcategory);
+        } else {
+            setCategoryName('');
+            setSubcategoryName('');
         }
     }, [product, categories, currentLocale]);
 
@@ -135,7 +136,7 @@ export default function ProductDetailsPage() {
                     description_en: product.description_en,
                     description_ar: product.description_ar,
                     price: product.price,
-                    image: product.image,
+                    image: product.image[0],
                 },
                 userId,
                 currentLocale
@@ -163,7 +164,7 @@ export default function ProductDetailsPage() {
                         description_en: product.description_en,
                         description_ar: product.description_ar,
                         price: product.price,
-                        image: product.image,
+                        image: product.image[0],
                     },
                     userId,
                     currentLocale
@@ -179,57 +180,8 @@ export default function ProductDetailsPage() {
         }
     };
 
-    // Handle rate product button click
-    const handleRateProduct = () => {
-        if (!isAuthenticated) {
-            router.push(`/${currentLocale}/login?redirect=/products/${productId}`);
-            return;
-        }
-        setIsRatingModalOpen(true);
-    };
 
-    // Handle rating star click
-    const handleStarClick = (value: number) => {
-        setRating(value);
-        setRatingError('');
-    };
 
-    // Handle review submission
-    const handleSubmitReview = async () => {
-        if (!product || !userId) return;
-        if (rating < 1 || rating > 5) {
-            setRatingError(t('products.ratingRequired'));
-            return;
-        }
-        if (reviewText.trim().length < 3) {
-            setRatingError(t('products.reviewTextRequired'));
-            return;
-        }
-
-        setIsSubmitting(true);
-        try {
-            const newReview = await submitProductReview(
-                {
-                    product_id: productId,
-                    rating,
-                    text: reviewText,
-                    customer_id: userId,
-                },
-                currentLocale
-            );
-            setReviews((prev) => [newReview, ...prev].slice(0, 4));
-            const { averageRating: newAverage } = await fetchProductReviews(productId);
-            setAverageRating(newAverage);
-            setIsRatingModalOpen(false);
-            setRating(0);
-            setReviewText('');
-            setRatingError('');
-        } catch (error) {
-            setRatingError(error instanceof Error ? error.message : t('products.submitReviewFailed'));
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
 
     // Split description into lines
     const description = product && (currentLocale === 'en' ? product.description_en : product.description_ar) || '';
@@ -281,14 +233,7 @@ export default function ProductDetailsPage() {
                                 ))}
                             </div>
                         </div>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={handleRateProduct}
-                            className="bg-[#038c8c] text-white px-4 py-2 rounded-md hover:bg-[#026e78] transition-colors"
-                        >
-                            {t('products.rateProduct')}
-                        </motion.button>
+
                     </div>
                     {isReviewsLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -360,77 +305,15 @@ export default function ProductDetailsPage() {
         <div className={`min-h-screen bg-[#e8f5e9] overflow-hidden ${currentLocale === 'ar' ? 'rtl' : 'ltr'}`}>
             <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-            {/* Rating Modal */}
-            {isRatingModalOpen && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
-                    style={{ backdropFilter: 'blur(0.8px)' }}
-                >
-                    <motion.div
-                        initial={{ scale: 0.8 }}
-                        animate={{ scale: 1 }}
-                        className="bg-white rounded-lg p-6 w-full max-w-md"
-                    >
-                        <h2 className="text-xl font-medium text-[#026e78] mb-4">{t('products.rateProduct')}</h2>
-                        <div className="mb-4">
-                            <label className="block mb-2 text-[#667085]">{t('products.yourRating')}</label>
-                            <div className="flex gap-1">
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        className={`w-6 h-6 cursor-pointer ${i < rating ? 'fill-[#20c015] text-[#20c015]' : 'text-[#d0d5dd]'}`}
-                                        onClick={() => handleStarClick(i + 1)}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block mb-2 text-[#667085]">{t('products.yourReview')}</label>
-                            <textarea
-                                value={reviewText}
-                                onChange={(e) => setReviewText(e.target.value)}
-                                className="w-full rounded-md border border-[#d0d5dd] p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#038c8c]"
-                                rows={4}
-                                placeholder={t('products.reviewPlaceholder')}
-                            />
-                        </div>
-                        {ratingError && <p className="text-red-500 text-sm mb-4">{ratingError}</p>}
-                        <div className="flex justify-end gap-2">
-                            <button
-                                onClick={() => {
-                                    setIsRatingModalOpen(false);
-                                    setRating(0);
-                                    setReviewText('');
-                                    setRatingError('');
-                                }}
-                                className="px-4 py-2 border border-[#d0d5dd] text-[#667085] rounded-md hover:bg-gray-100"
-                            >
-                                {t('products.cancel')}
-                            </button>
-                            <button
-                                onClick={handleSubmitReview}
-                                disabled={isSubmitting}
-                                className={`px-4 py-2 bg-[#038c8c] text-white rounded-md hover:bg-[#026e78] ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-                            >
-                                {isSubmitting ? t('products.submitting') : t('products.submitReview')}
-                            </button>
-                        </div>
-                    </motion.div>
-                </motion.div>
-            )}
-
             <div className="max-w-7xl mx-auto px-4 py-6">
                 <div className="flex flex-col md:flex-row gap-8">
                     <div className="md:w-1/2 lg:w-5/12">
                         <Breadcrumb pageName={'products'} product={currentLocale === 'en' ? product.name_en : product.name_ar} />
-                        <div className="rounded-lg overflow-hidden">
-                            <ProductImageSwiper
-                                images={Array.isArray(product.image) ? product.image : [product.image]}
-                                altText={currentLocale === 'en' ? product.name_en : product.name_ar || 'Product Image'}
-                            />
-                        </div>
+                        <ProductImagesCarousel
+                        images={Array.isArray(product.image) ? product.image : [product.image]}
+                        productName={currentLocale === 'en' ? product.name_en : product.name_ar}
+                        locale={currentLocale}
+                        />
                     </div>
 
                     <div className="md:w-1/2 lg:w-7/12 mt-6">

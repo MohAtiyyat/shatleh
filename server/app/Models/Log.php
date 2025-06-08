@@ -12,6 +12,7 @@ class Log extends Model
         'user_id',
         'action',
         'log_type',
+        'message',
         'created_at',
         'updated_at',
     ];

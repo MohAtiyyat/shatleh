@@ -1,3 +1,4 @@
+// components/products/filters.tsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -7,25 +8,23 @@ import { useTranslations } from 'next-intl';
 import { FiltersState } from '../../lib/index';
 
 interface FiltersProps {
-    currentLocale: string;
+    currentLocale: 'en' | 'ar';
     filters: FiltersState;
     setFilters: React.Dispatch<React.SetStateAction<FiltersState>>;
 }
 
 export default function Filters({ filters, setFilters, currentLocale }: FiltersProps) {
     const t = useTranslations('');
-
-    // State for dropdown visibility
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-    // Refs for dropdowns
+    // Refs for dropdowns to handle click outside
     const dropdownRefs = {
         category: useRef<HTMLDivElement>(null),
         availability: useRef<HTMLDivElement>(null),
         rating: useRef<HTMLDivElement>(null),
     };
 
-    // Handle click outside to close dropdown
+    // Close dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (openDropdown && dropdownRefs[openDropdown as keyof typeof dropdownRefs]?.current) {
@@ -34,7 +33,6 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                 }
             }
         }
-
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -43,11 +41,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
 
     // Toggle dropdown visibility
     const toggleDropdown = (dropdown: string) => {
-        if (openDropdown === dropdown) {
-            setOpenDropdown(null);
-        } else {
-            setOpenDropdown(dropdown);
-        }
+        setOpenDropdown(openDropdown === dropdown ? null : dropdown);
     };
 
     // Toggle category or subcategory selection
@@ -57,22 +51,26 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
             categories: prev.categories.map((category) => {
                 if (category.id === categoryId) {
                     if (subcategoryId) {
-                        // Toggle subcategory
+                        // Handle subcategory toggle
+                        const updatedSubcategories = category.subcategories.map((sub) =>
+                            sub.id === subcategoryId ? { ...sub, selected: !sub.selected } : sub
+                        );
+                        // Check if all subcategories are selected to update main category
+                        const allSubcategoriesSelected = updatedSubcategories.every((sub) => sub.selected);
                         return {
                             ...category,
-                            subcategories: category.subcategories.map((sub) =>
-                                sub.id === subcategoryId ? { ...sub, selected: !sub.selected } : sub
-                            ),
+                            selected: allSubcategoriesSelected,
+                            subcategories: updatedSubcategories,
                         };
                     } else {
-                        // Toggle main category and all subcategories
+                        // Handle main category toggle
                         const newSelected = !category.selected;
                         return {
                             ...category,
                             selected: newSelected,
                             subcategories: category.subcategories.map((sub) => ({
                                 ...sub,
-                                selected: newSelected,
+                                selected: newSelected, // Select/deselect all subcategories
                             })),
                         };
                     }
@@ -82,7 +80,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
         }));
     };
 
-    // Toggle other filters
+    // Toggle other filters (availability, ratings)
     const toggleFilter = (type: 'availability' | 'ratings', id: number) => {
         setFilters((prev) => ({
             ...prev,
@@ -98,7 +96,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
         }));
     };
 
-    // Clear filter
+    // Clear specific filter
     const clearFilter = (
         type: 'categories' | 'availability' | 'ratings' | 'bestSelling',
         id?: number,
@@ -115,19 +113,25 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                 categories: prev.categories.map((category) => {
                     if (category.id === id) {
                         if (subcategoryId) {
+                            // Clear specific subcategory
+                            const updatedSubcategories = category.subcategories.map((sub) =>
+                                sub.id === subcategoryId ? { ...sub, selected: false } : sub
+                            );
                             return {
                                 ...category,
-                                subcategories: category.subcategories.map((sub) =>
-                                    sub.id === subcategoryId ? { ...sub, selected: false } : sub
-                                ),
+                                selected: false, // Main category is deselected if any subcategory is cleared
+                                subcategories: updatedSubcategories,
                             };
                         }
+
+
                         return {
                             ...category,
                             selected: false,
                             subcategories: category.subcategories.map((sub) => ({ ...sub, selected: false })),
-                        };
-                    }
+                        }
+                    };
+                    localStorage.removeItem('selectedCategory');
                     return category;
                 }),
             }));
@@ -152,9 +156,11 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
             ratings: prev.ratings.map((r) => ({ ...r, selected: false })),
             bestSelling: false,
         }));
+        localStorage.removeItem('selectedCategory');
+
     };
 
-    // Get selected filters count
+    // Get count of selected filters
     const getSelectedCount = (type: 'categories' | 'availability' | 'ratings') => {
         if (type === 'categories') {
             return filters.categories.reduce((count, category) => {
@@ -165,7 +171,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
         return filters[type].filter((item) => item.selected).length;
     };
 
-    // Get selected filters names
+    // Get names of selected filters
     const getSelectedNames = (type: 'categories' | 'availability' | 'ratings') => {
         if (type === 'categories') {
             const names: string[] = [];
@@ -197,9 +203,9 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
     };
 
     return (
-        <>
+        <div className="flex flex-col gap-4">
             {/* Filter Dropdowns */}
-            <div className={`flex flex-wrap items-center gap-3 mb-4 justify-center ${currentLocale === 'ar' ? 'ml-10' : 'mr-10'}`}>
+            <div className="flex flex-wrap items-center gap-3 justify-center">
                 {/* Category Dropdown */}
                 <div className="relative" ref={dropdownRefs.category}>
                     <button
@@ -228,6 +234,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                             <div className="p-2 space-y-2">
                                 {filters.categories.map((category) => (
                                     <div key={category.id}>
+                                        {/* Main category checkbox */}
                                         <label className="flex items-center space-x-2 cursor-pointer">
                                             <input
                                                 type="checkbox"
@@ -240,6 +247,7 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                                                 {currentLocale === 'ar' ? category.name.ar : category.name.en}
                                             </span>
                                         </label>
+                                        {/* Subcategories */}
                                         {category.subcategories.length > 0 && (
                                             <div className="mx-6 space-y-1">
                                                 {category.subcategories.map((subcategory) => (
@@ -269,8 +277,8 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                 <button
                     onClick={toggleBestSelling}
                     className={`flex items-center justify-center px-4 py-2 border rounded-md min-w-[150px] ${filters.bestSelling
-                            ? 'bg-[#80ce97] text-white border-[#80ce97]'
-                            : 'bg-white text-[#0f4229] border-[#80ce97]'
+                        ? 'bg-[#80ce97] text-white border-[#80ce97]'
+                        : 'bg-white text-[#0f4229] border-[#80ce97]'
                         }`}
                     aria-label={t('products.bestSelling')}
                 >
@@ -508,6 +516,6 @@ export default function Filters({ filters, setFilters, currentLocale }: FiltersP
                     </button>
                 </motion.div>
             )}
-        </>
+        </div>
     );
 }

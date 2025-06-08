@@ -1,3 +1,4 @@
+// app/[locale]/products/page.tsx
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -6,8 +7,8 @@ import SearchBar from '../../../../components/products/search-bar';
 import Filters from '../../../../components/products/filters';
 import ProductCard from '../../../../components/products/product-card';
 import Pagination from '../../../../components/pagination';
-import { useTranslations } from 'next-intl';
 import Breadcrumb from '../../../../components/breadcrumb';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { useProducts } from '../../../../lib/ProductContext';
 import { fetchCategories } from '../../../../lib/api';
@@ -41,11 +42,11 @@ const initializeFilters = (categories: Category[]): FiltersState => ({
 });
 
 export default function ProductsPage() {
-    const t = useTranslations('');
+const t = useTranslations('');
     const pathname = usePathname();
     const router = useRouter();
-    const currentLocale = pathname.split('/')[1] || 'ar';
-    const { allProducts, isLoading } = useProducts();
+    const currentLocale = pathname.split('/')[1] as 'en' | 'ar';
+    const { allProducts, isLoading, setCategoryIds } = useProducts();
     const [categories, setCategories] = useState<Category[]>([]);
     const [filters, setFilters] = useState<FiltersState>(initializeFilters([]));
     const [searchTerm, setSearchTerm] = useState('');
@@ -55,13 +56,11 @@ export default function ProductsPage() {
     const productsPerPage = 12;
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-    // Fetch categories on mount
+ // Fetch categories on mount
     useEffect(() => {
         const loadCategories = async () => {
             try {
-                console.log('Attempting to fetch categories...');
                 const fetchedCategories = await fetchCategories();
-                console.log('Categories fetched:', fetchedCategories);
                 setCategories(fetchedCategories);
                 setFilters(initializeFilters(fetchedCategories));
             } catch (error) {
@@ -77,30 +76,40 @@ export default function ProductsPage() {
     useEffect(() => {
         const category = localStorage.getItem('selectedCategory')?.toLowerCase();
         if (category && categories.length > 0) {
-            setFilters((prev) => ({
-                ...prev,
-                categories: prev.categories.map((c) => ({
-                    ...c,
-                    selected: c.name.en.toLowerCase() === category || c.name.ar.toLowerCase() === category,
-                    subcategories: c.subcategories.map((s) => ({
-                        ...s,
-                        selected: c.name.en.toLowerCase() === category || c.name.ar.toLowerCase() === category,
-                    })),
-                })),
-                availability: prev.availability.map((a) => ({ ...a, selected: false })),
-                ratings: prev.ratings.map((r) => ({ ...r, selected: false })),
-                bestSelling: false,
-            }));
-            localStorage.removeItem('selectedCategory');
+            setFilters((prev) => {
+                const updatedFilters = {
+                    ...prev,
+                    categories: prev.categories.map((c) => {
+                        const isMainCategoryMatch = c.name.en.toLowerCase() === category || c.name.ar.toLowerCase() === category;
+                        const matchedSubcategory = c.subcategories.find(
+                            (s) => s.name.en.toLowerCase() === category || s.name.ar.toLowerCase() === category
+                        );
+                        if (isMainCategoryMatch) {
+                            return {
+                                ...c,
+                                selected: true,
+                                subcategories: c.subcategories.map((s) => ({ ...s, selected: true })),
+                            };
+                        } else if (matchedSubcategory) {
+                            return {
+                                ...c,
+                                selected: false,
+                                subcategories: c.subcategories.map((s) => ({
+                                    ...s,
+                                    selected: s.id === matchedSubcategory.id,
+                                })),
+                            };
+                        }
+                        return c;
+                    }),
+                    availability: prev.availability.map((a) => ({ ...a, selected: false })),
+                    ratings: prev.ratings.map((r) => ({ ...r, selected: false })),
+                    bestSelling: false,
+                };
+                return updatedFilters;
+            });
         }
     }, [categories]);
-
-    // Clear localStorage on unmount
-    useEffect(() => {
-        return () => {
-            localStorage.removeItem('selectedCategory');
-        };
-    }, []);
 
     // Debounce search term
     useEffect(() => {
@@ -110,7 +119,45 @@ export default function ProductsPage() {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    // Apply filters and search with memoization
+    // Update category IDs for backend filtering whenever filters change
+    const updateCategoryIds = (filters: FiltersState) => {
+        // Collect IDs of selected main categories and subcategories
+        const selectedCategoryIds: number[] = [];
+        filters.categories.forEach((category) => {
+            if (category.selected) {
+                selectedCategoryIds.push(category.id);
+            }
+            category.subcategories.forEach((sub) => {
+                if (sub.selected) {
+                    selectedCategoryIds.push(sub.id);
+                }
+            });
+        });
+        // Update ProductContext with selected category IDs
+        setCategoryIds(selectedCategoryIds);
+    };
+    // Update category IDs for backend filtering
+    useEffect(() => {
+        const selectedCategoryIds: number[] = [];
+        filters.categories.forEach((category) => {
+            if (category.selected) {
+                selectedCategoryIds.push(category.id);
+            }
+            category.subcategories.forEach((sub) => {
+                if (sub.selected) {
+                    selectedCategoryIds.push(sub.id);
+                }
+            });
+        });
+        setCategoryIds(selectedCategoryIds);
+    }, [filters.categories, setCategoryIds]);
+
+    // Trigger category ID update when filters change
+    useEffect(() => {
+        updateCategoryIds(filters);
+    }, [filters.categories]);
+
+    // Apply client-side filters (search, availability, ratings, bestSelling)
     const filteredProductsMemo = useMemo(() => {
         let result = [...allProducts];
 
@@ -126,24 +173,6 @@ export default function ProductsPage() {
                     product.description_ar.toLowerCase().includes(searchLower);
                 return nameMatch || descMatch;
             });
-        }
-
-        // Filter by category
-        const selectedCategoryIds: number[] = [];
-        filters.categories.forEach((category) => {
-            if (category.selected) {
-                selectedCategoryIds.push(category.id);
-                category.subcategories.forEach((sub) => selectedCategoryIds.push(sub.id));
-            } else {
-                category.subcategories.forEach((sub) => {
-                    if (sub.selected) {
-                        selectedCategoryIds.push(sub.id);
-                    }
-                });
-            }
-        });
-        if (selectedCategoryIds.length > 0) {
-            result = result.filter((product) => product.category_id && selectedCategoryIds.includes(product.category_id));
         }
 
         // Filter by availability
@@ -165,7 +194,6 @@ export default function ProductsPage() {
         if (filters.bestSelling) {
             result = result.filter((product) => (product.sold_quantity || 0) > 10);
             if (result.length === 0) {
-                console.log('No best-selling products found');
             } else {
                 result = result.sort((a, b) => (b.sold_quantity || 0) - (a.sold_quantity || 0));
             }
@@ -181,7 +209,7 @@ export default function ProductsPage() {
 
     // Handle search submission
     const handleSearch = () => {
-        console.log('Search submitted:', searchTerm);
+        
     };
 
     // Get current page products
@@ -215,14 +243,12 @@ export default function ProductsPage() {
                 <div className="mb-4 mx-8">
                     <Breadcrumb pageName="products" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 mb-3">
-                    <div className="sm:col-span-2 md:col-span-1 sm:mx-auto">
-                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
-                    </div>
+                <div className="flex flex-wrap justify-center space-x-6 mb-3">
+                    <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
                     <Filters filters={filters} setFilters={setFilters} currentLocale={currentLocale} />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 w-[90%] mx-auto">
+                <div className="flex flex-wrap justify-center md:justify-end gap-6 sm:w-[280px] md:w-[90%] mx-auto">
                     {isLoading ? (
                         Array.from({ length: 12 }).map((_, index) => <SkeletonCard key={index} />)
                     ) : currentProducts.length > 0 ? (
@@ -230,7 +256,7 @@ export default function ProductsPage() {
                             <div
                                 key={product.id}
                                 onClick={() => router.push(`/${currentLocale}/products/${product.id}`)}
-                                className="cursor-pointer"
+                                className="cursor-pointer mx-4 max-w-6xl rounded-3xl relative"
                             >
                                 <ProductCard product={product} index={index} pageName="products" />
                             </div>
@@ -239,14 +265,15 @@ export default function ProductsPage() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="col-span-full text-center py-10"
+                            className="flex-1 col-span-full text-center py-10"
                         >
                             <p className="text-lg text-[#0f4229]">{t('products.noProducts')}</p>
                             <button
                                 onClick={() => {
                                     setFilters(initializeFilters(categories));
+                                    localStorage.removeItem('selectedCategory');
                                     setSearchTerm('');
-                                    setFilteredProducts(allProducts);
+                                    setCategoryIds([]); // Reset category filters in context
                                 }}
                                 className="mt-4 px-4 py-2 bg-[#43bb67] text-white rounded-md"
                             >

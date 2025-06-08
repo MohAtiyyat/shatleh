@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Settings } from 'lucide-react';
+import { Mail, Settings } from 'lucide-react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Toast from '../../../../components/Toast';
@@ -28,8 +28,7 @@ interface FormData {
     last_name: string;
     email: string;
     phone_number: string;
-    current_password: string;
-    new_password: string;
+
     photo: File | string | null;
     remove_photo: boolean;
 }
@@ -39,8 +38,7 @@ interface FormErrors {
     last_name?: string;
     email?: string;
     phone_number?: string;
-    current_password?: string;
-    new_password?: string;
+
     photo?: string;
     address?: string;
 }
@@ -55,14 +53,11 @@ export default function ProfilePage() {
         last_name: '',
         email: '',
         phone_number: '',
-        current_password: '',
-        new_password: '',
         photo: null,
         remove_photo: false,
     });
     const [formErrors, setFormErrors] = useState<FormErrors>({});
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
+
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [addresses, setAddresses] = useState<Address[]>([]);
@@ -90,8 +85,6 @@ export default function ProfilePage() {
                     last_name: profile.last_name,
                     email: profile.email,
                     phone_number: profile.phone_number,
-                    current_password: '',
-                    new_password: '',
                     photo: profile.photo,
                     remove_photo: false,
                 });
@@ -164,12 +157,7 @@ export default function ProfilePage() {
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             newErrors.email = t('errors.emailInvalid');
         }
-        if (!formData.phone_number.trim()) newErrors.phone_number = t('errors.phoneNumberRequired');
-        if (formData.current_password || formData.new_password) {
-            if (!formData.current_password) newErrors.current_password = t('errors.currentPasswordRequired');
-            if (!formData.new_password) newErrors.new_password = t('errors.newPasswordRequired');
-            else if (formData.new_password.length < 8) newErrors.new_password = t('errors.newPasswordLength');
-        }
+
         if (!defaultAddressId) newErrors.address = t('errors.addressRequired');
         if (formData.photo instanceof File && formData.photo.size > 2 * 1024 * 1024) {
             newErrors.photo = t('errors.photoSize');
@@ -187,8 +175,6 @@ export default function ProfilePage() {
         submitData.append('last_name', formData.last_name);
         submitData.append('email', formData.email);
         submitData.append('phone_number', formData.phone_number);
-        if (formData.current_password) submitData.append('current_password', formData.current_password);
-        if (formData.new_password) submitData.append('new_password', formData.new_password);
         if (formData.remove_photo) submitData.append('remove_photo', 'true');
         if (formData.photo instanceof File) submitData.append('photo', formData.photo);
 
@@ -199,8 +185,6 @@ export default function ProfilePage() {
                 last_name: updatedProfile.last_name,
                 email: updatedProfile.email,
                 phone_number: updatedProfile.phone_number,
-                current_password: '',
-                new_password: '',
                 photo: updatedProfile.photo,
                 remove_photo: false,
             });
@@ -253,8 +237,8 @@ export default function ProfilePage() {
                                         formData.photo instanceof File
                                             ? URL.createObjectURL(formData.photo)
                                             : formData.photo
-                                            ? `${process.env.NEXT_PUBLIC_API_URL}${formData.photo}`
-                                            : '/placeholder.svg?height=128&width=128'
+                                                ? `${process.env.NEXT_PUBLIC_API_URL}${formData.photo}`
+                                                : '/placeholder.svg?height=128&width=128'
                                     }
                                     alt="Profile"
                                     className="w-full h-full object-cover"
@@ -315,9 +299,8 @@ export default function ProfilePage() {
                                 value={formData.first_name}
                                 onChange={handleInputChange}
                                 placeholder={currentLocale === 'ar' ? 'مثال: صادق' : 'Ex: Sadeq'}
-                                className={`w-full rounded-lg border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${
-                                    formErrors.first_name ? 'border-red-500' : 'border-[var(--secondary-bg)]'
-                                }`}
+                                className={`w-full rounded-lg border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.first_name ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                    }`}
                                 aria-invalid={!!formErrors.first_name}
                                 aria-describedby={formErrors.first_name ? 'firstName-error' : undefined}
                             />
@@ -335,9 +318,8 @@ export default function ProfilePage() {
                                 value={formData.last_name}
                                 onChange={handleInputChange}
                                 placeholder={currentLocale === 'ar' ? 'مثال: محمد' : 'Ex: Mohamed'}
-                                className={`w-full rounded-lg border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${
-                                    formErrors.last_name ? 'border-red-500' : 'border-[var(--secondary-bg)]'
-                                }`}
+                                className={`w-full rounded-lg border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.last_name ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                    }`}
                                 aria-invalid={!!formErrors.last_name}
                                 aria-describedby={formErrors.last_name ? 'lastName-error' : undefined}
                             />
@@ -363,9 +345,8 @@ export default function ProfilePage() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    className={`w-full rounded-lg border px-4 py-3 pl-10 text-sm focus:outline-none focus:ring-2 transition-colors ${
-                                        formErrors.email ? 'border-red-500' : 'border-[var(--secondary-bg)]'
-                                    }`}
+                                    className={`w-full rounded-lg border px-4 py-3 pl-10 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.email ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                        }`}
                                     aria-invalid={!!formErrors.email}
                                     aria-describedby={formErrors.email ? 'email-error' : undefined}
                                 />
@@ -391,9 +372,8 @@ export default function ProfilePage() {
                                 inputProps={{
                                     name: 'phone_number',
                                     required: true,
-                                    className: `w-full pl-16 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 transition-colors ${
-                                        formErrors.phone_number ? 'border-red-500' : 'border-[var(--secondary-bg)]'
-                                    }`,
+                                    className: `w-full pl-16 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.phone_number ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                        }`,
                                 }}
                                 buttonStyle={{
                                     border: 'none',
@@ -433,9 +413,8 @@ export default function ProfilePage() {
                                 name="address"
                                 value={defaultAddressId || ''}
                                 onChange={handleAddressChange}
-                                className={`w-full rounded-lg border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${
-                                    formErrors.address ? 'border-red-500' : 'border-[var(--secondary-bg)]'
-                                }`}
+                                className={`w-full rounded-lg border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.address ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                    }`}
                                 aria-invalid={!!formErrors.address}
                                 aria-describedby={formErrors.address ? 'address-error' : undefined}
                             >
@@ -465,71 +444,8 @@ export default function ProfilePage() {
                         )}
                     </motion.div>
 
-                    <hr className="my-6 border-[var(--secondary-bg)]" />
 
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.6 }}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10"
-                    >
-                        <div>
-                            <label className="block mb-2 font-medium text-[var(--text-primary)]">{t('currentPassword')}</label>
-                            <div className="relative">
-                                <input
-                                    type={showCurrentPassword ? 'text' : 'password'}
-                                    name="current_password"
-                                    value={formData.current_password}
-                                    onChange={handleInputChange}
-                                    className={`w-full rounded-lg border px-4 py-3 pr-10 text-sm focus:outline-none focus:ring-2 transition-colors ${
-                                        formErrors.current_password ? 'border-red-500' : 'border-[var(--secondary-bg)]'
-                                    }`}
-                                    aria-invalid={!!formErrors.current_password}
-                                    aria-describedby={formErrors.current_password ? 'currentPassword-error' : undefined}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-gray)]"
-                                >
-                                    {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                </button>
-                            </div>
-                            {formErrors.current_password && (
-                                <p className="text-red-500 text-sm mt-1" id="currentPassword-error">
-                                    {formErrors.current_password}
-                                </p>
-                            )}
-                        </div>
-                        <div>
-                            <label className="block mb-2 font-medium text-[var(--text-primary)]">{t('newPassword')}</label>
-                            <div className="relative">
-                                <input
-                                    type={showNewPassword ? 'text' : 'password'}
-                                    name="new_password"
-                                    value={formData.new_password}
-                                    onChange={handleInputChange}
-                                    className={`w-full rounded-lg border px-4 py-3 pr-10 text-sm focus:outline-none focus:ring-2 transition-colors ${
-                                        formErrors.new_password ? 'border-red-500' : 'border-[var(--secondary-bg)]'
-                                    }`}
-                                    aria-invalid={!!formErrors.new_password}
-                                    aria-describedby={formErrors.new_password ? 'newPassword-error' : undefined}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowNewPassword(!showNewPassword)}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-gray)]"
-                                >
-                                    {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                </button>
-                            </div>
-                            {formErrors.new_password && (
-                                <p className="text-red-500 text-sm mt-1" id="newPassword-error">
-                                    {formErrors.new_password}
-                                </p>
-                            )}
-                        </div>
-                    </motion.div>
+
 
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -550,8 +466,6 @@ export default function ProfilePage() {
                                         last_name: profile.last_name,
                                         email: profile.email,
                                         phone_number: profile.phone_number,
-                                        current_password: '',
-                                        new_password: '',
                                         photo: profile.photo,
                                         remove_photo: false,
                                     });

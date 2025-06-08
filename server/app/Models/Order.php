@@ -8,21 +8,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
     use SoftDeletes;
-
+    protected $table = 'orders';
     protected $fillable = [
         'order_code',
         'address_id',
         'total_price',
         'customer_id',
         'employee_id',
+        'assigned_to',
         'coupon_id',
         'payment_id',
         'status',
+        'skipped_rating',
         'cart_id',
-        'status',
         'delivery_cost',
-        'delivery_date'
-        ];
+        'delivery_date',
+        'payment_method', // Add payment_method to fillable
+        'first_name',
+        'last_name',
+        'phone_number',
+        'is_gift',
+    ];
 
     public function customer()
     {
@@ -34,15 +40,18 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function address(){
+    public function address()
+    {
         return $this->belongsTo(Address::class);
     }
 
-    public function coupon(){
+    public function coupon()
+    {
         return $this->belongsTo(Coupon::class);
     }
 
-    public function payment(){
+    public function payment()
+    {
         return $this->belongsTo(PaymentInfo::class);
     }
 
@@ -54,4 +63,17 @@ class Order extends Model
                     ->withTrashed();
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'order_id', 'id');
+    }
+    public function expert()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
 }

@@ -15,6 +15,16 @@ use function PHPUnit\Framework\isEmpty;
 class AuthController extends Controller
 
 {
+    public function showLoginForm()
+    {
+        if(Auth::check() && Auth::user()->hasAnyRole('Admin|Expert|Employee')){ 
+                if(Auth::user()->hasAnyRole('Employee|Expert'))
+                    return redirect('/dashboard/order')->with('success', 'Login successful');
+
+            return redirect('/dashboard');
+        }
+        return view('admin.Login.login');
+    }
     public function Login(LoginRequest $request)
     {
         if(Auth::check()){
@@ -37,8 +47,14 @@ class AuthController extends Controller
 
         request()->session()->regenerate();
 
+        if(Auth::user()->hasAnyRole('Employee|Expert'))
+            return redirect('/dashboard/order')->with('success', 'Login successful');
+        else if(Auth::user()->hasRole('Customer')){
+            Auth::logout();
+            return redirect('/dashboard/login')->with('error', 'You are not allowed to access this area');
+        }
 
-        return redirect('/dashboard/home')->with('success', 'Login successful');
+        return redirect('/dashboard')->with('success', 'Login successful');
     }
 
 

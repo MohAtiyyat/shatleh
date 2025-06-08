@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Product\AllProductRequest;
 use App\Http\Requests\Dashboard\Product\DeleteProductRequest;
@@ -10,11 +11,13 @@ use App\Http\Requests\Dashboard\Product\StoreProductRequest;
 use App\Http\Requests\Dashboard\Product\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    use HelperTrait;
     public function index(AllProductRequest $request)
     {
         $products = Product::all();
@@ -35,7 +38,7 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             $imagePaths = [];
             foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('product_images', 'public');
+                $imagePath = $image->store('images/products', 'public');
                 $imagePaths[] = Storage::url($imagePath);
             }
             $data['image'] = $imagePaths;
@@ -50,13 +53,14 @@ class ProductController extends Controller
             $product->categories()->sync($request->input('categories'));
         }
 
+        $this->logAction(auth()->id(), 'create_product', 'Product created: ' . $product->name_en . ' (ID: ' . $product->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.product')->with('success', 'Product created successfully.');
     }
 
     public function edit($id)
     {
         $item = Product::with('categories')->findOrFail($id);
-        $categories = Category::where('parent_id', null)->get();
+        $categories = Category::get();
         return view('admin.Product.createUpdate', compact('item', 'categories'));
     }
 
@@ -83,7 +87,7 @@ class ProductController extends Controller
             // Add new images
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $imagePath = $image->store('product_images', 'public');
+                    $imagePath = $image->store('images/products', 'public');
                     $imagePaths[] = Storage::url($imagePath);
                 }
             }
@@ -97,18 +101,30 @@ class ProductController extends Controller
                 $product->categories()->sync($request->input('categories'));
             }
 
+            $this->logAction(auth()->id(), 'update_product', 'Product updated: ' . $data['name_en'] . ' (ID: ' . $product->id . ')', LogsTypes::INFO->value);
             return redirect()->route('dashboard.product')->with('success', 'Product updated successfully.');
         } catch (\Exception $e) {
+            $this->logAction(auth()->id(), 'update_product_error', 'Error updating product: ' . $e->getMessage(), LogsTypes::ERROR->value);
             return redirect()->back()->withErrors(['error' => 'Failed to update product: ' . $e->getMessage()]);
         }
     }
 
     public function show($product)
     {
-        $product = Product::with(['shops' => function ($query) {
-            $query->take(3);
-        }, 'categories'])->findOrFail($product);
-        return view('admin.Product.show', compact('product'));
+       $product = Product::with([
+            'reviews' => function ($query) {
+                $query->select('id', 'product_id', 'rating');
+            },
+            'shops' => function ($query) {
+                $query->take(3);
+            },
+            'categories'
+        ])
+        ->withCount('reviews')
+        ->findOrFail($product);
+
+        $ratingSum = $product->reviews->sum('rating');
+        return view('admin.Product.show', compact('product', 'ratingSum'));
     }
 
     public function delete(DeleteProductRequest $request, $id)
@@ -124,6 +140,7 @@ class ProductController extends Controller
         }
         $product->delete();
 
+        $this->logAction(auth()->id(), 'delete_product', 'Product deleted: ' . $product->name_en . ' (ID: ' . $product->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.product')->with('success', 'Product deleted successfully.');
     }
 

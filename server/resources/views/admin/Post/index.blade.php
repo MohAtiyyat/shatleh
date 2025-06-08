@@ -74,9 +74,11 @@
                         </button>
                     </form>
                 </div>
+                @if(auth()->user()->hasAnyRole('Admin|Expert'))
                 <a href="{{ route('dashboard.post.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus me-1"></i> Create New Post
                 </a>
+                @endif
             </div>
 
             <div class="table-responsive">
@@ -140,6 +142,7 @@
                                 <td>{{ $post->product ? $post->product->name_ar : 'N/A' }}</td>
                                 <td>{{ $post->created_at->format('Y-m-d H:i') }}</td>
                                 <td>
+                                    @if(auth()->user()->hasAnyRole('Admin|Expert'))
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                                             <i class="fas fa-ellipsis-v"></i>
@@ -157,6 +160,11 @@
                                             </li>
                                         </ul>
                                     </div>
+                                    @else
+                                    <a href="{{ route('dashboard.post.show', $post->id) }}" class="btn btn-sm btn-secondary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

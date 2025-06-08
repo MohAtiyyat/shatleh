@@ -11,6 +11,7 @@
         ]"
         :items="$products"
         :Route="'dashboard.product'"
+        :createRoles="'Admin|Employee'"
     >
     <x-slot name="rows">
         @foreach ($products as $product)
@@ -42,6 +43,7 @@
 
                 <td>{{ $product->sold_quantity ?? 0 }}</td>
                 <td>
+                    @if (auth()->user()->hasRole('Admin'))
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-ellipsis-v"></i>
@@ -59,6 +61,10 @@
                             </li>
                         </ul>
                     </div>
+                    @else
+                    <a href="{{ route('dashboard.product.show', $product->id) }}"><i class="fas fa-eye"></i> View</a>
+                    @endif
+                    
                 </td>
             </tr>
         @endforeach

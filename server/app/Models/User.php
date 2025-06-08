@@ -144,4 +144,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Cart::class, 'customer_id');
     }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany(Post::class, 'bookmarks')->withTimestamps();
+    }
+
 }

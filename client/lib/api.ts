@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 import { mockProducts } from './mockData';
-import type { Product, Category, BackendCartItem, Service, BlogPost, PostFilterCategory } from './index';
+import type { Product, Category, BackendCartItem, Service, BlogPost, PostFilterCategory, Order, ServiceRequest } from './index';
 
 interface LoginRequest {
     email: string;
@@ -145,18 +145,6 @@ interface ReviewsResponse {
     };
     message: string;
 }
-
-interface ReviewRequest {
-    product_id: number;
-    rating: number;
-    text: string;
-    customer_id: string;
-}
-
-interface ReviewResponse {
-    data: Review;
-    message: string;
-}
 interface subcategories {
     id: number;
     name_en: string;
@@ -215,6 +203,22 @@ interface CheckoutResponse {
     };
     message: string;
 }
+interface OrdersResponse {
+    data: Order[];
+    message: string;
+}
+interface SearchResponse {
+    data: {
+        products: Product[];
+        posts: BlogPost[];
+        services: Service[];
+    };
+    message: string;
+}
+interface ServiceRequestsResponse {
+    data: ServiceRequest[];
+    message: string;
+}
 
 interface ApiErrorResponse {
     message?: string;
@@ -222,7 +226,7 @@ interface ApiErrorResponse {
     errors?: Record<string, string[]>;
 }
 
-const getAuthToken = (): string | null => {
+export const getAuthToken = (): string | null => {
     return localStorage.getItem('token');
 };
 
@@ -304,7 +308,6 @@ export const logoutApi = async (token: string): Promise<void> => {
 
 export const fetchCategories = async (): Promise<Category[]> => {
     try {
-        console.log('Fetching categories from:', `${API_URL}/api/categories`);
         const response = await fetch(`${API_URL}/api/categories`, {
             method: 'GET',
             headers: {
@@ -325,10 +328,11 @@ export const fetchCategories = async (): Promise<Category[]> => {
                     en: sub.name_en,
                     ar: sub.name_ar,
                 },
+                image: sub.name_en,
                 subcategories: [],
             })),
+            image: category.subcategories.length > 0 ? category.subcategories[0].name_en : '',
         }));
-        console.log('Transformed categories:', transformedCategories);
         return transformedCategories;
     } catch (error) {
         console.error('Failed to fetch categories:', error);
@@ -336,6 +340,39 @@ export const fetchCategories = async (): Promise<Category[]> => {
     }
 };
 
+// Fetch all products, optionally filtered by category IDs
+export const fetchAllProducts = async (category_ids?: number[]): Promise<Product[]> => {
+    try {
+        // Construct query parameters for category filtering
+        const query = category_ids && category_ids.length > 0 ? `?category_ids=${category_ids.join(',')}` : '';
+        const response = await fetch(`${API_URL}/api/all_products${query}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
+        const data = await handleResponse<ProductsResponse>(response);
+        return data.data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        // Return mock products as fallback, ensuring type consistency
+        return mockProducts.map((product) => ({
+            ...product,
+            price: product.price.toString(),
+            availability: !!product.availability,
+            categories: product.categories
+                ? product.categories.map((category) => ({
+                    id: category.id,
+                    name_en: category.name_en || '',
+                    name_ar: category.name_ar || '',
+                    parent_id: null,
+                }))
+                : [],
+            rating: product.rating || undefined,
+        }));
+    }
+};
 export const fetchTopProducts = async (): Promise<Product[]> => {
     try {
         const response = await fetch(`${API_URL}/api/top_sellers`, {
@@ -344,6 +381,7 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },
+            next: { revalidate: 86400 }
         });
         const data = await handleResponse<ProductsResponse>(response);
         return data.data;
@@ -352,28 +390,21 @@ export const fetchTopProducts = async (): Promise<Product[]> => {
     }
 };
 
-export const fetchAllProducts = async (): Promise<Product[]> => {
+export const search = async (query: string, contentType: string = 'all'): Promise<SearchResponse> => {
     try {
-        const response = await fetch(`${API_URL}/api/all_products`, {
+        const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}&type=${contentType}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },
+            next: { revalidate: 30 }
         });
-        const data = await handleResponse<ProductsResponse>(response);
-        return data.data;
+        
+        return await handleResponse<SearchResponse>(response);
     } catch (error) {
-        console.error('Error fetching all products:', error);
-        return mockProducts.map((product) => ({
-            ...product,
-            price: product.price.toString(),
-            availability: !!product.availability,
-            category_id: product.category_id || null,
-            category_en: product.category_en || null,
-            category_ar: product.category_ar || null,
-            rating: product.rating || undefined,
-        }));
+        console.error('Error performing search:', error);
+        throw new Error(error instanceof Error ? error.message : 'Search failed');
     }
 };
 
@@ -617,28 +648,26 @@ export const updateCartItem = async (data: CartUpdateRequest, locale: string): P
     }
 };
 
-export const clearCart = async (customerId: string, locale: string): Promise<CartClearResponse> => {
-    const token = getAuthToken();
+export const clearCart = async (customerId: string, locale: string, token: string | null): Promise<CartClearResponse> => {
     if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("No authentication token found");
     }
     try {
         const response = await fetch(`${API_URL}/api/cart/clear`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
+                "Content-Type": "application/json",
+                Accept: "application/json",
                 Authorization: `Bearer ${token}`,
-                'Accept-Language': locale,
+                "Accept-Language": locale,
             },
             body: JSON.stringify({ customer_id: customerId }),
         });
         return handleResponse<CartClearResponse>(response);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Failed to clear cart');
+        throw new Error(error instanceof Error ? error.message : "Failed to clear cart");
     }
 };
-
 export const fetchProductReviews = async (productId: number): Promise<{ reviews: Review[]; averageRating: number }> => {
     try {
         const response = await fetch(`${API_URL}/api/products/${productId}/reviews`, {
@@ -657,14 +686,57 @@ export const fetchProductReviews = async (productId: number): Promise<{ reviews:
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch product reviews');
     }
 };
-
-export const submitProductReview = async (data: ReviewRequest, locale: string): Promise<Review> => {
+export const fetchOrders = async (locale: string): Promise<Order[]> => {
     const token = getAuthToken();
     if (!token) {
         throw new Error('No authentication token found');
     }
     try {
-        const response = await fetch(`${API_URL}/api/products/reviews`, {
+        const response = await fetch(`${API_URL}/api/orders`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<OrdersResponse>(response);
+        return data.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch orders');
+    }
+};
+
+export const fetchUnratedOrders = async (locale: string): Promise<Order[]> => {
+    const token = getAuthToken();
+    if (!token) {
+        return [];
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/orders/unrated`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+        const data = await handleResponse<OrdersResponse>(response);
+        return data.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch unrated orders');
+    }
+};
+
+export const submitOrderRatings = async (orderId: number, ratings: { product_id: number; rating: number }[], locale: string): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/orders/${orderId}/ratings`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -672,33 +744,89 @@ export const submitProductReview = async (data: ReviewRequest, locale: string): 
                 Authorization: `Bearer ${token}`,
                 'Accept-Language': locale,
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify({ ratings }),
         });
-        const result = await handleResponse<ReviewResponse>(response);
-        return result.data;
+        await handleResponse(response);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Failed to submit review');
+        throw new Error(error instanceof Error ? error.message : 'Failed to submit ratings');
     }
 };
 
-export const fetchBlogPosts = async (locale: string): Promise<BlogPost[]> => {
+export const skipOrderRating = async (orderId: number, locale: string): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/orders/${orderId}/skip-rating`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+        await handleResponse(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to skip rating');
+    }
+};
+export const fetchBlogPosts = async (): Promise<BlogPost[]> => {
     try {
         const response = await fetch(`${API_URL}/api/blog`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                'Accept-Language': locale,
             },
         });
-        const data = await handleResponse<BlogPost[]>(response);
-        return data;
+        return await handleResponse<BlogPost[]>(response);
     } catch (error) {
-        console.error('Failed to fetch blog posts:', error);
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch blog posts');
     }
 };
 
+export const fetchBookmarkedPosts = async (): Promise<BlogPost[]> => {
+    const token = getAuthToken();
+    if (!token) {
+        return []; // Return empty array for unauthenticated users
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/bookmarks`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return await handleResponse<BlogPost[]>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch bookmarked posts');
+    }
+};
+
+export const toggleBookmark = async (postId: number): Promise<boolean> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/blog/${postId}/bookmark`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await handleResponse<{ bookmarked: boolean }>(response);
+        return data.bookmarked;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to toggle bookmark');
+    }
+};
 export const fetchPostCategories = async (locale: string): Promise<PostFilterCategory[]> => {
     try {
         const response = await fetch(`${API_URL}/api/categories`, {
@@ -722,6 +850,33 @@ export const fetchPostCategories = async (locale: string): Promise<PostFilterCat
     } catch (error) {
         console.error('Failed to fetch post categories:', error);
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch post categories');
+    }
+};
+
+
+export const cancelOrder = async (orderId: string, locale: string): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/${orderId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to cancel order');
+        }
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to cancel order');
     }
 };
 
@@ -763,11 +918,11 @@ export const applyCoupon = async (code: string, countryId: number | null): Promi
     }
 };
 
-export const checkout = async (data: CheckoutRequest): Promise<CheckoutResponse> => {
-    const token = getAuthToken();
+export const checkout = async (data: CheckoutRequest, token: string | null): Promise<CheckoutResponse> => {
     if (!token) {
         throw new Error('No authentication token found');
     }
+    console.log('Checkout token:', token); // Log token for debugging
     try {
         const response = await fetch(`${API_URL}/api/checkout`, {
             method: 'POST',
@@ -778,8 +933,35 @@ export const checkout = async (data: CheckoutRequest): Promise<CheckoutResponse>
             },
             body: JSON.stringify(data),
         });
+        if (response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            throw new Error('Session expired. Please log in again.');
+        }
         return await handleResponse<CheckoutResponse>(response);
     } catch (error) {
+        console.error('Checkout error:', error);
         throw new Error(error instanceof Error ? error.message : 'Checkout failed');
+    }
+};
+export const fetchServiceRequests = async (locale: string): Promise<ServiceRequest[]> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/service-requests`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale, // Pass locale for language-specific responses
+            },
+        });
+        const data = await handleResponse<ServiceRequestsResponse>(response);
+        return data.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch service requests');
     }
 };

@@ -11,9 +11,10 @@ export const mockProducts: Product[] = [
     description_ar: 'وصف منتج عينة',
     availability: true,
     sold_quantity: 20,
-    category_id: 1,
-    category_en: 'seeds',
-    category_ar: 'بذور',
+    categories: [
+      { id: 1, name_en: 'Electronics', name_ar: 'إلكترونيات', parent_id: null },
+      { id: 2, name_en: 'Mobile Phones', name_ar: 'هواتف محمولة', parent_id: 1 },
+    ],
     rating: 4.5,
   },
   // Add more mock products as needed

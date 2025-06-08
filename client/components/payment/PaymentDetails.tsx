@@ -6,7 +6,7 @@ import { useCartStore } from '../../lib/store';
 import { useStickyFooter } from '../../lib/useStickyFooter';
 import BillingDetails from './BillingForm';
 import PaymentMethodSelector from './PaymentMethodSelector';
-import CardDetailsForm from './CardDetailsForm';
+// import CardDetailsForm from './CardDetailsForm';
 import ConfirmButton from './ConfirmButton';
 import { formatPrice } from '../../lib/utils';
 import { useState, useEffect } from 'react';
@@ -26,7 +26,9 @@ interface Coupon {
 interface PaymentDetailsProps {
     userData: UserData;
     addresses: Address[];
+    setAddresses: React.Dispatch<React.SetStateAction<Address[]>>; // Added prop
     defaultAddressId: number | null;
+    setDefaultAddressId: (id: number | null) => void;
     couponCode: string;
     setCouponCode: (code: string) => void;
     couponApplied: boolean;
@@ -35,12 +37,16 @@ interface PaymentDetailsProps {
     setCouponDiscount: (discount: number) => void;
     couponError: string | null;
     setCouponError: (error: string | null) => void;
+    currentLocale: 'en' | 'ar';
 }
+
 
 export default function PaymentDetails({
     userData,
     addresses,
+    setAddresses, // Added to props
     defaultAddressId,
+    setDefaultAddressId,
     couponCode,
     setCouponCode,
     couponApplied,
@@ -91,40 +97,40 @@ export default function PaymentDetails({
     }, 0);
     const shipping = 2;
     const tax = 0;
-    const originalTotal = subtotal + shipping + tax;
-    const discountedTotal = couponApplied ? originalTotal * (1 - couponDiscount) : originalTotal;
+    const originalTotal = subtotal  + tax;
+    const discountedTotal = (couponApplied ? originalTotal * (1 - couponDiscount)  : originalTotal)+ shipping;
 
     // Get selected address country_id
     const selectedAddress = addresses.find((addr) => addr.id === defaultAddressId);
     const countryId = selectedAddress?.country_id || null;
 
     // Format card number (add spaces every 4 digits)
-    const formatCardNumber = (value: string) => {
-        const digits = value.replace(/\D/g, '').slice(0, 16);
-        return digits.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
-    };
+    // const formatCardNumber = (value: string) => {
+    //     const digits = value.replace(/\D/g, '').slice(0, 16);
+    //     return digits.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+    // };
 
-    // Format expiry date (MM/YY)
-    const formatExpiryDate = (value: string) => {
-        const digits = value.replace(/\D/g, '').slice(0, 4);
-        if (digits.length <= 2) return digits;
-        return `${digits.slice(0, 2)}/${digits.slice(2, 4)}`;
-    };
+    // // Format expiry date (MM/YY)
+    // const formatExpiryDate = (value: string) => {
+    //     const digits = value.replace(/\D/g, '').slice(0, 4);
+    //     if (digits.length <= 2) return digits;
+    //     return `${digits.slice(0, 2)}/${digits.slice(2, 4)}`;
+    // };
 
-    // Handle input changes
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        let formattedValue = value;
-        if (name === 'cardNumber') {
-            formattedValue = formatCardNumber(value);
-        } else if (name === 'expiryDate') {
-            formattedValue = formatExpiryDate(value);
-        } else if (name === 'cvv') {
-            formattedValue = value.replace(/\D/g, '').slice(0, 4);
-        }
-        setFormData((prev) => ({ ...prev, [name]: formattedValue }));
-        setFormErrors((prev) => ({ ...prev, [name]: undefined }));
-    };
+    // // Handle input changes
+    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const { name, value } = e.target;
+    //     let formattedValue = value;
+    //     if (name === 'cardNumber') {
+    //         formattedValue = formatCardNumber(value);
+    //     } else if (name === 'expiryDate') {
+    //         formattedValue = formatExpiryDate(value);
+    //     } else if (name === 'cvv') {
+    //         formattedValue = value.replace(/\D/g, '').slice(0, 4);
+    //     }
+    //     setFormData((prev) => ({ ...prev, [name]: formattedValue }));
+    //     setFormErrors((prev) => ({ ...prev, [name]: undefined }));
+    // };
 
     // Handle gift fields change
     const handleGiftInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,7 +194,9 @@ export default function PaymentDetails({
 
     return (
         <div
-            className={`sticky-container p-6 sm:p-8 w-[95%] md:w-full max-w-md sm:max-w-lg lg:max-w-2xl mx-auto lg:mx-7 min-h-[450px] sm:mx-auto md:mx-auto flex flex-col z-10 rounded-lg shadow-md ${isFooterVisible ? 'lg:sticky lg:top-25' : 'lg:sticky lg:top-25'}`}
+            className={`sticky-container p-6 sm:p-8 w-[95%] md:w-full max-w-md sm:max-w-lg lg:max-w-2xl mx-auto lg:mx-7 min-h-[450px] sm:mx-auto md:mx-auto flex flex-col z-10 rounded-lg shadow-md ${
+                isFooterVisible ? 'lg:sticky lg:top-25' : 'lg:sticky lg:top-25'
+            }`}
             style={{ backgroundColor: 'var(--primary-bg)', borderColor: 'var(--secondary-bg)' }}
             role="region"
             aria-label={t('paymentDetails')}
@@ -200,7 +208,9 @@ export default function PaymentDetails({
             <BillingDetails
                 userData={userData}
                 addresses={addresses}
+                setAddresses={setAddresses} // Pass setAddresses
                 defaultAddressId={defaultAddressId}
+                setDefaultAddressId={setDefaultAddressId}
                 formData={formData}
                 formErrors={formErrors}
                 handleGiftInputChange={handleGiftInputChange}
@@ -262,12 +272,12 @@ export default function PaymentDetails({
                 handlePaymentMethodChange={handlePaymentMethodChange}
             />
 
-            <CardDetailsForm
+            {/* <CardDetailsForm
                 formData={formData}
                 formErrors={formErrors}
                 handleInputChange={handleInputChange}
                 isVisible={formData.paymentMethod === 'credit-card'}
-            />
+            /> */}
 
             <ConfirmButton
                 formData={formData}

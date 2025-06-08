@@ -60,7 +60,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose, currentLocale }) =
                             : 'Your service request has been submitted successfully. You can view the request details in the orders page.'}
                     </p>
                     <div className="flex justify-between gap-4">
-                        <Link href={`/${currentLocale}/orders`}>
+                        <Link href={`/${currentLocale}/service-requests`}>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}

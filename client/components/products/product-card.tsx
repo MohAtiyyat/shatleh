@@ -19,12 +19,12 @@ const truncateText = (text: string, maxLength: number = 100): string => {
 };
 
 interface ProductCardProps {
-    product: Product;
+    product: Product;   
     index: number;
     pageName: string;
 }
 
-function ProductCard({ product, index, pageName }: ProductCardProps) {
+function ProductCard({ product, pageName }: ProductCardProps) {
     const t = useTranslations('');
     const pathname = usePathname();
     const currentLocale = pathname.split('/')[1] || 'ar';
@@ -37,11 +37,11 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
 
     const label = !product.availability
         ? t('products.outOfStockLabel')
-        : product.sold_quantity > 10
+        : product.sold_quantity && product.sold_quantity > 10
             ? t('products.topSellingLabel')
             : null;
 
-   
+
 
     const description = truncateText(
         currentLocale === 'ar' ? product.description_ar : product.description_en,
@@ -61,7 +61,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                         description_en: product.description_en,
                         description_ar: product.description_ar,
                         price: product.price,
-                        image: product.image,
+                        image: product.image[0],
                     },
                     userId,
                     currentLocale
@@ -92,8 +92,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                    duration: 0.4,
-                    delay: index * 0.1,
+                    duration: 0.2,
                     ease: 'easeOut',
                 }}
                 whileHover={{
@@ -103,7 +102,7 @@ function ProductCard({ product, index, pageName }: ProductCardProps) {
                 className={
                     pageName !== 'products'
                         ? 'bg-[#337a5b] rounded-xl p-4 text-white flex flex-col justify-between h-full w-full relative cursor-pointer'
-                        : 'bg-[#337a5b] rounded-xl p-4 text-white flex flex-col justify-between h-full relative cursor-pointer w-full sm:w-[280px]'
+                        : 'bg-[#337a5b] rounded-xl p-4 text-white flex flex-col justify-between h-full relative cursor-pointer w-[280px]'
                 }
                 aria-label={currentLocale === 'ar' ? product.name_ar : product.name_en}
             >

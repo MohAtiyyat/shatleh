@@ -14,51 +14,59 @@ export function formatPrice(price: number | string, locale: string): string {
   return `${formatter.format(numericPrice)} ${locale === 'ar' ? 'د.أ' : 'JD'}`;
 }
 
-
 export function getRelatedProducts(
   currentProduct: Product,
   allProducts: Product[],
   categories: Category[],
   maxProducts: number = 10
 ): Product[] {
-  if (!currentProduct || !currentProduct.category_id) {
-    // If no current product or category_id, return random products
+  if (!currentProduct || !currentProduct.categories || currentProduct.categories.length === 0) {
+    // If no current product or categories, return random products
     const shuffledProducts = allProducts
       .filter((product) => product.id !== currentProduct?.id)
       .sort(() => Math.random() - 0.5);
     return shuffledProducts.slice(0, maxProducts);
   }
 
-  // Find the parent category if the current product's category_id is a subcategory
-  let parentCategoryId: number | null = null;
-  for (const category of categories) {
-    if (category.id === currentProduct.category_id) {
-      parentCategoryId = category.id;
-      break;
-    }
-    const subcategory = category.subcategories.find((sub) => sub.id === currentProduct.category_id);
-    if (subcategory) {
-      parentCategoryId = category.id;
-      break;
+  // Collect all category IDs (primary and subcategories) for the current product
+  const parentCategoryIds = currentProduct.categories
+    .filter((cat) => cat.parent_id === null)
+    .map((cat) => cat.id);
+  const subcategoryIds = currentProduct.categories
+    .filter((cat) => cat.parent_id !== null)
+    .map((cat) => cat.id);
+
+  // Find parent category IDs for subcategories
+  const relatedParentCategoryIds = new Set<number>();
+  for (const subcategoryId of subcategoryIds) {
+    for (const category of categories) {
+      if (category.subcategories.some((sub) => sub.id === subcategoryId)) {
+        relatedParentCategoryIds.add(category.id);
+      }
     }
   }
 
-  // Filter products that match the current product's category_id or parent category_id
+  // Filter products that match the current product's categories or parent categories
   const relatedProducts = allProducts.filter((product) => {
     if (product.id === currentProduct.id) {
       return false; // Exclude the current product
     }
-    if (product.category_id === currentProduct.category_id) {
+    // Check if product shares any category or subcategory
+    const productCategoryIds = product.categories.map((cat) => cat.id);
+    if (productCategoryIds.some((id) => productCategoryIds.includes(id))) {
       return true; // Match same category or subcategory
     }
-    if (parentCategoryId && product.category_id === parentCategoryId) {
+    // Check if product belongs to a parent category of the current product's subcategories
+    if (productCategoryIds.some((id) => relatedParentCategoryIds.has(id))) {
       return true; // Match parent category
     }
-    // Check if product's category_id is a subcategory of the parent category
-    if (parentCategoryId) {
+    // Check if product's category is a subcategory of any parent category
+    for (const parentId of parentCategoryIds) {
       for (const category of categories) {
-        if (category.id === parentCategoryId) {
-          return category.subcategories.some((sub) => sub.id === product.category_id);
+        if (category.id === parentId) {
+          if (productCategoryIds.some((id) => category.subcategories.some((sub) => sub.id === id))) {
+            return true;
+          }
         }
       }
     }

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { fetchCart, updateCartItem, clearCart } from './api';
 
-interface CartItem {
+export interface CartItem {
     id: number;
     product_id: number;
     
@@ -152,10 +152,11 @@ export const useCartStore = create<CartState>()(
                 clearCart: async (userId, locale) => {
                     set({ isLoading: true, error: null });
                     const previousItems = get().items;
+                    const token = localStorage.getItem('token');
                     try {
                         set({ items: [] });
                         if (userId) {
-                            await clearCart(userId, locale);
+                            await clearCart(userId, locale, token);
                         }
                         await get().syncWithBackend(userId, locale);
                     } catch (error) {
@@ -181,7 +182,6 @@ export const useCartStore = create<CartState>()(
                     set({ isLoading: true, error: null });
                     try {
                         const data = await fetchCart(userId, locale);
-                        console.log('Fetched cart items:', data);
                         const mappedItems: CartItem[] = data.map((item) => ({
                             id: item.id,
                             product_id: item.product_id,
@@ -220,8 +220,6 @@ export const useCartStore = create<CartState>()(
                                 locale
                             );
                         }
-
-                        console.log('Cart synced successfully:', mergedItems);
                     } catch (error) {
                         console.error('Error syncing with backend:', error);
                         set({ error: getErrorMessage(error) });

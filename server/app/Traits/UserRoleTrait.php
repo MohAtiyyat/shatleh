@@ -8,14 +8,7 @@ trait UserRoleTrait
 {
     public function admin()
     {
-        return (Auth::check() && Auth::user()->hasAnyRole('Admin', 'Expert', 'Employee'))||$this->redirectToLogin();
+        return (Auth::check() && Auth::user()->hasAnyRole('Admin', 'Expert', 'Employee'));
     }
 
-    public function redirectToLogin()
-    {
-        if (Auth::check()) {
-           Auth::logout();
-        }
-        return redirect('/dashboard/login');
-    }
 }

@@ -39,11 +39,6 @@
     .form-group textarea {
         min-height: 100px;
     }
-    .form-group select[multiple] {
-        height: 150px;
-        width: 100%;
-        max-width: 500px;
-    }
     .custom-file {
         position: relative;
         display: inline-block;
@@ -90,7 +85,7 @@
         transition: all 0.3s;
     }
     .btn-primary {
-        background-color: #007bff;
+        background-color: #28a745;
         border: none;
         color: white;
     }
@@ -144,9 +139,79 @@
         word-break: break-all;
     }
     .new-image-preview {
-        border: 2px dashed #007bff;
+        border: 2px dashed #28a745;
         padding: 5px;
         background: #f8f9fa;
+    }
+    .category-checkboxes {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f9f9f9;
+        margin-bottom: 10px;
+    }
+    .category-checkboxes label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        transition: color 0.3s ease;
+    }
+    .category-checkboxes input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #28a745;
+        border-radius: 4px;
+        margin-right: 10px;
+        position: relative;
+        outline: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    .category-checkboxes input[type="checkbox"]:checked {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    .category-checkboxes input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ffc107;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .category-checkboxes input[type="checkbox"]:hover {
+        border-color: #218838;
+    }
+    .category-checkboxes input[type="checkbox"]:focus {
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+    }
+    .category-checkboxes input[type="checkbox"]:disabled {
+        border-color: #ccc;
+        background-color: #f1f1f1;
+        cursor: not-allowed;
+    }
+    .subcategory-checkboxes {
+        padding-left: 25px;
+        margin-top: 8px;
+        border-left: 2px solid #e6f4ea;
+    }
+    .subcategory-checkboxes label {
+        font-weight: 400;
+        color: #555;
+    }
+    .category-checkboxes label:hover {
+        color: #28a745;
+    }
+    .main-category-checkbox + label {
+        font-weight: 500;
     }
 </style>
 @endsection
@@ -188,7 +253,7 @@
             <!-- Price -->
             <div class="form-group">
                 <label for="price">Price</label>
-                <input type="number" id="price" name="price" placeholder="Enter price" min="0" required
+                <input type="number" id="price" step="0.01" name="price" placeholder="Enter price" min="0" required
                        value="{{ old('price', isset($item) ? $item->price : '') }}">
                 @error('price')
                     <div class="text-danger">{{ $message }}</div>
@@ -224,15 +289,43 @@
 
             <!-- Categories -->
             <div class="form-group">
-                <label for="categories">Categories</label>
-                <select id="categories" name="categories[]" multiple required size="6">
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}"
-                            {{ isset($item) && $item->categories->pluck('id')->contains($category->id) ? 'selected' : (old('categories', []) && in_array($category->id, old('categories', [])) ? 'selected' : '') }}>
-                            {{ $category->name_ar }} / {{ $category->name_en }}
-                        </option>
+                <label for="categories">Categories <span class="text-danger">*</span></label>
+                <div class="category-checkboxes">
+                    @php
+                        $mainCategories = $categories->whereNull('parent_id');
+                        $selectedCategoryIds = isset($item) && $item->categories ? $item->categories->pluck('id')->toArray() : old('categories', []);
+                    @endphp
+                    @foreach($mainCategories as $mainCategory)
+                        <div>
+                            <label for="main-category-{{ $mainCategory->id }}">
+                                <input type="checkbox"
+                                       id="main-category-{{ $mainCategory->id }}"
+                                       name="categories[]"
+                                       value="{{ $mainCategory->id }}"
+                                       class="main-category-checkbox"
+                                       data-category-id="{{ $mainCategory->id }}"
+                                       {{ in_array($mainCategory->id, $selectedCategoryIds) ? 'checked' : '' }}>
+                                {{ $mainCategory->name_ar }} / {{ $mainCategory->name_en }}
+                            </label>
+                            <div class="subcategory-checkboxes" id="subcategories-{{ $mainCategory->id }}"
+                                 style="display: {{ in_array($mainCategory->id, $selectedCategoryIds) ? 'block' : 'none' }};">
+                                @php
+                                    $subCategories = $categories->where('parent_id', $mainCategory->id);
+                                @endphp
+                                @foreach($subCategories as $subCategory)
+                                    <label for="sub-category-{{ $subCategory->id }}">
+                                        <input type="checkbox"
+                                               id="sub-category-{{ $subCategory->id }}"
+                                               name="categories[]"
+                                               value="{{ $subCategory->id }}"
+                                               {{ in_array($subCategory->id, $selectedCategoryIds) ? 'checked' : '' }}>
+                                        {{ $subCategory->name_ar }} / {{ $subCategory->name_en }}
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
                     @endforeach
-                </select>
+                </div>
                 @error('categories')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -262,7 +355,6 @@
                 <select id="status" name="status" required>
                     <option value="active" {{ old('status', isset($item) ? $item->status : '') == '1' ? 'selected' : '' }}>Active</option>
                     <option value="inactive" {{ old('status', isset($item) ? $item->status : '') == '0' ? 'selected' : '' }}>Inactive</option>
-                    <option value="draft" {{ old('status', isset($item) ? $item->status : '') == '2' ? 'selected' : '' }}>Draft</option>
                 </select>
                 @error('status')
                     <div class="text-danger">{{ $message }}</div>
@@ -275,7 +367,6 @@
                 <select id="availability" name="availability" required>
                     <option value="1" {{ old('availability', isset($item) ? $item->availability : '') == '1' ? 'selected' : '' }}>In Stock</option>
                     <option value="0" {{ old('availability', isset($item) ? $item->availability : '') == '0' ? 'selected' : '' }}>Out of Stock</option>
-                    <option value="2" {{ old('availability', isset($item) ? $item->availability : '') == '2' ? 'selected' : '' }}>Pre-order</option>
                 </select>
                 @error('availability')
                     <div class="text-danger">{{ $message }}</div>
@@ -339,6 +430,31 @@
                 }
             }
         };
+
+        // Initialize subcategory visibility for pre-checked main categories
+        document.querySelectorAll('.main-category-checkbox').forEach(checkbox => {
+            const subContainer = document.getElementById(`subcategories-${checkbox.dataset.categoryId}`);
+            if (subContainer) {
+                subContainer.style.display = checkbox.checked ? 'block' : 'none';
+            }
+
+            // Toggle subcategories on change
+            checkbox.addEventListener('change', function () {
+                if (subContainer) {
+                    subContainer.style.display = this.checked ? 'block' : 'none';
+                }
+            });
+        });
+
+        // Client-side validation for categories
+        document.getElementById('productForm').addEventListener('submit', function (e) {
+            const checkedCategories = document.querySelectorAll('input[name="categories[]"]:checked');
+            if (checkedCategories.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one category.');
+                document.querySelector('.category-checkboxes').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
     });
 </script>
 @endsection

@@ -6,9 +6,10 @@ use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ServiceController;
-use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
@@ -20,13 +21,16 @@ Route::prefix('api')->group(function () {
     Route::get('/categories', [ProductController::class, 'categories'])->name('api.categories');
     Route::get('/products/{productId}/reviews', [ReviewController::class, 'getTopReviews'])->name('api.reviews.index');
     Route::get('/blog', [PostController::class, 'index'])->name('api.blog.index');
-    Route::get('/blog/{id}', [PostController::class, 'show'])->name('api.blog.show');    Route::get('/coupons', [CouponController::class, 'index'])->name('api.coupons.index');
+    Route::get('/blog/{id}', [PostController::class, 'show'])->name('api.blog.show');
+    Route::get('/coupons', [CouponController::class, 'index'])->name('api.coupons.index');
+    Route::get('/search', [ProductController::class, 'search'])->name('api.search');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
         Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('api.checkout');
         Route::post('/service-requests', [ServiceController::class, 'storeServiceRequest'])->name('api.service-requests.store');
-        Route::post('/products/reviews', [ReviewController::class, 'submitReview'])->name('api.reviews.store');
+        Route::post('/blog/{postId}/bookmark', [PostController::class, 'bookmarksToggle'])->name('api.blog.bookmark');
+        Route::get('/bookmarks', [PostController::class, 'getBookmarks'])->name('api.bookmarks');
 
         // Profile routes
         Route::get('/profile', [ProfileController::class, 'getProfile'])->name('api.profile.show');
@@ -46,5 +50,15 @@ Route::prefix('api')->group(function () {
 
         // Coupon routes
         Route::post('/coupons/apply', [CouponController::class, 'apply'])->name('api.coupons.apply');
+
+        // Orders routes
+        Route::get('/orders', [OrderController::class, 'index'])->name('api.orders.index');
+        Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('api.orders.cancel');
+        Route::get('/orders/unrated', [OrderController::class, 'getUnratedOrders'])->name('api.orders.unrated');
+        Route::post('/orders/{id}/ratings', [OrderController::class, 'submitRatings'])->name('api.orders.ratings');
+        Route::post('/orders/{id}/skip-rating', [OrderController::class, 'skipRating'])->name('api.orders.skip-rating');
+
+        // Service requests
+        Route::get('/service-requests', [ProfileController::class, 'getServiceRequests'])->name('api.service_requests.index');
     });
 });

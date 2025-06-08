@@ -11,6 +11,7 @@
         ]"
         :items="$services"
         :Route="'dashboard.service'"
+        :createRoles="'Admin|Employee'"
     >
     <x-slot name="rows">
         @foreach ($services as $service)
@@ -22,13 +23,13 @@
                 $statusClassMap = [
                     1 => ['label' => 'Active', 'class' => 'status-badge status-active'],
                     0 => ['label' => 'Unactive', 'class' => 'status-badge status-inactive'],
-                    2 => ['label' => 'Draft', 'class' => 'status-badge status-draft'],
                 ];
                 $status = $statusClassMap[$service->status] ?? ['label' => 'Unknown', 'class' => 'status-badge'];
                 @endphp
                 <td><span class="{{ $status['class'] }}">{{ $status['label'] }}</span></td>
-                <td>{{ $requested_times[$service->id] ?? 0 }}</td>
+                <td>{{ $requested_time[$service->id] ?? 0 }}</td>
                 <td>
+                    @if(auth()->user()->hasAnyRole('Admin|Employee'))
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-ellipsis-v"></i>
@@ -46,6 +47,9 @@
                             </li>
                         </ul>
                     </div>
+                    @else
+                        <a href="{{ route('dashboard.service.show', $service->id) }}"><i class="fas fa-eye"></i> View</a>
+                    @endif
                 </td>
             </tr>
         @endforeach

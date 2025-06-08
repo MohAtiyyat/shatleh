@@ -49,10 +49,6 @@ export default function HeroSection({ currentLocale }: HeroSectionProps) {
         setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }
 
-    const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
-    }
-
     return (
         <section className="relative h-[90vh] w-full overflow-hidden" dir={currentLocale === "ar" ? "rtl" : "ltr"}>
             <div className="absolute inset-0 bg-black/30 z-10"></div>
@@ -75,36 +71,23 @@ export default function HeroSection({ currentLocale }: HeroSectionProps) {
                 <p className="text-xl max-w-2xl opacity-90">{heroSlides[currentSlide].description}</p>
 
                 <div className="mt-10 flex gap-4">
-                    <Link href={`/${currentLocale}/coming-soon`}>
+                    <Link href={`/${currentLocale}/products`}>
                         <button className="bg-[#337a5b] hover:bg-[#0f4229] text-white px-8 py-3 rounded-full transition-colors md:flex hidden ">
                             {t("home.shopNow")}
                         </button>
                     </Link>
-                    <Link href={`/${currentLocale}/coming-soon`}>
+                    <Link href={`/${currentLocale}/services`}>
                         <button className="md:flex hidden bg-[#a9f59d] hover:bg-[#8ed67d] text-[#0f4229]  px-8 py-3 rounded-full transition-colors">
                             {t("home.requestService")}
                         </button>
                     </Link>
-                    <Link href={`/${currentLocale}/coming-soon`}>
+                    <Link href={`/${currentLocale}/about-us`}>
                         <button className="md:flex hidden  border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white hover:text-[#0f4229] transition-colors">
                             {t("home.learnMore")}
                         </button>
                     </Link>
                 </div>
             </motion.div>
-
-            <button
-                onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full md:flex hidden  items-center justify-center text-white transition-colors "
-            >
-                <span className="text-2xl ">{currentLocale === "ar" ? ">" : "<"}</span>
-            </button>
-            <button
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full md:flex hidden items-center justify-center text-white transition-colors "
-            >
-                <span className="text-2xl">{currentLocale === "ar" ? "<" : ">"}</span>
-            </button>
 
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2">
                 {heroSlides.map((_, index) => (

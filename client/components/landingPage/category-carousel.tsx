@@ -4,12 +4,10 @@
     import Image from "next/image"
     import Link from "next/link"
     import { Swiper, SwiperSlide } from "swiper/react"
-    import { EffectCoverflow, Pagination, Navigation } from "swiper/modules"
+    import { EffectCoverflow, Pagination } from "swiper/modules"
     import type { Category, Locale } from "../../lib"
-    // Import Swiper core and types
-    import { SwiperOptions, Swiper as SwiperClass } from "swiper/types"
+    import { SwiperOptions,  } from "swiper/types"
 
-    // Import Swiper styles
     import "swiper/css"
     import "swiper/css/effect-coverflow"
     import "swiper/css/pagination"
@@ -21,8 +19,6 @@
     }
 
     export default function CategoryCarousel({ categories, currentLocale }: CategoryCarouselProps) {
-        const [activeIndex, setActiveIndex] = useState(3)
-        console.log("activeIndex", activeIndex)
         const [screenSize, setScreenSize] = useState<'small' | 'medium' | 'large'>('medium')
 
         useEffect(() => {
@@ -67,10 +63,6 @@
                     slideShadows: false,
                 },
                 pagination: { clickable: true },
-                navigation: {
-                    prevEl: '.custom-swiper-button-prev',
-                    nextEl: '.custom-swiper-button-next',
-                },
             }
         }
 
@@ -79,15 +71,14 @@
                 <div className="max-w-5xl mx-auto">
                     <Swiper
                         {...getSwiperParams()}
-                        modules={[EffectCoverflow, Pagination, Navigation]}
-                        onSlideChange={(swiper: SwiperClass) => setActiveIndex(swiper.activeIndex)}
+                        modules={[EffectCoverflow, Pagination]}
                         className="swiper-container"
                     >
                         {categories.map((category, index) => (
                             <SwiperSlide key={index} className="swiper-slide" style={{ width: '280px' }}>
                                 <Link
                                     href={`/${currentLocale}/products`}
-                                    onClick={() => handleCategoryClick(category.title[currentLocale])}
+                                    onClick={() => handleCategoryClick(category.name[currentLocale])}
                                 >
                                     <div
                                         className={`bg-[var(--accent-color)] rounded-xl p-6 flex flex-col items-center text-white h-[400px] mx-auto w-[260px] transform transition-all duration-300 hover:scale-105 hover:shadow-lg `}
@@ -96,11 +87,11 @@
                                             className="flex-1 flex items-center justify-center mb-8"
                                             width={200}
                                             height={200}
-                                            src={category.svg || "/placeholder.svg"}
-                                            alt={category.title[currentLocale]}
+                                            src={category.image || "/placeholder.svg"}
+                                            alt={category.name[currentLocale]}
                                         />
                                         <div className="text-center">
-                                            <p className="text-lg">{category.title[currentLocale]}</p>
+                                            <p className="text-lg">{category.name[currentLocale]}</p>
                                         </div>
                                     </div>
                                 </Link>
@@ -108,18 +99,6 @@
                         ))}
                     </Swiper>
 
-                    <button
-                        className="custom-swiper-button-prev absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full flex items-center justify-center text-white transition-colors"
-                        aria-label="Previous"
-                    >
-                        <span className="text-2xl">{currentLocale === "ar" ? ">" : "<"}</span>
-                    </button>
-                    <button
-                        className="custom-swiper-button-next absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-[#a9f59d]/30 hover:bg-[#a9f59d]/50 w-12 h-12 rounded-full flex items-center justify-center text-white transition-colors"
-                        aria-label="Next"
-                    >
-                        <span className="text-2xl">{currentLocale === "ar" ? "<" : ">"}</span>
-                    </button>
                 </div>
 
                 <style jsx global>{`

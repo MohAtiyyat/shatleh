@@ -24,7 +24,7 @@ export default function SearchBar({ searchTerm, setSearchTerm, onSearch }: Searc
   };
 
   return (
-    <div className="relative lg:min-w-xl sm:max-w-lg  mb-2 ">
+    <div className="relative sm:max-w-xl md:min-w-xl    mb-2 ">
       <input
         type="text"
         value={searchTerm}
@@ -35,7 +35,7 @@ export default function SearchBar({ searchTerm, setSearchTerm, onSearch }: Searc
       />
       <button
         onClick={onSearch}
-        className={`absolute top-1/2 -translate-y-1/2 bg-[#80ce97] p-2 rounded-full ${currentLocal === "ar" ? "left-1" : "right-1"}   `}
+        className={`absolute top-6 -translate-y-1/2 bg-[#80ce97] p-2 rounded-full ${currentLocal === "ar" ? "left-1" : "right-1"}   `}
       >
         <Search  className="h-5 w-5 text-white" />
       </button>

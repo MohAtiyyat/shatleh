@@ -7,7 +7,7 @@
     <x-management-table
         title="Order Management"
         :headers="[
-            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Status', 'Payment Info', 'Address', 'Actions'
+            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Assigned To', 'Status', 'Payment Info', 'Address', 'Actions'
         ]"
         :items="$order"
         :Route="'dashboard.order'"
@@ -17,18 +17,33 @@
             @foreach ($order as $record)
                 <tr>
                     <td>{{ $record->id }}</td>
-                    <td>{{ $record->customer->user->first_name ?? '' }} {{ $record->customer->user->last_name ?? '' }}</td>
+                    <td>{{ $record->customer->first_name ?? '' }} {{ $record->customer->last_name ?? '' }}</td>
                     <td>
                         {{ $record->employee ? $record->employee->first_name . ' ' . $record->employee->last_name : 'N/A' }}
                     </td>
                     <td>{{ $record->first_name ?? 'N/A' }} {{ $record->last_name ?? '' }}</td>
                     <td>{{ $record->phone_number ?? 'N/A' }}</td>
                     <td>
+                        @if ($record->expert)
+                            {{ $record->expert->first_name }} {{ $record->expert->last_name }}
+                        @else
+                            <form method="POST" action="{{ route($Route . '.assign', $record->id) }}">
+                                @csrf
+                                <select name="expert_id" onchange="this.form.submit()" class="form-select">
+                                    <option value="">Select Expert</option>
+                                    @foreach($experts as $id => $name)
+                                        <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        @endif
+                    </td>
+                    <td>
                         <form action="{{ route($Route . '.updateStatus', $record->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <select name="status" class="form-select" onchange="this.form.submit()">
-                                @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
+                                @foreach(['pending', 'inProgress', 'delivered', 'cancelled'] as $status)
                                     <option value="{{ $status }}" {{ $record->status === $status ? 'selected' : '' }}>
                                         {{ ucfirst($status) }}
                                     </option>
@@ -48,14 +63,7 @@
                     </td>
 
                     <td>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route($Route . '.show', $record->id) }}"><i class="fas fa-eye"></i> View</a></li>
-                            </ul>
-                        </div>
+                        <a href="{{ route($Route . '.show', $record->id) }}"><i class="fas fa-eye"></i> View</a>
                     </td>
                 </tr>
             @endforeach

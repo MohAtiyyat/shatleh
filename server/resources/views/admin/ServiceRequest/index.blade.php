@@ -6,7 +6,7 @@
 @section('content')
     <x-management-table
         title="Service Request Management"
-        :headers="['#', 'Customer Name', 'Assign To Expert','Status', 'Managed By Employee','Address']"
+        :headers="['#', 'Customer Name', 'Service Name', 'Assigned To','Status', 'Managed By Employee','Address', 'Action']"
         :items="$serviceRequests"
         :Route="'dashboard.service-request'"
     >
@@ -20,11 +20,17 @@
 
                     {{-- Customer Name --}}
                     <td>
-                        <a href="{{ route('dashboard.customer.index', ['search' => $serviceRequest->customer->user->email]) }}">
-                            {{ $serviceRequest->customer?->user?->first_name }} {{ $serviceRequest->customer?->user?->last_name }}
+                        <a href="{{ route('dashboard.customer.index', ['search' => $serviceRequest->customer->email]) }}">
+                            {{ $serviceRequest->customer?->first_name }} {{ $serviceRequest->customer?->last_name }}
                         </a>
                     </td>
 
+                    {{-- Service Name --}}
+                    <td>
+                        <a href="{{ route('dashboard.service', ['search' => $serviceRequest->service?->name_en]) }}">
+                            {{ $serviceRequest->service?->name_en }}
+                        </a>
+                    </td>
                     {{-- Assign to Expert --}}
                     <td>
                         @if ($serviceRequest->expert)
@@ -50,7 +56,7 @@
                             <select name="status" onchange="this.form.submit()" class="form-select">
                                 <option value="{{ $serviceRequest->status }}">{{ $serviceRequest->status }}</option>
                                 <option value="pending">Pending</option>
-                                <option value="in progress">In Progress</option>
+                                <option value="inProgress">In Progress</option>
                                 <option value="completed">Completed</option>
                             </select>
                         </form>
@@ -68,6 +74,18 @@
                         @include('/components/address-popout', [
                             'addresses' => [$serviceRequest->address]
                         ])
+                    </td>
+
+                    {{-- Actions --}}
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route($Route . '.show', $serviceRequest->id) }}"><i class="fas fa-eye"></i> View</a></li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             @endforeach

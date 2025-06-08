@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Models\Review;
+use App\Traits\HelperTrait;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request; // Added missing import
@@ -12,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
 {
+    use HelperTrait;
     /**
      * Fetch the top 4 reviews for a product along with the average rating.
      *
@@ -116,6 +120,12 @@ class ReviewController extends Controller
                 'customer_id' => $request->customer_id,
             ]);
 
+            $this->logAction(
+                auth()->user()->id,
+                'created_review',
+                'Review submitted for product ID ' . $request->product_id . ' by customer ID ' . $request->customer_id . ' with rating ' . $request->rating,
+                LogsTypes::INFO->value,
+            );
             return response()->json([
                 'data' => [
                     'id' => $review->id,
@@ -133,6 +143,12 @@ class ReviewController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
+            $this->logAction(
+                auth()->user()->id,
+                'failed',
+                'Failed to submit review for product ID ' . $request->product_id . ' by customer ID ' . $request->customer_id . '. Error: ' . $e ,
+                LogsTypes::ERROR->value,
+            );
             return response()->json([
                 'error' => 'Failed to submit review',
                 'message' => 'An unexpected error occurred while submitting the review.',

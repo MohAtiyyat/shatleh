@@ -2,6 +2,7 @@
     'title' => 'Management Table',
     'headers' => [],
     'items' => [],
+    'createRoles' => '',
     'Route' => '#',
 ])
 
@@ -13,7 +14,7 @@
         <div class="flex header-actions w-full p-3">
             <div class="btn-group" id="export-tools"></div>
             <div class="ml-auto">
-                @if (Route::has($Route . '.create'))
+                @if (Route::has($Route . '.create')&&(auth()->user()->hasAnyRole($createRoles)))
                     <a href="{{ route($Route . '.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus fa-sm mr-2"></i>Add New
                     </a>

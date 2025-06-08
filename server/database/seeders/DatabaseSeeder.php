@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CartsTableSeeder::class);
         $this->call(OrderSeeder::class);
         $this->call(OrderDetailSeeder::class);
+        $this->call(PostsSeeder::class);
+
         for ($i = 1; $i <= 2; $i++) {
             DB::table('categories')->insert([
                 [

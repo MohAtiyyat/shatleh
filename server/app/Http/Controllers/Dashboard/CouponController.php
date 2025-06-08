@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Coupon;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
+    use HelperTrait;
     /**
      * Display a listing of the resource.
      */
@@ -24,7 +28,7 @@ class CouponController extends Controller
     public function create()
     {
         $countries = Country::all();
-        return view('admin.coupon.createUpdate', compact('countries'));
+        return view('admin.Coupon.createUpdate', compact('countries'));
     }
 
     /**
@@ -42,8 +46,9 @@ class CouponController extends Controller
             'country_id' => 'required|exists:countries,id',
         ]);
 
-        Coupon::create($validated);
+        $coupon = Coupon::create($validated);
 
+        $this->logAction(auth()->id(), 'create_coupon', 'Coupon created: ' . $coupon->title . ' (Id: ' . $coupon->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.coupon.index')->with('success', 'Coupon created successfully');
     }
 
@@ -73,6 +78,7 @@ class CouponController extends Controller
 
         $coupon->update($validated);
 
+        $this->logAction(auth()->id(), 'update_coupon', 'Coupon updated: ' . $validated['title'] . ' (Id: ' . $coupon->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.coupon.index')->with('success', 'Coupon updated successfully');
     }
 
@@ -83,6 +89,7 @@ class CouponController extends Controller
     {
         $coupon->delete();
 
+        $this->logAction(auth()->id(), 'delete_coupon', 'Coupon deleted: ' . $coupon->title . ' (Id: ' . $coupon->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.coupon.index')->with('success', 'Coupon deleted successfully');
     }
 }

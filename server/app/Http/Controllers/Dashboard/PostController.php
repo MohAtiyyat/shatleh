@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Post\StorePostRequest;
 use App\Http\Requests\Dashboard\Post\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Log;
 use App\Models\User;
 use App\Models\Product;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    use HelperTrait;
     public function index(Request $request)
     {
         $sort = $request->query('sort', 'id');
@@ -42,7 +47,7 @@ class PostController extends Controller
     {
         $categories = Category::where('parent_id', null)->get();
         $products = Product::all();
-        return view('admin.post.createUpdate', compact('categories', 'products'));
+        return view('admin.Post.createUpdate', compact('categories', 'products'));
     }
 
     public function store(StorePostRequest $request)
@@ -53,8 +58,9 @@ class PostController extends Controller
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        Post::create($data + ['user_id' => auth()->id()]);
+        $post = Post::create($data + ['user_id' => auth()->id()]);
 
+        $this->logAction(auth()->id(), 'create_post', 'Post created: ' . $post->title_en . ' (ID: ' . $post->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.post.index')->with('success', 'Post created successfully.');
     }
 
@@ -63,7 +69,7 @@ class PostController extends Controller
         $post = Post::with(['category', 'user', 'product'])->findOrFail($id);
         $categories = Category::where('parent_id', null)->get();
         $products = Product::all();
-        return view('admin.post.createUpdate', compact('post', 'categories', 'products'));
+        return view('admin.Post.createUpdate', compact('post', 'categories', 'products'));
     }
 
     public function update(UpdatePostRequest $request, $id)
@@ -82,6 +88,7 @@ class PostController extends Controller
 
         $post->update($data);
 
+        $this->logAction(auth()->id(), 'update_post', 'Post updated: ' . $data['title_en'] . ' (ID: ' . $post->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.post.index')->with('success', 'Post updated successfully.');
     }
 
@@ -93,12 +100,13 @@ class PostController extends Controller
         }
         $post->delete();
 
+        $this->logAction(auth()->id(), 'delete_post', 'Post deleted: ' . $post->title_en . ' (ID: ' . $post->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.post.index')->with('success', 'Post deleted successfully.');
     }
 
     public function show($id)
     {
         $post = Post::with(['category', 'user', 'product'])->findOrFail($id);
-        return view('admin.post.show', compact('post'));
+        return view('admin.Post.show', compact('post'));
     }
 }

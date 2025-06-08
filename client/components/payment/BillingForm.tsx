@@ -1,12 +1,13 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Link from 'next/link';
 import { Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { setDefaultAddress } from '../../lib/api';
 
 interface UserData {
     first_name: string;
@@ -35,11 +36,13 @@ interface FormErrors {
     giftFirstName?: string;
     giftLastName?: string;
     giftPhoneNumber?: string;
+    address?: string;
 }
 
 interface BillingDetailsProps {
     userData: UserData;
     addresses: Address[];
+    setAddresses: React.Dispatch<React.SetStateAction<Address[]>>; // Added prop
     defaultAddressId: number | null;
     formData: FormData;
     formErrors: FormErrors;
@@ -47,11 +50,13 @@ interface BillingDetailsProps {
     handleGiftPhoneChange: (value: string) => void;
     handleGiftToggle: () => void;
     currentLocale: 'en' | 'ar';
+    setDefaultAddressId: (id: number | null) => void;
 }
 
 export default function BillingDetails({
     userData,
     addresses,
+    setAddresses, // Added to props
     defaultAddressId,
     formData,
     formErrors,
@@ -59,11 +64,35 @@ export default function BillingDetails({
     handleGiftPhoneChange,
     handleGiftToggle,
     currentLocale,
+    setDefaultAddressId,
 }: BillingDetailsProps) {
     const t = useTranslations('checkout');
     const phoneRef = useRef<string | null>(userData.phone_number);
     const giftPhoneRef = useRef<string | null>(formData.giftPhoneNumber);
-    const defaultAddress = addresses.find((addr) => addr.id === defaultAddressId) || null;
+    const [addressError, setAddressError] = useState<string | undefined>(undefined);
+
+    const handleAddressChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const addressId = parseInt(e.target.value);
+        if (!addressId) {
+            setAddressError(t('errors.addressRequired'));
+            setDefaultAddressId(null);
+            return;
+        }
+        try {
+            await setDefaultAddress(addressId);
+            setAddresses(
+                addresses.map((addr) => ({
+                    ...addr,
+                    is_default: addr.id === addressId,
+                }))
+            );
+            setDefaultAddressId(addressId);
+            setAddressError(undefined);
+        } catch (error: unknown) {
+            console.error('Error setting default address:', error);
+            setAddressError(t('errors.addressChangeFailed'));
+        }
+    };
 
     return (
         <div className="space-y-6" dir={currentLocale === 'ar' ? 'rtl' : 'ltr'}>
@@ -148,17 +177,18 @@ export default function BillingDetails({
                     <select
                         name="address"
                         value={defaultAddressId || ''}
-                        onChange={() => { }} // Prevent changes since only one option
-                        className="w-full rounded-lg border px-4 py-3 text-sm border-[var(--secondary-bg)]"
-                        aria-label={t('address')}
+                        onChange={handleAddressChange}
+                        className={`w-full rounded-lg border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${addressError ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                            }`}
+                        aria-invalid={!!addressError}
+                        aria-describedby={addressError ? 'address-error' : undefined}
                     >
-                        {defaultAddress ? (
-                            <option value={defaultAddress.id}>
-                                {defaultAddress.title} - {defaultAddress.city}, {defaultAddress.country_name || defaultAddress.country_id}
+                        <option value="">{t('selectAddress')}</option>
+                        {addresses.map((address) => (
+                            <option key={address.id} value={address.id}>
+                                {address.title} - {address.city}, {address.country_name || address.country_id}
                             </option>
-                        ) : (
-                            <option value="">{t('selectAddress')}</option>
-                        )}
+                        ))}
                     </select>
                     <Link href={`/${currentLocale}/address`}>
                         <motion.button
@@ -172,21 +202,14 @@ export default function BillingDetails({
                         </motion.button>
                     </Link>
                 </div>
-                {!defaultAddressId && (
-                    <p className="text-red-500 text-sm mt-1">
-                        {t('incompleteAddress')}.{' '}
-                        <Link
-                            href={`/${currentLocale}/profile`}
-                            className="underline"
-                            style={{ color: 'var(--accent-color)' }}
-                        >
-                            {t('updateProfile')}
-                        </Link>
+                {addressError && (
+                    <p className="text-red-500 text-sm mt-1" id="address-error">
+                        {addressError}
                     </p>
                 )}
             </motion.div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 my-2">
                 <input
                     type="checkbox"
                     id="isGift"
@@ -204,7 +227,7 @@ export default function BillingDetails({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.6 }}
-                    className="space-y-4 mt-4"
+                    className="space-y-4 mt-4 my-4"
                 >
                     <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -214,7 +237,8 @@ export default function BillingDetails({
                                 placeholder={t('giftFirstName')}
                                 value={formData.giftFirstName}
                                 onChange={handleGiftInputChange}
-                                className={`w-full rounded-md border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.giftFirstName ? 'border-red-500' : 'border-[var(--secondary-bg)]'}`}
+                                className={`w-full rounded-md border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.giftFirstName ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                    }`}
                                 aria-invalid={!!formErrors.giftFirstName}
                                 aria-describedby={formErrors.giftFirstName ? 'giftFirstName-error' : undefined}
                             />
@@ -231,7 +255,8 @@ export default function BillingDetails({
                                 placeholder={t('giftLastName')}
                                 value={formData.giftLastName}
                                 onChange={handleGiftInputChange}
-                                className={`w-full rounded-md border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.giftLastName ? 'border-red-500' : 'border-[var(--secondary-bg)]'}`}
+                                className={`w-full rounded-md border px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.giftLastName ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                    }`}
                                 aria-invalid={!!formErrors.giftLastName}
                                 aria-describedby={formErrors.giftLastName ? 'giftLastName-error' : undefined}
                             />
@@ -254,7 +279,8 @@ export default function BillingDetails({
                             inputProps={{
                                 name: 'giftPhoneNumber',
                                 required: true,
-                                className: `w-full pl-16 py-3 rounded-md border text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.giftPhoneNumber ? 'border-red-500' : 'border-[var(--secondary-bg)]'}`,
+                                className: `w-full pl-16 py-3 rounded-md border text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.giftPhoneNumber ? 'border-red-500' : 'border-[var(--secondary-bg)]'
+                                    }`,
                             }}
                             buttonStyle={{
                                 border: 'none',

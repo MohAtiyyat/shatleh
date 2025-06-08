@@ -25,7 +25,7 @@ class StoreAddressRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'country_id' => 'required|string:exists:countries,id|default:1',
+            'country_id' => 'required|string:exists:countries,id',
             'city' => 'required|string',
             'address_line' => 'required|string',
         ];

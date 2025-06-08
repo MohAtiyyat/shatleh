@@ -28,7 +28,6 @@ function CartItemList() {
     const pathname = usePathname();
     const currentLocale: 'en' | 'ar' = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
     const { items } = useCartStore();
-    console.log(items);
 
     if (items.length === 0) {
         return (
@@ -156,7 +155,7 @@ const CartItemCard = memo(function CartItemCard({ item, currentLocale }: CartIte
                     <div className="w-20 h-20 sm:w-24 sm:h-24 relative">
                         <Link href={`/${currentLocale}/products/${item.product_id}`} passHref>
                             <Image
-                                src={process.env.NEXT_PUBLIC_API_URL + item.image[0]}
+                                src={process.env.NEXT_PUBLIC_API_URL  +  item.image[0]}
                                 alt={item.name_en || item.name_ar || ''}
                                 fill
                                 className="object-cover rounded"

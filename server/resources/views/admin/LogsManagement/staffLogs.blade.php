@@ -53,8 +53,9 @@
                         <tr>
                             <th width="5%">ID</th>
                             <th width="25%">User</th>
-                            <th width="40%">Action</th>
+                            <th width="10%">Action</th>
                             <th width="10%">Type</th>
+                            <th width="30%">Message</th>
                             <th width="20%">Created At</th>
                         </tr>
                     </thead>
@@ -76,6 +77,7 @@
                                         {{ ucfirst($log->log_type) }}
                                     </span>
                                 </td>
+                                <td>{{ Str::limit($log->message, 100) }}</td>
                                 <td>{{ $log->created_at->format('Y-m-d H:i:s') }}</td>
                             </tr>
                         @empty

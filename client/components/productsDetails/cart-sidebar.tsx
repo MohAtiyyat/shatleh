@@ -96,7 +96,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b">
                             <h2 className="text-xl font-medium flex items-center">
-                                {t('cart.title')}
+                                {t('Cart.title')}
                                 <ShoppingCart className="mx-2 h-5 w-5" />
                             </h2>
                             <button
@@ -113,7 +113,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                 <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
                                     <ShoppingCart className="h-16 w-16 mb-4 opacity-20" />
                                     <p className="text-lg font-medium">{t('Cart.empty')}</p>
-                                    <p className="mt-1">{t('cart.addProducts', { defaultMessage: 'Add some products to your cart' })}</p>
+                                    <p className="mt-1">{t('Cart.addProducts', { defaultMessage: 'Add some products to your cart' })}</p>
                                     <button
                                         onClick={onClose}
                                         className="mt-6 bg-[#337a5b] text-white px-4 py-2 rounded-md hover:bg-[#025162] transition-colors"
@@ -177,16 +177,16 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                         {items.length > 0 && (
                             <div className="border-t border-gray-200 p-4 space-y-4">
                                 <div className="flex justify-between text-base font-medium text-gray-900">
-                                    <p>{t('cart.total')}</p>
+                                    <p>{t('Cart.total')}</p>
                                     <p>{formatPrice(total().toFixed(2))}</p>
                                 </div>
                                 <p className="text-sm text-gray-500">
-                                    {t('cart.shippingTaxes', { defaultMessage: 'Shipping and taxes calculated at checkout.' })}
+                                    {t('Cart.shippingTaxes', { defaultMessage: 'Shipping and taxes calculated at checkout.' })}
                                 </p>
                                 <div className="mt-6">
                                     <Link href={`/${currentLocale}/checkout`}>
                                         <button className="w-full bg-[#20c015] hover:bg-[#27eb00] text-white px-6 py-3 rounded-md transition-colors">
-                                            {t('cart.checkout')}
+                                            {t('Cart.checkout')}
                                         </button>
                                     </Link>
                                 </div>

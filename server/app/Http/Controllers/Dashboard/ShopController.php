@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Address\DeleteAddressRequest;
 use App\Http\Requests\Dashboard\Shop\DeleteShopRequest;
 use App\Http\Requests\Dashboard\Shop\StoreShopRequest;
 use App\Http\Requests\Dashboard\Shop\UpdateShopRequest;
 use App\Models\Address;
+use App\Models\Log;
 use App\Models\Shop;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ShopController extends Controller
 {
+    use HelperTrait;
     public function index()
     {
 
@@ -32,7 +37,9 @@ class ShopController extends Controller
     public function create()
     {
         $addresses = Address::pluck('title', 'id')->toArray();
-        return view('admin.Shop.createUpdate', compact('addresses'));
+        $countries = \App\Models\Country::pluck('name_en', 'id');
+
+        return view('admin.Shop.createUpdate', compact('addresses','countries'));    
     }
 
     public function store(StoreShopRequest $request)
@@ -48,8 +55,9 @@ class ShopController extends Controller
             $data['image'] = Storage::url($imagePath);
         }
 
-        Shop::create($data);
+        $shop = Shop::create($data);
 
+        $this->logAction(auth()->id(), 'create_shop', 'Shop created: ' . $shop->name . ' (ID: ' . $shop->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.shop')->with('success', 'Shop created successfully.');
     }
 
@@ -82,8 +90,10 @@ class ShopController extends Controller
 
             $shop->update($data);
 
+            $this->logAction(auth()->id(), 'update_shop', 'Shop updated: ' . $data['name'] . ' (ID: ' . $shop->id . ')', LogsTypes::INFO->value);
             return redirect()->route('dashboard.shop')->with('success', 'Shop updated successfully.');
         } catch (\Exception $e) {
+            $this->logAction(auth()->id(), 'update_shop_error', 'Error updating shop: ' . $e->getMessage(), LogsTypes::ERROR->value);
             return redirect()->back()->withErrors(['error' => 'Failed to update shop: ' . $e->getMessage()]);
         }
     }
@@ -97,6 +107,7 @@ class ShopController extends Controller
         }
         $shop->delete();
 
+        $this->logAction(auth()->id(), 'delete_shop', 'Shop deleted: ' . $shop->name . ' (ID: ' . $shop->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.shop')->with('success', 'Shop deleted successfully.');
     }
 

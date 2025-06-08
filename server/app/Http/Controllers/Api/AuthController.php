@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\LogsTypes;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegiseterRequest;
 use App\Http\Requests\Dashboard\auth\LogoutRequest;
 use App\Models\User;
+use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    use HelperTrait;
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
@@ -49,8 +53,10 @@ class AuthController extends Controller
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
+            $this->logAction($user->id, 'register', 'User registered: ' . $user->name . ' (ID: ' . $user->id . ')', LogsTypes::INFO->value);
             return response()->json(['message' => 'Registration successful', 'token' => $token, 'user' => $user], 200);
         } catch (\Throwable $th) {
+            $this->logAction(null, 'register_error', 'Registration failed: ' . $th->getMessage(), LogsTypes::ERROR->value);
             return response()->json(['message' => 'reqgiser failed', 'throwable' => $th], 500);
         }
     }
