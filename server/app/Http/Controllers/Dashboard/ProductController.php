@@ -111,10 +111,20 @@ class ProductController extends Controller
 
     public function show($product)
     {
-        $product = Product::with(['shops' => function ($query) {
-            $query->take(3);
-        }, 'categories'])->findOrFail($product);
-        return view('admin.Product.show', compact('product'));
+       $product = Product::with([
+            'reviews' => function ($query) {
+                $query->select('id', 'product_id', 'rating');
+            },
+            'shops' => function ($query) {
+                $query->take(3);
+            },
+            'categories'
+        ])
+        ->withCount('reviews')
+        ->findOrFail($product);
+
+        $ratingSum = $product->reviews->sum('rating');
+        return view('admin.Product.show', compact('product', 'ratingSum'));
     }
 
     public function delete(DeleteProductRequest $request, $id)
