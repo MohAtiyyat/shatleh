@@ -14,6 +14,7 @@ interface UserData {
     first_name: string;
     last_name: string;
     phone_number: string;
+    email: string;
 }
 
 interface Address {
@@ -45,7 +46,7 @@ export default function CheckoutPage() {
         const token = localStorage.getItem('token');
         const storedUserId = localStorage.getItem('userId');
         if (!token || !storedUserId) {
-            router.push(`/${currentLocale}/login?redirect=${encodeURIComponent(pathname)}`);
+            router.push(`/${currentLocale}/login?redirect=/checkout`);
             return;
         }
 
@@ -60,6 +61,7 @@ export default function CheckoutPage() {
                     first_name: profile.first_name,
                     last_name: profile.last_name,
                     phone_number: profile.phone_number,
+                    email: profile.email,
                 });
                 setAddresses(addressData);
                 const defaultAddr = addressData.find((addr) => addr.is_default);

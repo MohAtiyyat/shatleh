@@ -28,8 +28,7 @@ interface FormData {
     last_name: string;
     email: string;
     phone_number: string;
-    current_password: string;
-    new_password: string;
+
     photo: File | string | null;
     remove_photo: boolean;
 }
@@ -39,8 +38,7 @@ interface FormErrors {
     last_name?: string;
     email?: string;
     phone_number?: string;
-    current_password?: string;
-    new_password?: string;
+
     photo?: string;
     address?: string;
 }
@@ -55,8 +53,6 @@ export default function ProfilePage() {
         last_name: '',
         email: '',
         phone_number: '',
-        current_password: '',
-        new_password: '',
         photo: null,
         remove_photo: false,
     });
@@ -89,8 +85,6 @@ export default function ProfilePage() {
                     last_name: profile.last_name,
                     email: profile.email,
                     phone_number: profile.phone_number,
-                    current_password: '',
-                    new_password: '',
                     photo: profile.photo,
                     remove_photo: false,
                 });
@@ -163,12 +157,7 @@ export default function ProfilePage() {
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             newErrors.email = t('errors.emailInvalid');
         }
-        if (!formData.phone_number.trim()) newErrors.phone_number = t('errors.phoneNumberRequired');
-        if (formData.current_password || formData.new_password) {
-            if (!formData.current_password) newErrors.current_password = t('errors.currentPasswordRequired');
-            if (!formData.new_password) newErrors.new_password = t('errors.newPasswordRequired');
-            else if (formData.new_password.length < 8) newErrors.new_password = t('errors.newPasswordLength');
-        }
+
         if (!defaultAddressId) newErrors.address = t('errors.addressRequired');
         if (formData.photo instanceof File && formData.photo.size > 2 * 1024 * 1024) {
             newErrors.photo = t('errors.photoSize');
@@ -186,8 +175,6 @@ export default function ProfilePage() {
         submitData.append('last_name', formData.last_name);
         submitData.append('email', formData.email);
         submitData.append('phone_number', formData.phone_number);
-        if (formData.current_password) submitData.append('current_password', formData.current_password);
-        if (formData.new_password) submitData.append('new_password', formData.new_password);
         if (formData.remove_photo) submitData.append('remove_photo', 'true');
         if (formData.photo instanceof File) submitData.append('photo', formData.photo);
 
@@ -198,8 +185,6 @@ export default function ProfilePage() {
                 last_name: updatedProfile.last_name,
                 email: updatedProfile.email,
                 phone_number: updatedProfile.phone_number,
-                current_password: '',
-                new_password: '',
                 photo: updatedProfile.photo,
                 remove_photo: false,
             });
@@ -481,8 +466,6 @@ export default function ProfilePage() {
                                         last_name: profile.last_name,
                                         email: profile.email,
                                         phone_number: profile.phone_number,
-                                        current_password: '',
-                                        new_password: '',
                                         photo: profile.photo,
                                         remove_photo: false,
                                     });

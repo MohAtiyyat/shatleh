@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { fetchCart, updateCartItem, clearCart } from './api';
 
-interface CartItem {
+export interface CartItem {
     id: number;
     product_id: number;
     
@@ -152,10 +152,11 @@ export const useCartStore = create<CartState>()(
                 clearCart: async (userId, locale) => {
                     set({ isLoading: true, error: null });
                     const previousItems = get().items;
+                    const token = localStorage.getItem('token');
                     try {
                         set({ items: [] });
                         if (userId) {
-                            await clearCart(userId, locale);
+                            await clearCart(userId, locale, token);
                         }
                         await get().syncWithBackend(userId, locale);
                     } catch (error) {
