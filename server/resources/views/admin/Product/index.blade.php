@@ -11,6 +11,7 @@
         ]"
         :items="$products"
         :Route="'dashboard.product'"
+        :createRoles="'Admin|Employee'"
     >
     <x-slot name="rows">
         @foreach ($products as $product)

@@ -20,10 +20,12 @@
                                         class="btn btn-light btn-sm mr-2 rounded-pill px-3" title="Back to Posts">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
+                                    @if(auth()->user()->hasAnyRole('Admin|Expert'))
                                     <a href="{{ route('dashboard.post.create') }}"
                                         class="btn btn-light btn-sm rounded-pill px-3" title="Add PollsAdd New Post">
                                         <i class="fas fa-plus mr-1"></i> New
                                     </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -86,6 +88,7 @@
                         </div>
                         <!-- Footer -->
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
+                            @if(auth()->user()->hasAnyRole('Admin|Expert'))
                             <a href="{{ route('dashboard.post.edit', $post->id) }}"
                                 class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
                                 <i class="fas fa-edit mr-2"></i> Edit Post
@@ -98,6 +101,7 @@
                                     <i class="fas fa-trash mr-2"></i> Delete
                                 </button>
                             </form>
+                            @endif
                         </div>
                     </div>
                 </div>

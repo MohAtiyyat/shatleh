@@ -11,6 +11,7 @@
         ]"
         :items="$specialties"
         :Route="'dashboard.specialties'"
+        :createRoles="'Admin|Employee'"
     >
         <x-slot:rows>
             @php($Route = 'dashboard.specialties')

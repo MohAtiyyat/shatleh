@@ -20,7 +20,7 @@
                                        title="Back to Services">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
-                                    @if(auth()->user()->hasRole('Admin'))
+                                    @if(auth()->user()->hasAnyRole('Admin|Employee'))
                                     <a href="{{ route('dashboard.service.create') }}"
                                        class="btn btn-light btn-sm rounded-pill px-3"
                                        title="Add New Service">
@@ -120,7 +120,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if(auth()->user()->hasRole('Admin'))
+                        @if(auth()->user()->hasAnyRole('Admin|Employee'))
                         <div class="card-footer bg-light border-top-0 p-4 d-flex flex-column flex-md-row justify-content-end align-items-md-center">
                             <a href="{{ route('dashboard.service.edit', $service->id) }}"
                                class="btn btn-outline-primary btn-sm mb-2 mb-md-0 mr-md-3 rounded-pill px-4">

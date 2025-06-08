@@ -11,6 +11,7 @@
         ]"
         :items="$categories"
         :Route="'dashboard.category'"
+        :createRoles="'Admin|Employee'"
     >
         <x-slot:rows>
             @php($Route = 'dashboard.category')
@@ -27,7 +28,7 @@
                         />
                     </td>
                     <td>
-                        @if(auth()->user()->hasRole('Admin'))
+                        @if(auth()->user()->hasAnyRole('Admin|Employee'))
                         <div class="dropdown">
                             <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                                 <i class="fas fa-ellipsis-v"></i>
@@ -37,11 +38,13 @@
                                 <li><a class="dropdown-item" href="{{ route($Route . '.edit', $item->id) }}"><i class="fas fa-edit"></i> Edit</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form action="{{ route('dashboard.category.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash"></i> Delete</button>
-                                    </form>
+                                    @if (auth()->user()->hasRole('Admin'))
+                                        <form action="{{ route('dashboard.category.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash"></i> Delete</button>
+                                        </form>
+                                    @endif
                                 </li>
                             </ul>
                         </div>

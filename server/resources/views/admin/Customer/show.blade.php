@@ -20,10 +20,12 @@
                                         class="btn btn-light btn-sm mr-2 rounded-pill px-3" title="Back to Customers">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
+                                    @if (auth()->user()->hasRole('Admin'))
                                     <a href="{{ route('dashboard.customer.create') }}"
-                                        class="btn btn-light btn-sm rounded-pill px-3" title="Add New Customer">
-                                        <i class="fas fa-plus mr-1"></i> New
+                                    class="btn btn-light btn-sm rounded-pill px-3" title="Add New Customer">
+                                    <i class="fas fa-plus mr-1"></i> New
                                     </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -119,18 +121,20 @@
                         </div>
                         <!-- Footer -->
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
-                            <a href="{{ route('dashboard.customer.edit', $customer->id) }}"
-                                class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
-                                <i class="fas fa-edit mr-2"></i> Edit Customer
-                            </a>
-                            <form action="{{ route('dashboard.customer.destroy', $customer->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger btn-md rounded-pill px-4"
+                            @if (auth()->user()->hasRole('Admin'))
+                                <a href="{{ route('dashboard.customer.edit', $customer->id) }}"
+                                    class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
+                                    <i class="fas fa-edit mr-2"></i> Edit Customer
+                                </a>
+                                <form action="{{ route('dashboard.customer.destroy', $customer->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger btn-md rounded-pill px-4"
                                     onclick="return confirm('Are you sure you want to delete this customer?')">
                                     <i class="fas fa-trash mr-2"></i> Delete
-                                </button>
-                            </form>
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>
