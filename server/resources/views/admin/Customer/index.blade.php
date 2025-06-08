@@ -38,7 +38,9 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ route($Route . '.show', $item->id) }}"><i class="fas fa-eye"></i> View</a></li>
+                                @if(auth()->user()->hasRole('Admin'))
                                 <li><a class="dropdown-item" href="{{ route($Route . '.edit', $item->id) }}"><i class="fas fa-edit"></i> Edit</a></li>
+                                @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route($Route . '.resetPassword', $item->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset this customer\'s password?');">

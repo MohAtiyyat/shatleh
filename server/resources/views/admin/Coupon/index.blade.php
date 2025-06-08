@@ -32,6 +32,7 @@
                     </td>
                     <td>{{ $item->used_count ?? 0 }}</td>
                     <td>
+                        @if(auth()->user()->hasAnyRole('Admin'))
                         <div class="dropdown">
                             <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                                 <i class="fas fa-ellipsis-v"></i>
@@ -48,6 +49,7 @@
                                 </li>
                             </ul>
                         </div>
+                        @endif
                     </td>
                 </tr>
             @endforeach

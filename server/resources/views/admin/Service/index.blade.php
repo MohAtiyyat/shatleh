@@ -11,6 +11,7 @@
         ]"
         :items="$services"
         :Route="'dashboard.service'"
+        :createRoles="'Admin|Employee'"
     >
     <x-slot name="rows">
         @foreach ($services as $service)
@@ -28,7 +29,7 @@
                 <td><span class="{{ $status['class'] }}">{{ $status['label'] }}</span></td>
                 <td>{{ $requested_time[$service->id] ?? 0 }}</td>
                 <td>
-                    @if(auth()->user()->hasRole('Admin'))
+                    @if(auth()->user()->hasAnyRole('Admin|Employee'))
                     <div class="dropdown">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                             <i class="fas fa-ellipsis-v"></i>
