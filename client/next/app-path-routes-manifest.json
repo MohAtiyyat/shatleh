@@ -1,0 +1,23 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/[locale]/address/page": "/[locale]/address",
+  "/[locale]/account/page": "/[locale]/account",
+  "/[locale]/checkout/page": "/[locale]/checkout",
+  "/[locale]/about-us/page": "/[locale]/about-us",
+  "/[locale]/cart/page": "/[locale]/cart",
+  "/[locale]/blog/[id]/page": "/[locale]/blog/[id]",
+  "/[locale]/blog/page": "/[locale]/blog",
+  "/[locale]/feedback/page": "/[locale]/feedback",
+  "/[locale]/login/page": "/[locale]/login",
+  "/[locale]/orders/page": "/[locale]/orders",
+  "/[locale]/payments/page": "/[locale]/payments",
+  "/[locale]/products/[id]/page": "/[locale]/products/[id]",
+  "/[locale]/page": "/[locale]",
+  "/[locale]/register/page": "/[locale]/register",
+  "/[locale]/success/page": "/[locale]/success",
+  "/[locale]/products/page": "/[locale]/products",
+  "/[locale]/search/page": "/[locale]/search",
+  "/[locale]/services/page": "/[locale]/services",
+  "/[locale]/service-requests/page": "/[locale]/service-requests",
+  "/[locale]/services/[id]/page": "/[locale]/services/[id]"
+}

@@ -1,0 +1,23 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/[locale]/address/page": "app/[locale]/address/page.js",
+  "/[locale]/account/page": "app/[locale]/account/page.js",
+  "/[locale]/checkout/page": "app/[locale]/checkout/page.js",
+  "/[locale]/about-us/page": "app/[locale]/about-us/page.js",
+  "/[locale]/cart/page": "app/[locale]/cart/page.js",
+  "/[locale]/blog/[id]/page": "app/[locale]/blog/[id]/page.js",
+  "/[locale]/blog/page": "app/[locale]/blog/page.js",
+  "/[locale]/feedback/page": "app/[locale]/feedback/page.js",
+  "/[locale]/login/page": "app/[locale]/login/page.js",
+  "/[locale]/orders/page": "app/[locale]/orders/page.js",
+  "/[locale]/payments/page": "app/[locale]/payments/page.js",
+  "/[locale]/products/[id]/page": "app/[locale]/products/[id]/page.js",
+  "/[locale]/page": "app/[locale]/page.js",
+  "/[locale]/register/page": "app/[locale]/register/page.js",
+  "/[locale]/success/page": "app/[locale]/success/page.js",
+  "/[locale]/products/page": "app/[locale]/products/page.js",
+  "/[locale]/search/page": "app/[locale]/search/page.js",
+  "/[locale]/services/page": "app/[locale]/services/page.js",
+  "/[locale]/service-requests/page": "app/[locale]/service-requests/page.js",
+  "/[locale]/services/[id]/page": "app/[locale]/services/[id]/page.js"
+}
