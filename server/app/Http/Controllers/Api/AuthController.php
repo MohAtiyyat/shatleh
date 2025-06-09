@@ -112,7 +112,6 @@ class AuthController extends Controller
             ->first();
             
         if (empty($otpRecord)) {
-            dd($otpRecord);
             return response()->json(['message' => 'Invalid or expired OTP'], 400);
         }
         if(!empty($data['otp_type']) && $data['otp_type'] === 'reset_password') {
