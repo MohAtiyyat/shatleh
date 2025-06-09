@@ -15,7 +15,7 @@ class OrderController extends Controller
 {
     use HelperTrait;
     public function index(){
-        $order = Order::with('customer' , 'employee' , 'address' , 'payment')->get();
+        $order = Order::with('customer' , 'employee' , 'address')->get();
         $experts = User::whereHas('roles', fn($q) => $q->where('name', 'Expert'))->pluck('first_name', 'id');
 
         return view('admin.Order.index' , compact('order', 'experts'));
@@ -35,7 +35,7 @@ class OrderController extends Controller
     }
 
     public function show(Order $order){
-        $order = Order::with('customer', 'employee', 'address', 'payment', 'orderDetails.product')->findOrFail($order->id);
+        $order = Order::with('customer', 'employee', 'address', 'orderDetails.product')->findOrFail($order->id);
         return view('admin.Order.show' , compact('order'));
     }
 

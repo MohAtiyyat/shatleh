@@ -56,14 +56,6 @@
                     </a>
                 </li>
                 @endif
-                @if (auth()->user()->hasRole('Admin'))
-                <li class="nav-item">
-                    <a href="{{ route('dashboard.payments.index') }}" class="nav-link @yield('Payments_Show')">
-                        <ion-icon class="nav-icon" name="card-outline"></ion-icon>
-                        <p>Payments Management</p>
-                    </a>
-                </li>
-                @endif
                 <li class="nav-item">
                     <a href="{{ route('dashboard.service') }}" class="nav-link @yield('Services_Show')">
                         <ion-icon class="nav-icon" name="diamond-outline"></ion-icon>

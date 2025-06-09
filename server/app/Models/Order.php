@@ -17,7 +17,6 @@ class Order extends Model
         'employee_id',
         'assigned_to',
         'coupon_id',
-        'payment_id',
         'status',
         'skipped_rating',
         'cart_id',
@@ -48,11 +47,6 @@ class Order extends Model
     public function coupon()
     {
         return $this->belongsTo(Coupon::class);
-    }
-
-    public function payment()
-    {
-        return $this->belongsTo(PaymentInfo::class);
     }
 
     public function products()
