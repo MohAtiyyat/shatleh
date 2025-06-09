@@ -7,16 +7,18 @@ use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegiseterRequest;
-use App\Http\Requests\Api\CheckMobileRequest;
+use App\Http\Requests\Api\Contact\CheckContactRequest;
+use App\Http\Requests\Api\Contact\CheckUniqeContactRequest;
 use App\Http\Requests\Api\OTP\VerifyOtpRequest;
 use App\Http\Requests\Dashboard\auth\LogoutRequest;
+use App\Mail\EmailVerification;
 use App\Models\OTP;
 use App\Models\User;
 use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -71,40 +73,55 @@ class AuthController extends Controller
         return response()->json(['message' => 'logged out'], 200);
     }
 
-    public function checkMobile(CheckMobileRequest $request)
+    public function checkUniqeContact(CheckUniqeContactRequest $request)
     {
         $data = $request->validated();
+        $contact = isset($data['phone_number']) ? 'phone_number' : 'email';
 
         return response()->json([
-            'message' => 'Mobile number is valid',
-            'mobile' => $data['mobile']
+            'message' => 'Contact is valid',
+             $contact=> $data[$contact],
         ], 200);
     }
-    public function sendOtp(CheckMobileRequest $request)
+    public function sendOtp(CheckContactRequest $request)
     {
         $data = $request->validated();
+        $contact = !empty($data['phone_number']) ? 'phone_number' : 'email';
 
         $otp = rand(1000, 9999);
         OTP::create([
-            'mobile' => $data['mobile'],
+            $contact => $data[$contact],
             'otp' => $otp,
-            'expires_at' => now()->addMinutes(5),
+            'expired_at' => now()->addMinutes(5),
         ]); 
-        return response()->json(['message' => 'OTP sent successfully', 'mobile' => $data['mobile']], 200);
+
+        if($contact ==='email')
+            Mail::to($data[$contact])->send(new EmailVerification ($otp, auth()->user()->lang ?? $data['lang']));
+        
+        return response()->json(['message' => 'OTP sent successfully', $contact => $data[$contact]], 200);
     }
 
     public function verifyOtp(VerifyOtpRequest $request)
     {
         $data = $request->validated();
+        $contact = isset($data['phone_number']) ? 'phone_number' : 'email';
 
-        $otpRecord = OTP::where('mobile', $data['mobile'])
-            ->where('otp', $data['otp'])
-            ->where('expires_at', '>', now())
+        $otpRecord = OTP::where($contact, $data[$contact])
+            ->where('otp',  $data['otp'])
+            ->where('expired_at', '>', now())
             ->first();
-
-        if (!$otpRecord) {
+            
+        if (empty($otpRecord)) {
+            dd($otpRecord);
             return response()->json(['message' => 'Invalid or expired OTP'], 400);
         }
+        if(!empty($data['otp_type']) && $data['otp_type'] === 'reset_password') {
+            $user = User::where($contact, $data[$contact])->first();
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+        } 
 
         return response()->json(['message' => 'OTP verified successfully'], 200);
     }

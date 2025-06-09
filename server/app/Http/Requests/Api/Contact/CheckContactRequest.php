@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Contact;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CheckMobileRequest extends FormRequest
+class CheckContactRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,9 @@ class CheckMobileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => 'required|regex:/^(\+?2)?[0-9]{13}$/|unique:users,mobile',
+            'lang' => 'required|in:ar,en',
+            'phone_number' => 'required_if:email,null|regex:/^(\+?2)?[0-9]{13}$/',
+            'email' => 'required_if:phone_number,null|email',
         ];
     }
 }

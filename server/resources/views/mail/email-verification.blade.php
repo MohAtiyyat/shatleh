@@ -66,7 +66,7 @@
             <p>Thank you for joining Shatleh, your trusted partner in agriculture!</p>
             <p>Please use the following One-Time Password (OTP) to verify your email address:</p>
             <div class="otp">{{ $otp }}</div>
-            <p>This OTP is valid for the next 10 minutes.</p>
+            <p>This OTP is valid for the next 5 minutes.</p>
             <p>If you did not request this verification, please ignore this email.</p>
         </div>
         <div class="footer">
@@ -146,7 +146,7 @@
             <p>شكرًا لانضمامك إلى شتلة، شريكك الموثوق في الزراعة!</p>
             <p>يرجى استخدام كلمة المرور لمرة واحدة (OTP) التالية لتأكيد بريدك الإلكتروني:</p>
             <div class="otp">{{ $otp }}</div>
-            <p>كلمة المرور هذه صالحة لمدة 10 دقائق فقط.</p>
+            <p>كلمة المرور هذه صالحة لمدة 5 دقائق فقط.</p>
             <p>إذا لم تطلب هذا التأكيد، يرجى تجاهل هذا البريد الإلكتروني.</p>
         </div>
         <div class="footer">
