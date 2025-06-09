@@ -47,7 +47,7 @@ class ServiceController extends Controller
             $data['image'] = $imagePaths;
         }
 
-        
+
        $service = Service::create($data);
 
         $this->logAction(auth()->id(), 'create_service', 'Service created: ' . $service->name_en . ' (ID: ' . $service->id . ')', LogsTypes::INFO->value);
@@ -82,7 +82,7 @@ class ServiceController extends Controller
 
             $service->update($data);
 
-            $this->logAction(auth()->id(), 'update_service', 'Service updated: ' . $data['name'] . ' (ID: ' . $service->id . ')', LogsTypes::INFO->value);
+            $this->logAction(auth()->id(), 'update_service', 'Service updated: ' . $service->name . ' (ID: ' . $service->id . ')', LogsTypes::INFO->value);
             return redirect()->route('dashboard.service')->with('success', 'Service updated successfully.');
         } catch (\Exception $e) {
             $this->logAction(auth()->id(), 'update_service_error', 'Error updating service: ' . $e->getMessage(), LogsTypes::ERROR->value);

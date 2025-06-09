@@ -12,6 +12,7 @@
         :items="$products"
         :Route="'dashboard.product'"
         :createRoles="'Admin|Employee'"
+        :unsortableColumns="[1,6]"
     >
     <x-slot name="rows">
         @foreach ($products as $product)
@@ -64,7 +65,7 @@
                     @else
                     <a href="{{ route('dashboard.product.show', $product->id) }}"><i class="fas fa-eye"></i> View</a>
                     @endif
-                    
+
                 </td>
             </tr>
         @endforeach

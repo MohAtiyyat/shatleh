@@ -4,6 +4,7 @@
     'items' => [],
     'createRoles' => '',
     'Route' => '#',
+    'unsortableColumns' => [], // Add this new prop with a default empty array
 ])
 
 <div class="container-fluid">
@@ -62,86 +63,92 @@
     <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
     <script>
-      $(function() {
-        var table = $('#managementTable').DataTable({
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            pageLength: 10,
-            order: [[0, 'asc']],
-            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
-            buttons: [
-                { extend: 'copy', className: 'btn-sm btn-primary', text: '<i class="fas fa-copy mr-1"></i>Copy' },
-                { extend: 'csv', className: 'btn-sm btn-primary', text: '<i class="fas fa-file-csv mr-1"></i>CSV' },
-                { extend: 'excel', className: 'btn-sm btn-primary', text: '<i class="fas fa-file-excel mr-1"></i>Excel' },
-                { extend: 'pdf', className: 'btn-sm btn-primary', text: '<i class="fas fa-file-pdf mr-1"></i>PDF' },
-                { extend: 'print', className: 'btn-sm btn-primary', text: '<i class="fas fa-print mr-1"></i>Print' }
-            ],
-            language: {
-                search: "Search:",
-                lengthMenu: "_MENU_ records per page",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                paginate: {
-                    first: '<i class="fas fa-angle-double-left"></i>',
-                    last: '<i class="fas fa-angle-double-right"></i>',
-                    previous: '<i class="fas fa-angle-left"></i>',
-                    next: '<i class="fas fa-angle-right"></i>'
-                }
-            },
-            initComplete: function() {
-                this.api().buttons().container().appendTo('#export-tools');
-                setTimeout(function() {
-                    $('#export-tools .btn').removeClass('dt-button');
-                    $('#export-tools .btn-group').addClass('mr-2');
-                    $('#export-tools .btn').addClass('mr-1');
-                    $('#export-tools').css('display', 'inline-flex');
-                }, 0);
+        $(function() {
 
-                // Prefill the DataTable search input from the URL (without pressing Enter)
-                var searchInput = $('div.dataTables_filter input');
-                var url = new URL(window.location.href);
-                var searchQuery = url.searchParams.get('search');
+            const unsortableCols = @json($unsortableColumns);
 
-                if (searchQuery) {
-                    searchInput.val(searchQuery); // fill the search box
-                    this.api().search(searchQuery).draw(); // trigger the frontend search
-                }
+            var table = $('#managementTable').DataTable({
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                pageLength: 10,
+                order: [[0, 'asc']],
+                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+                buttons: [
+                    { extend: 'copy', className: 'btn-sm btn-primary', text: '<i class="fas fa-copy mr-1"></i>Copy' },
+                    { extend: 'csv', className: 'btn-sm btn-primary', text: '<i class="fas fa-file-csv mr-1"></i>CSV' },
+                    { extend: 'excel', className: 'btn-sm btn-primary', text: '<i class="fas fa-file-excel mr-1"></i>Excel' },
+                    { extend: 'pdf', className: 'btn-sm btn-primary', text: '<i class="fas fa-file-pdf mr-1"></i>PDF' },
+                    { extend: 'print', className: 'btn-sm btn-primary', text: '<i class="fas fa-print mr-1"></i>Print' }
+                ],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "_MENU_ records per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: '<i class="fas fa-angle-double-left"></i>',
+                        last: '<i class="fas fa-angle-double-right"></i>',
+                        previous: '<i class="fas fa-angle-left"></i>',
+                        next: '<i class="fas fa-angle-right"></i>'
+                    }
+                },
+                initComplete: function() {
+                    this.api().buttons().container().appendTo('#export-tools');
+                    setTimeout(function() {
+                        $('#export-tools .btn').removeClass('dt-button');
+                        $('#export-tools .btn-group').addClass('mr-2');
+                        $('#export-tools .btn').addClass('mr-1');
+                        $('#export-tools').css('display', 'inline-flex');
+                    }, 0);
+
+                    var searchInput = $('div.dataTables_filter input');
+                    var url = new URL(window.location.href);
+                    var searchQuery = url.searchParams.get('search');
+
+                    if (searchQuery) {
+                        searchInput.val(searchQuery);
+                        this.api().search(searchQuery).draw();
+                    }
+                },
+
+                ... (unsortableCols.length > 0 && {
+                    "columnDefs": [
+                        { "orderable": false, "targets": unsortableCols }
+                    ]
+                })
+            });
+        });
+    </script>
+
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: false,
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: '{{ session('error') }}',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         });
-      });
-
     </script>
-@if(session('success'))
-<script>
-    Swal.fire({
-        toast: true,
-        position: 'top-end', // top-right corner
-        icon: 'success',
-        title: '{{ session('success') }}',
-        showConfirmButton: false,
-        timer: 2500,
-        timerProgressBar: false,
-    });
-</script>
-@endif
-
-@if(session('error'))
-<script>
-    Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'error',
-        title: '{{ session('error') }}',
-        showConfirmButton: false,
-        timer: 2500,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    });
-</script>
-@endif
-
-
+    @endif
 @endsection
