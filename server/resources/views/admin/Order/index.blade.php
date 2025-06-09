@@ -7,7 +7,7 @@
     <x-management-table
         title="Order Management"
         :headers="[
-            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Assigned To', 'Status', 'Payment Info', 'Address', 'Actions'
+            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Assigned To', 'Status', 'Payment Method', 'Address', 'Actions'
         ]"
         :items="$order"
         :Route="'dashboard.order'"
@@ -52,9 +52,7 @@
                         </form>
                     </td>
                     <td>
-                        @if ($record->payment)
-                            @include('admin.Order.payment-popout', ['payment' => $record->payment])
-                        @endif
+                       {{ $record->payment_method ?? 'N/A' }}
                     </td>
                     <td>
                         @include('/components/address-popout', [

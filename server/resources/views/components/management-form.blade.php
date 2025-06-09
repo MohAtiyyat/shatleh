@@ -99,7 +99,7 @@
                                    {{ $field['step'] ?? '' ? 'step="' . $field['step'] . '"' : '' }}
                                    {{ $field['min'] ?? '' ? 'min="' . $field['min'] . '"' : '' }}
                                    {{ $field['maxlength'] ?? '' ? 'maxlength="' . $field['maxlength'] . '"' : '' }}
-                                   {{ $field['type'] == 'button' ? 'onclick=window.location.href=\''.route($field['href']).'\'' : '' }}
+                                   {{ $field['type'] == 'button' ? 'onclick=window.location.href=\''.route($field['href']).'\'' : '' }}>
                         @endif
                         @error(str_replace('[]', '', $field['name']))
                             <div class="text-danger">{{ $message }}</div>

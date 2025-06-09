@@ -29,14 +29,14 @@
                                 <tr>
                                     <td>{{ $product->name['en'] ?? 'N/A' }}</td>
                                     <td>{{ $product->pivot->quantity ?? 1 }}</td>
-                                    <td>${{ number_format(($product->price ?? 0) / 100, 2) }}</td>
-                                    <td>${{ number_format((($product->price ?? 0) * ($product->pivot->quantity ?? 1)) / 100, 2) }}</td>
+                                    <td>${{ number_format(($product->price ?? 0) , 2) }}</td>
+                                    <td>${{ number_format((($product->price ?? 0) * ($product->pivot->quantity ?? 1)) , 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <div class="text-right mt-3">
-                        <h6><strong>Total Amount:</strong> ${{ number_format($order->products->sum(function($product) { return ($product->price * $product->pivot->quantity) / 100; }), 2) }}</h6>
+                        <h6><strong>Total Amount:</strong> ${{ number_format($order->products->sum(function($product) { return ($product->price * $product->pivot->quantity); }), 2) }}</h6>
                     </div>
                 @else
                     <p class="text-muted">No products found for this order.</p>

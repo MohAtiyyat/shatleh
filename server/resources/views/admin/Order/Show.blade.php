@@ -48,11 +48,11 @@
                             </div>
                             <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Payment Info</h5>
-                                @if($order->payment)
-                                @include('admin.Order.payment-popout', ['payment' => $order->payment])
-                                @else
-                                    <p class="text-dark">No payment information available.</p>
-                                @endif
+                                <span>Total Price: {{ $order->total_price !== null ? number_format($order->total_price, 2) . ' JD' : 'N/A' }}</span>
+                                <br>
+                                <span>Payment Method: {{ $order->payment_method !== null ? $order->payment_method : 'N/A' }}</span>
+                                <br>
+                                <span>coupon: {{ $order->coupon !== null ? $order->coupon->amount . " %" : 'did not use a coupon' }}</span>
                             </div>
                             <div class="col-12 col-sm-6 mb-4">
                                 <h5 class="text-muted font-weight-semibold mb-2">Products</h5>
