@@ -359,6 +359,7 @@
     "selecatAddress": "Select an address",
     "manageAddresses": "Manage Addresses",
     "couponCode": "Coupon Code",
+    "couponMount": "and Coupon Amount",
     "enterCoupon": "Enter your coupon code",
     "selectAddress": "Select an address",
     "error": "An error occurred during fetching the order details",

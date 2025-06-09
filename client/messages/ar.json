@@ -358,6 +358,8 @@
     "selectAddress": "اختر عنوانًا",
     "manageAddresses": "إدارة العناوين",
     "couponCode": "كود الخصم",
+    "couponMount": "و قيمة الخصم",
+
     "enterCoupon": "ادخل كود الخصم الخاص بك",
     "selecatAddress": "حدد عنوانًا",
     "error": "حدث خطاء في جلب تفاصيل الطلب",

@@ -37,6 +37,7 @@ export async function createCheckoutSession(items: BackendCartItem[], metadata: 
         const discountFactor = metadata.couponDiscount && metadata.finalTotal && originalTotal > 0
             ? metadata.finalTotal / originalTotal
             : 1;
+            console.log("Discount factor:", discountFactor);
 
         // Create checkout session
         const checkoutSession = await stripe.checkout.sessions.create({
@@ -44,6 +45,7 @@ export async function createCheckoutSession(items: BackendCartItem[], metadata: 
             customer_creation: customerId ? undefined : 'always',
             customer_email: !customerId ? metadata.customerEmail : undefined,
             metadata,
+            
             mode: "payment",
             payment_method_types: ["card"], // Specify payment method types
             allow_promotion_codes: true,
@@ -72,6 +74,16 @@ export async function createCheckoutSession(items: BackendCartItem[], metadata: 
                     quantity: item.quantity,
                 };
             }),
+            
+            shipping_options: [
+                {
+                    shipping_rate_data: {
+                        type: 'fixed_amount',
+                        fixed_amount: { amount: 2 * 1000, currency: 'jod' }, // Shipping in fils
+                        display_name: 'Standard Shipping',
+                    },
+                },
+            ],
         });
 
         return checkoutSession.url;
