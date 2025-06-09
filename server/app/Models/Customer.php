@@ -14,7 +14,6 @@ class Customer extends Model
     protected $fillable = [
         'user_id',
         'balance',
-        'payment_info_id',
     ];
 
     public function user()

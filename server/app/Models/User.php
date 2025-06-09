@@ -81,14 +81,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the payment information for the user.
-     */
-    public function paymentInfos()
-    {
-        return $this->hasMany(PaymentInfo::class);
-    }
-
-    /**
      * Get the orders placed by the user.
      */
     public function orders()
