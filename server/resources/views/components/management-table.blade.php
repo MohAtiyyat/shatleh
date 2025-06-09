@@ -2,7 +2,7 @@
     'title' => 'Management Table',
     'headers' => [],
     'items' => [],
-    'createRoles' => '',
+    'createRoles' => 'Admin',
     'Route' => '#',
 ])
 
