@@ -22,11 +22,6 @@ class Customer extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function defultPaymentInfo()
-    {
-        return $this->belongsTo(PaymentInfo::class);
-    }
-
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -35,8 +30,5 @@ class Customer extends Model
     public function cart()
     {
         return $this->hasOne(Cart::class);
-    }
-    public function paymentInfo(){
-        return $this->hasMany(PaymentInfo::class);
     }
 }
