@@ -8,20 +8,19 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Lang;
 
-class ResetPasswordOTP extends Mailable
+class NewCustomer extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $otp;
+    private $password;
     private $lang;
     /**
      * Create a new message instance.
      */
-    public function __construct($otp, $lang = 'en')
+    public function __construct($password, $lang)
     {
-        $this->otp = $otp;
+        $this->password = $password;
         $this->lang = $lang;
     }
 
@@ -31,7 +30,7 @@ class ResetPasswordOTP extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Shatleh Reset Password OTP',
+            subject: 'Welcome to Shatleh',
         );
     }
 
@@ -41,9 +40,9 @@ class ResetPasswordOTP extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'Mail.reset-password-otp',
+            view: 'mail.new-customer',
             with: [
-                'otp' => $this->otp,
+                'password' => $this->password,
                 'lang' => $this->lang,
             ],
         );

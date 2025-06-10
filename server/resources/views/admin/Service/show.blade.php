@@ -33,35 +33,14 @@
                         <div class="card-body p-5 bg-light">
                             <div class="row">
                                 <div class="col-12 col-md-5 mb-4">
-                                    @if($service->image && count($service->image) > 0)
+                                    @if($service->image)
                                         <div id="serviceImageCarousel" class="carousel slide" data-ride="carousel">
-                                            @if($service->image && count($service->image) > 1)
-                                                <ol class="carousel-indicators">
-                                                    @foreach($service->image as $index => $image)
-                                                        <li data-target="#serviceImageCarousel" data-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}"></li>
-                                                    @endforeach
-                                                </ol>
-                                            @endif
                                             <div class="carousel-inner">
-                                                @foreach($service->image as $index => $image)
-                                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                        <img src="{{ asset($image) }}"
-                                                             loading="lazy"
-                                                             alt="{{ $service->name_en . ' ' . $service->name_ar }}"
-                                                             class="rounded-lg shadow-sm img-fluid">
-                                                    </div>
-                                                @endforeach
+                                                <img src="{{ asset($service->image) }}"
+                                                        loading="lazy"
+                                                        alt="{{ $service->name_en . ' ' . $service->name_ar }}"
+                                                        class="rounded-lg shadow-sm img-fluid">
                                             </div>
-                                            @if($service->image && count($service->image) > 1)
-                                                <a class="carousel-control-prev" href="#serviceImageCarousel" role="button" data-slide="prev">
-                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                    <span class="sr-only">Previous</span>
-                                                </a>
-                                                <a class="carousel-control-next" href="#serviceImageCarousel" role="button" data-slide="next">
-                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                    <span class="sr-only">Next</span>
-                                                </a>
-                                            @endif
                                         </div>
                                     @else
                                         <img src="https://placehold.co/350"

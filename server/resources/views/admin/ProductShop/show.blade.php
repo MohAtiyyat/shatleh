@@ -21,11 +21,13 @@
                                        title="Back to Product Shops">
                                         <i class="fas fa-arrow-left mr-1"></i> Back
                                     </a>
+                                    @if(auth()->user()->hasAnyRole('Admin|Employee'))
                                     <a href="{{ route('dashboard.productShop.create') }}"
                                        class="btn btn-light btn-sm rounded-pill px-3"
                                        title="Add New Product Shop">
                                         <i class="fas fa-plus mr-1"></i> New
                                     </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -74,6 +76,7 @@
                         </div>
                         <!-- Footer -->
                         <div class="card-footer bg-light border-top-0 p-4 d-flex justify-content-end align-items-center">
+                            @if (auth()->user()->hasAnyRole('Admin|Employee'))
                             <a href="{{ route('dashboard.productShop.edit', $record->id) }}"
                                class="btn btn-outline-primary btn-md mr-3 rounded-pill px-4">
                                 <i class="fas fa-edit mr-2"></i> Edit Product Shop
@@ -88,6 +91,7 @@
                                     <i class="fas fa-trash mr-2"></i> Delete
                                 </button>
                             </form>
+                            @endif
                         </div>
                     </div>
                 </div>

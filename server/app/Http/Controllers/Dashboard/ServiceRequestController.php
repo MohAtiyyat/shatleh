@@ -59,7 +59,7 @@ class ServiceRequestController extends Controller
     public function assign(Request $request, ServiceRequest $serviceRequest)
     {
         $request->validate([
-            'expert_id' => 'required|exists:users,id',
+            'expert_id' => 'nullable|exists:users,id',
         ]);
 
         $serviceRequest->update(['expert_id' => $request->expert_id, 'employee_id' => auth()->user()->id]);

@@ -8,12 +8,13 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateSpecialtyRequest extends FormRequest
 {
     use UserRoleTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->admin() || true;
+        return $this->admin();
     }
 
     /**
@@ -23,10 +24,12 @@ class UpdateSpecialtyRequest extends FormRequest
      */
     public function rules(): array
     {
-        // dd(Request::input());
+        // Get the ID of the specialty being updated
+        $specialtyId = $this->route('specialty'); // Assuming the route parameter is named 'specialty'
+
         return [
-            'name_ar' => 'required|string|unique:specialties,name_ar,'.$this->id,
-            'name_en' => 'required|string|unique:specialties,name_en,'.$this->id,
+            'name_ar' => 'required|string|unique:specialties,name_ar,' . $specialtyId,
+            'name_en' => 'required|string|unique:specialties,name_en,' . $specialtyId,
         ];
     }
 }

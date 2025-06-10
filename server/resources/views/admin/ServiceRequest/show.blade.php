@@ -46,9 +46,13 @@
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Customer</h5>
                                         <p class="text-dark mb-0">
+                                            @if (auth()->user()->hasAnyRole('Admin|Employee')) 
                                             <a href="{{ route('dashboard.customer.index', ['search' => $serviceRequest->customer->email]) }}">
                                                 {{ $serviceRequest->customer?->first_name }} {{ $serviceRequest->customer?->last_name }}
                                             </a>
+                                            @else
+                                                {{ $serviceRequest->customer?->first_name }} {{ $serviceRequest->customer?->last_name }}
+                                            @endif
                                         </p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
@@ -87,11 +91,17 @@
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Managed By</h5>
+                                        @if (auth()->user()->hasAnyRole('Admin|Employee')) 
                                         <p class="text-dark mb-0">
                                             <a href="{{ route('dashboard.staff', ['search' => $serviceRequest->employee?->email]) }}">
                                                 {{ $serviceRequest->employee?->first_name }} {{ $serviceRequest->employee?->last_name }}
                                             </a>
                                         </p>
+                                        @else
+                                            <p class="text-dark mb-0">
+                                                {{ $serviceRequest->employee?->first_name }} {{ $serviceRequest->employee?->last_name }}
+                                            </p>
+                                        @endif
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Service Request ID</h5>

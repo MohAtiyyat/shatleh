@@ -29,7 +29,6 @@ class UpdateProductShopRequest extends FormRequest
         return [
             'product_id' => 'required|exists:products,id',
             'shop_id' => 'required|exists:shops,id',
-            'employee_id' => 'required|exists:users,id',
             'cost' => 'required|numeric|min:0',
         ];
     }

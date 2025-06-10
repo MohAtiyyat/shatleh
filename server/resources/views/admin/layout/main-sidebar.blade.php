@@ -16,12 +16,14 @@
                     </a>
                 </li>
                 @endif
+                 @if (auth()->user()->hasAnyRole('Admin|Employee'))
                 <li class="nav-item">
                     <a href="{{ route('dashboard.staff') }}" class="nav-link @yield('Staff_Show')">
                         <ion-icon class="nav-icon" name="people-outline"></ion-icon>
                         <p>Staff Management</p>
                     </a>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('dashboard.product') }}" class="nav-link @yield('Products_Show')">
                         <ion-icon class="nav-icon" name="cube-outline"></ion-icon>

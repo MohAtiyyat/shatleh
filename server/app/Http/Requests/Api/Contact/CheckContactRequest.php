@@ -25,7 +25,7 @@ class CheckContactRequest extends FormRequest
             'lang' => 'required|in:ar,en',
             'phone_number' => 'required_if:email,null|regex:/^(\+?2)?[0-9]{13}$/',
             'email' => 'required_if:phone_number,null|email',
-            'otp_type' => 'nullable|in:reset_password,verify_email',
+            'otp_type' => 'nullable|in:reset_password,verify_email,register,update_profile',
         ];
     }
 }

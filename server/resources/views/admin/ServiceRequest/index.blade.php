@@ -20,9 +20,13 @@
 
                     {{-- Customer Name --}}
                     <td>
+                        @if (auth()->user()->hasAnyRole('Admin|Employee'))                        
                         <a href="{{ route('dashboard.customer.index', ['search' => $serviceRequest->customer->email]) }}">
                             {{ $serviceRequest->customer?->first_name }} {{ $serviceRequest->customer?->last_name }}
                         </a>
+                        @else
+                            {{ $serviceRequest->customer?->first_name }} {{ $serviceRequest->customer?->last_name }}
+                        @endif
                     </td>
 
                     {{-- Service Name --}}
@@ -33,7 +37,7 @@
                     </td>
                     {{-- Assign to Expert --}}
                     <td>
-                        @if ($serviceRequest->expert)
+                        @if (!auth()->user()->hasAnyRole('Admin|Employee') && $serviceRequest->expert)
                             {{ $serviceRequest->expert->first_name }} {{ $serviceRequest->expert->last_name }}
                         @else
                             <form method="POST" action="{{ route($Route . '.assign', $serviceRequest->id) }}">
@@ -41,7 +45,7 @@
                                 <select name="expert_id" onchange="this.form.submit()" class="form-select">
                                     <option value="">Select Expert</option>
                                     @foreach($experts as $id => $name)
-                                        <option value="{{ $id }}">{{ $name }}</option>
+                                        <option value="{{ $id }}" {{ (isset($serviceRequest->expert_id) ? $serviceRequest->expert_id : null) == $id ? 'selected' : '' }}>{{ $name }}</option>
                                     @endforeach
                                 </select>
                             </form>
@@ -64,9 +68,13 @@
 
                     {{-- Managed By Employee --}}
                     <td>
+                        @if (auth()->user()->hasAnyRole('Admin|Employee')) 
                         <a href="{{ route('dashboard.staff', ['search' => $serviceRequest->employee?->email]) }}">
                             {{ $serviceRequest->employee?->first_name }} {{ $serviceRequest->employee?->last_name }}
                         </a>
+                        @else
+                            {{ $serviceRequest->employee?->first_name }} {{ $serviceRequest->employee?->last_name }}
+                        @endif
                     </td>
 
                     {{--Address--}}
