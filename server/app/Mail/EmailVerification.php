@@ -32,7 +32,7 @@ class EmailVerification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Shatleh Email Verification',
+            subject: 'Shatleh OTP',
             
         );
     }

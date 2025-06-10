@@ -226,6 +226,50 @@ interface ApiErrorResponse {
     errors?: Record<string, string[]>;
 }
 
+interface CheckUniqeContactRequest {
+    phone_number?: string;
+    email?: string;
+    type?: 'register' | 'reset_password';
+}
+
+interface CheckUniqeContactResponse {
+    message: string;
+    phone_number?: string;
+    email?: string;
+}
+
+interface SendOtpRequest {
+    phone_number?: string;
+    email?: string;
+    lang: string;
+}
+
+interface SendOtpResponse {
+    message: string;
+    phone_number?: string;
+    email?: string;
+}
+
+interface VerifyOtpRequest {
+    phone_number?: string;
+    email?: string;
+    otp: string;
+    otp_type?: string;
+}
+interface ResetPasswordRequest {
+    email?: string;
+    phone_number?: string;
+    password: string;
+    password_confirmation: string;
+}
+
+interface ResetPasswordResponse {
+    message: string;
+}
+
+interface VerifyOtpResponse {
+    message: string;
+}
 export const getAuthToken = (): string | null => {
     return localStorage.getItem('token');
 };
@@ -250,6 +294,68 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     return response.json() as Promise<T>;
 };
 
+export const checkUniqeContact = async (data: CheckUniqeContactRequest): Promise<CheckUniqeContactResponse> => {
+    try {
+        const response = await fetch(`${API_URL}/api/checkContact`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return handleResponse<CheckUniqeContactResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to check contact');
+    }
+};
+
+export const sendOtp = async (data: SendOtpRequest): Promise<SendOtpResponse> => {
+    try {
+        const response = await fetch(`${API_URL}/api/sendOtp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return handleResponse<SendOtpResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to send OTP');
+    }
+};
+
+export const verifyOtp = async (data: VerifyOtpRequest): Promise<VerifyOtpResponse> => {
+    try {
+        const response = await fetch(`${API_URL}/api/verifyOtp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return handleResponse<VerifyOtpResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to verify OTP');
+    }
+};
+export const resetPassword = async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    try {
+        const response = await fetch(`${API_URL}/api/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return handleResponse<ResetPasswordResponse>(response);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to reset password');
+    }
+};
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
     try {
         const response = await fetch(`${API_URL}/api/login`, {

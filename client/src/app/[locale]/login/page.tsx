@@ -1,26 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react'; // Add useEffect
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../../../lib/AuthContext';
 import { login } from '../../../../lib/api';
+import EmailVerificationModal from '../../../../components/EmailVerificationModal';
+import OtpModal from '../../../../components/OtpModal';
+import ResetPasswordModal from '../../../../components/ResetPasswordModal';
 
 export default function Login() {
     const t = useTranslations('login');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { login: authLogin, isAuthenticated } = useAuth(); // Add isAuthenticated
+    const { login: authLogin, isAuthenticated } = useAuth();
     const currentLocale = pathname.split('/')[1] || 'ar';
     const redirectPath = searchParams.get('redirect') || '/';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showEmailModal, setShowEmailModal] = useState(false);
+    const [showOtpModal, setShowOtpModal] = useState(false);
+    const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+    const [contact, setContact] = useState<{ email?: string }>({});
 
-    // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
             router.push(`/${currentLocale}${redirectPath}`);
@@ -58,6 +64,22 @@ export default function Login() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEmailVerified = (contact: { email: string }) => {
+        setContact(contact);
+        setShowEmailModal(false);
+        setShowOtpModal(true);
+    };
+
+    const handleOtpVerified = () => {
+        setShowOtpModal(false);
+        setShowResetPasswordModal(true);
+    };
+
+    const handlePasswordResetSuccess = () => {
+        setShowResetPasswordModal(false);
+        router.push(`/${currentLocale}/login`);
     };
 
     return (
@@ -102,12 +124,13 @@ export default function Login() {
                         </div>
 
                         <div className="text-right mb-6">
-                            <Link
-                                href={`/${currentLocale}/forgot-password`}
+                            <button
+                                type="button"
+                                onClick={() => setShowEmailModal(true)}
                                 className="text-sm text-gray-600 hover:text-[#539407]"
                             >
                                 {t('forgotPassword')}
-                            </Link>
+                            </button>
                         </div>
 
                         <button
@@ -137,6 +160,26 @@ export default function Login() {
                     </form>
                 </div>
             </div>
+            <EmailVerificationModal
+                isOpen={showEmailModal}
+                onClose={() => setShowEmailModal(false)}
+                onEmailVerified={handleEmailVerified}
+                language={currentLocale}
+            />
+            <OtpModal
+                isOpen={showOtpModal}
+                onClose={() => setShowOtpModal(false)}
+                onVerify={handleOtpVerified}
+                contact={contact}
+                language={currentLocale}
+                otpType="reset_password"
+            />
+            <ResetPasswordModal
+                isOpen={showResetPasswordModal}
+                onClose={() => setShowResetPasswordModal(false)}
+                onSuccess={handlePasswordResetSuccess}
+                contact={contact}
+            />
         </main>
     );
 }
