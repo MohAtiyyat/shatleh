@@ -195,6 +195,29 @@
     "loginFailed": "Invalid email or password.",
     "error": "An error occurred during login"
   },
+  "forgotPassword": {
+        "enterEmail": "Enter Email",
+        "emailPrompt": "Enter your email to receive a verification code.",
+        "emailPlaceholder": "Email",
+        "emailVerificationFailed": "Email verification failed. Please check the email and try again.",
+        "enterOtp": "Enter OTP",
+        "otpSentTo": "OTP sent to",
+        "otpPlaceholder": "Enter OTP",
+        "timeRemaining": "Time remaining",
+        "otpVerificationFailed": "OTP verification failed. Please try again.",
+        "resetPassword": "Reset Password",
+        "resetPasswordPrompt": "Enter your new password and confirm it.",
+        "newPassword": "New Password",
+        "confirmNewPassword": "Confirm New Password",
+        "passwordMismatch": "Passwords do not match",
+        "passwordResetFailed": "Password reset failed. Please try again.",
+        "cancel": "Cancel",
+        "sendOtp": "Send OTP",
+        "verify": "Verify",
+        "verifying": "Verifying...",
+        "reset": "Reset",
+        "resetting": "Resetting..."
+    },
   "signup": {
     "title": "Sign Up",
     "firstName": "First Name",
@@ -214,7 +237,15 @@
     "corsError": "Unable to connect to the server. Please try again later.",
     "signupFailed": "Registration failed. Please try again.",
     "error": "An error occurred during signup",
-    "loginLinkText": "here"
+    "loginLinkText": "here",
+    "enterOtp": "Enter OTP",
+    "otpSentTo": "OTP sent to",
+    "otpPlaceholder": "Enter OTP",
+    "timeRemaining": "Time remaining",
+    "cancel": "Cancel",
+    "verify": "Verify",
+    "verifying": "Verifying...",
+    "otpVerificationFailed": "OTP verification failed. Please try again."
   },
   "user": {
     "title": "My Profile",
@@ -620,7 +651,7 @@
     "noResults": "No results found.",
     "category": "Category",
     "currency": "JOD",
-      "noResultsTitle": "No Results Found",
+    "noResultsTitle": "No Results Found",
     "noResultsMessage": "Sorry, we couldn’t find any results for your search query. Try a different search term or check out our categories.",
     "goBack": "Home",
     "errorTitle": "Error"

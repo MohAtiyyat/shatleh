@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Requests\Api\Auth\ResetPasswordRequest;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\CheckoutController;
@@ -24,9 +25,10 @@ Route::prefix('api/')->group(function () {
     Route::get('blog/{id}', [PostController::class, 'show'])->name('api.blog.show');
     Route::get('coupons', [CouponController::class, 'index'])->name('api.coupons.index');
     Route::get('search', [ProductController::class, 'search'])->name('api.search');
-    Route::post('checkContact',[AuthController::class, 'checkUniqeContact'])->name('api.checkUniqeContact');
-    Route::post('sendOtp',[AuthController::class, 'sendOtp'])->name('api.sendOtp');
-    Route::post('verifyOtp',[AuthController::class, 'verifyOtp'])->name('api.verifyOtp');
+    Route::post('checkContact', [AuthController::class, 'checkUniqeContact'])->name('api.checkUniqeContact');
+    Route::post('sendOtp', [AuthController::class, 'sendOtp'])->name('api.sendOtp');
+    Route::post('verifyOtp', [AuthController::class, 'verifyOtp'])->name('api.verifyOtp');
+    Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('api.resetPassword');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');

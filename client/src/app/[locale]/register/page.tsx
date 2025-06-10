@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react'; // Add useEffect
+import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -8,14 +8,15 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import { useAuth } from '../../../../lib/AuthContext';
-import { register } from '../../../../lib/api';
+import { register, checkUniqeContact, sendOtp } from '../../../../lib/api';
+import OtpModal from '../../../../components/OtpModal';
 
 export default function SignUp() {
     const t = useTranslations('signup');
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { login, isAuthenticated } = useAuth(); // Add isAuthenticated
+    const { login, isAuthenticated } = useAuth();
     const currentLocale = pathname.split('/')[1] || 'ar';
     const redirectPath = searchParams.get('redirect') || '/';
     const phoneRef = useRef<string | null>(null);
@@ -28,8 +29,9 @@ export default function SignUp() {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showOtpModal, setShowOtpModal] = useState(false);
+    const [contact, setContact] = useState<{ phone_number?: string; email?: string }>({});
 
-    // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
             router.push(`/${currentLocale}${redirectPath}`);
@@ -42,7 +44,6 @@ export default function SignUp() {
 
     const handlePhoneChange = (value: string) => {
         phoneRef.current = value;
-        console.log('Phone input:', value);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -61,11 +62,36 @@ export default function SignUp() {
                 ? parsePhoneNumberFromString(`+${phoneRef.current}`)
                 : null;
             if (!phoneNumber || !phoneNumber.isValid()) {
-                console.log('Invalid phone number:', phoneRef.current);
                 setError(t('invalidPhone'));
                 setLoading(false);
                 return;
             }
+
+
+            // Step 1: Check unique contact
+            await checkUniqeContact({ email: formData.email });
+
+            // Step 2: Send OTP
+            const otpResponse = await sendOtp({
+                email: formData.email,
+                lang: currentLocale,
+            });
+
+            setContact({  phone_number: otpResponse.phone_number , email: otpResponse.email });
+            setShowOtpModal(true);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : t('signupFailed'));
+            setLoading(false);
+        }
+    };
+
+    const handleOtpVerified = async () => {
+        setLoading(true);
+        try {
+            const phoneNumber = phoneRef.current
+                ? parsePhoneNumberFromString(`+${phoneRef.current}`)
+                : null;
+            if (!phoneNumber) throw new Error(t('invalidPhone'));
 
             const full_phone_number = `+${phoneNumber.countryCallingCode}${phoneNumber.nationalNumber}`;
 
@@ -79,11 +105,7 @@ export default function SignUp() {
                 ip_country_id: '12',
             };
 
-            console.log('Data to send:', dataToSend);
-
             const response = await register(dataToSend);
-            console.log('Response:', response);
-
             const { token, user } = response;
 
             if (!token || !user?.id) {
@@ -91,16 +113,11 @@ export default function SignUp() {
             }
 
             await login(token, user.id);
+            setShowOtpModal(false);
             router.push(`/${currentLocale}${redirectPath}`);
         } catch (error) {
-            console.error('Registration error:', error);
-            const err = error instanceof Error ? error : new Error(t('signupFailed'));
-            setError(
-                err.message.includes('Network Error')
-                    ? t('corsError')
-                    : err.message || t('signupFailed')
-            );
-        } finally {
+            setError(error instanceof Error ? error.message : t('signupFailed'));
+            setShowOtpModal(false);
             setLoading(false);
         }
     };
@@ -262,6 +279,13 @@ export default function SignUp() {
                     </form>
                 </div>
             </div>
+            <OtpModal
+                isOpen={showOtpModal}
+                onClose={() => setShowOtpModal(false)}
+                onVerify={handleOtpVerified}
+                contact={contact}
+                language={currentLocale}
+            />
         </main>
     );
 }

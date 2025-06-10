@@ -195,6 +195,29 @@
     "loginFailed": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
     "error": "حدث خطأ أثناء تسجيل الدخول"
   },
+  "forgotPassword": {
+    "enterEmail": "أدخل البريد الإلكتروني",
+    "emailPrompt": "أدخل بريدك الإلكتروني لتلقي رمز التحقق.",
+    "emailPlaceholder": "البريد الإلكتروني",
+    "emailVerificationFailed": "فشل التحقق من البريد الإلكتروني. تحقق من البريد الإلكتروني وحاول مرة أخرى.",
+    "enterOtp": "أدخل رمز التحقق",
+    "otpSentTo": "تم إرسال رمز التحقق إلى",
+    "otpPlaceholder": "أدخل رمز التحقق",
+    "timeRemaining": "الوقت المتبقي",
+    "otpVerificationFailed": "فشل التحقق من رمز التحقق. حاول مرة أخرى.",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "resetPasswordPrompt": "أدخل كلمة المرور الجديدة وتأكيدها.",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "passwordMismatch": "كلمات المرور غير متطابقة",
+    "passwordResetFailed": "فشل إعادة تعيين كلمة المرور. حاول مرة أخرى.",
+    "cancel": "إلغاء",
+    "sendOtp": "إرسال رمز التحقق",
+    "verify": "تحقق",
+    "verifying": "جارٍ التحقق...",
+    "reset": "إعادة تعيين",
+    "resetting": "جارٍ إعادة التعيين..."
+  },
   "signup": {
     "title": "إنشاء حساب",
     "firstName": "الاسم الأول",
@@ -214,7 +237,15 @@
     "corsError": "غير قادر على الاتصال بالخادم. حاول مرة أخرى لاحقًا.",
     "signupFailed": "فشل التسجيل. حاول مرة أخرى.",
     "error": "حدث خطأ أثناء إنشاء الحساب",
-    "loginLinkText": "هنا"
+    "loginLinkText": "هنا",
+    "enterOtp": "أدخل رمز التحقق",
+    "otpSentTo": "تم إرسال رمز التحقق إلى",
+    "otpPlaceholder": "أدخل رمز التحقق",
+    "timeRemaining": "الوقت المتبقي",
+    "cancel": "إلغاء",
+    "verify": "تحقق",
+    "verifying": "جارٍ التحقق...",
+    "otpVerificationFailed": "فشل التحقق من رمز التحقق. حاول مرة أخرى."
   },
   "user": {
     "title": "ملفي الشخصي",
@@ -480,7 +511,6 @@
       "submitFailed": "فشل في إرسال الطلب. يرجى المحاولة مرة أخرى."
     },
     "requestService": "طلب خدمة"
-
   },
   "profile": {
     "title": "ملفك الشخصي",

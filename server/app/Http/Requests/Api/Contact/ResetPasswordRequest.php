@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\Contact;
+namespace App\Http\Requests\Api\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CheckUniqeContactRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,9 @@ class CheckUniqeContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone_number' => 'required_without:email|regex:/^(\+?2)?[0-9]{13}$/',
-            'email' => 'required_without:phone_number|email',
-            'type' => 'nullable|in:register,reset_password',
+            'email' => 'required_without:phone_number|email|exists:users,email',
+            'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required|same:password',
         ];
     }
 }
