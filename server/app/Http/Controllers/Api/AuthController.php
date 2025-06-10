@@ -13,6 +13,7 @@ use App\Http\Requests\Api\Contact\CheckUniqeContactRequest;
 use App\Http\Requests\Api\OTP\VerifyOtpRequest;
 use App\Http\Requests\Dashboard\auth\LogoutRequest;
 use App\Mail\EmailVerification;
+use App\Mail\ResetPasswordOTP;
 use App\Models\OTP;
 use App\Models\User;
 use App\Traits\HelperTrait;
@@ -101,7 +102,9 @@ class AuthController extends Controller
         ]); 
 
         if($contact ==='email')
-            Mail::to($data[$contact])->send(new EmailVerification ($otp, auth()->user()->lang ?? $data['lang']));
+            Mail::to($data[$contact])->send($data['otp_type'] === 'reset_password' ? new ResetPasswordOTP($otp, User::where($contact, $data[$contact])->first()->lang ?? ($data['lang'] ?? 'en')) 
+        : new EmailVerification ($otp, auth()->user()->lang ?? ($data['lang'] ?? 'en')));
+
         
         return response()->json(['message' => 'OTP sent successfully', $contact => $data[$contact]], 200);
     }
