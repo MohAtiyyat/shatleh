@@ -65,6 +65,8 @@ class User extends Authenticatable
         ];
     }
 
+    protected $appends = ['name'];
+    
     protected $dates = ['deleted_at', 'email_verified_at'];
 
 
@@ -136,6 +138,11 @@ class User extends Authenticatable
     public function bookmarks()
     {
         return $this->belongsToMany(Post::class, 'bookmarks')->withTimestamps();
+    }
+
+    public function getNameAttribute()
+    {
+        return trim("{$this->first_name} {$this->last_name}");
     }
 
 }

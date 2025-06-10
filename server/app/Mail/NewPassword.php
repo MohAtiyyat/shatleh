@@ -14,8 +14,8 @@ class NewPassword extends Mailable
     use Queueable, SerializesModels;
 
 
-    public $newPassword;
-    public $lang;
+    private $newPassword;
+    private $lang;
     /**
      * Create a new message instance.
      */

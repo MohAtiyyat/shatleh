@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification - Shatleh</title>
+    <title>Welcome to Shatleh!</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,7 +32,13 @@
         .content {
             text-align: center;
         }
-        .otp {
+        .staff-details {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 20px 0;
+        }
+        .password {
             font-size: 24px;
             font-weight: bold;
             color: #2e7d32;
@@ -60,14 +66,18 @@
     <div class="container">
         <div class="header">
             <img src="{{ asset('images/shatleh-email-header.png') }}" alt="Shatleh Logo">
-            <h2>Email Verification</h2>
+            <h2>Welcome to Shatleh!</h2>
         </div>
         <div class="content">
-            <p>Thank you for joining Shatleh, your trusted partner in agriculture!</p>
-            <p>Please use the following One-Time Password (OTP) to verify your email address:</p>
-            <div class="otp">{{ $otp }}</div>
-            <p>This OTP is valid for the next 5 minutes.</p>
-            <p>If you did not request this verification, please ignore this email.</p>
+            <p>Dear {{ $staffName }},</p>
+            <p>Welcome to Shatleh, your trusted partner in agriculture!</p>
+            <div class="staff-details">
+                Name: {{ $staffName }}<br>
+                Role: {{ $staffRole }}
+            </div>
+            <p>We are thrilled to have you join our team as {{ $staffRole == 'Expert' ? 'an Expert' : 'an Employee' }}. Your skills and expertise will play a vital role in advancing our mission to empower agriculture, one seed at a time.</p>
+            <p>Please use the following  password to log in to your account:</p>
+            <div class="password">{{ $password }}</div>
         </div>
         <div class="footer">
             <p>© {{ date('Y') }} Shatleh. All rights reserved.</p>
@@ -82,7 +92,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد البريد الإلكتروني - شتلة</title>
+    <title>مرحبًا بك في شتلة!</title>
     <style>
         body {
             font-family: 'Tajawal', Arial, sans-serif;
@@ -112,7 +122,13 @@
         .content {
             text-align: center;
         }
-        .otp {
+        .staff-details {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 20px 0;
+        }
+        .password {
             font-size: 24px;
             font-weight: bold;
             color: #2e7d32;
@@ -140,14 +156,18 @@
     <div class="container">
         <div class="header">
             <img src="{{ asset('images/shatleh-email-header.png') }}" alt="شعار شتلة">
-            <h2>تأكيد البريد الإلكتروني</h2>
+            <h2>مرحبًا بك في شتلة!</h2>
         </div>
         <div class="content">
-            <p>شكرًا لانضمامك إلى شتلة، شريكك الموثوق في الزراعة!</p>
-            <p>يرجى استخدام كلمة المرور لمرة واحدة (OTP) التالية لتأكيد بريدك الإلكتروني:</p>
-            <div class="otp">{{ $otp }}</div>
-            <p>كلمة المرور هذه صالحة لمدة 5 دقائق فقط.</p>
-            <p>إذا لم تطلب هذا التأكيد، يرجى تجاهل هذا البريد الإلكتروني.</p>
+            <p>عزيزي {{ $staffName }}،</p>
+            <p>مرحبًا بك في شتلة، شريكك الموثوق في الزراعة!</p>
+            <div class="staff-details">
+                الاسم: {{ $staffName }}<br>
+                الدور: {{ $staffRole == 'Expert' ? 'خبير' : 'موظف' }}
+            </div>
+            <p>يسعدنا انضمامك إلى فريقنا كـ {{ $staffRole == 'Expert' ? 'خبير' : 'موظف' }}. ستساهم مهاراتك وخبراتك في تعزيز مهمتنا لتمكين الزراعة، بذرة واحدة في كل مرة.</p>
+            <p>يرجى استخدام كلمة المرور  التالية لتسجيل الدخول إلى حسابك:</p>
+            <div class="password">{{ $password }}</div>
         </div>
         <div class="footer">
             <p>© {{ date('Y') }} شتلة. جميع الحقوق محفوظة.</p>
