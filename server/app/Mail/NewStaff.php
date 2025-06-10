@@ -9,31 +9,28 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class EmailVerification extends Mailable
+class NewStaff extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $otp;
-    private $lang;
-
+    private $staff;
+    private $password;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($otp, $lang)
+    public function __construct( $staff, $password)
     {
-        $this->otp = $otp;
-        $this->lang = $lang;
+        $this->staff = $staff;
+        $this->password = $password;
     }
-
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Shatleh Email Verification',
-            
+            subject: 'Welecome to the Team',
         );
     }
 
@@ -43,10 +40,12 @@ class EmailVerification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'Mail.email-verification',
+            view: 'mail.new-staff',
             with: [
-                'otp' => $this->otp,
-                'lang'=> $this->lang
+                'staffName' => $this->staff->name,
+                'staffRole' => $this->staff->getRoleNames()[0] ?? 'Employee',
+                'password' => $this->password,
+                'lang'=> $this->staff->lang ?? 'en',
             ],
         );
     }

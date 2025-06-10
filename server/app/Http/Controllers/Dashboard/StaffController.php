@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Staff\StoreStaffRequest;
 use App\Http\Requests\Dashboard\Staff\UpdateStaffRequest;
 use App\Mail\NewPassword;
+use App\Mail\NewStaff;
 use App\Models\Log;
 use App\Models\Specialty;
 use App\Models\User;
@@ -46,7 +47,6 @@ class StaffController extends Controller
         $roles = Role::select('name')->whereIn('name', ['Expert', 'Employee'])->get();
         $specialties = Specialty::select('id', 'name_ar')->get();
 
-        $this->logAction(auth()->id(), 'create_staff', 'Accessed staff creation page', LogsTypes::INFO->value);
         return view('admin.Staff.createUpdate', compact('roles', 'specialties'));
     }
 
@@ -59,8 +59,8 @@ class StaffController extends Controller
     public function store(StoreStaffRequest $request) {
         $data = $request->validated();
 
-        $data['password'] = '1234';
-        $data['password'] = bcrypt($data['password']);
+        $password = Str::random(8); 
+        $data['password'] = bcrypt($password);
 
         $staff = User::create(Arr::except($data, ['role']));
 
@@ -68,6 +68,13 @@ class StaffController extends Controller
         if ($data['role'] === 'Expert' && isset($data['specialties'])) {
             $staff->specialties()->sync($data['specialties']);
         }
+
+        Mail::to($staff->email)->send(new NewStaff(
+            $staff, 
+            $password,
+        ));
+        $this->logAction(auth()->id(), 'create_staff', 'Staff created: ' . $staff->name, LogsTypes::INFO->value);
+
         return redirect()->route('dashboard.staff')->with('success', __('Staff created successfully.'));
 
     }
