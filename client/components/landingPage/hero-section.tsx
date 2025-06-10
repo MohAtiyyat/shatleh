@@ -17,21 +17,19 @@ export default function HeroSection({ currentLocale }: HeroSectionProps) {
     const heroSlides: HeroSlide[] = [
         {
             image:
-                "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                "/farmer.jpeg",
             subtitle: t("hero.slide1.subtitle"),
             title: t("hero.slide1.title"),
             description: t("hero.slide1.description"),
         },
         {
-            image:
-                "https://images.unsplash.com/photo-1535379453347-1ffd615e2e08?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            image:"bigFarm.avif",
             subtitle: t("hero.slide2.subtitle"),
             title: t("hero.slide2.title"),
             description: t("hero.slide2.description"),
         },
         {
-            image:
-                "https://images.unsplash.com/photo-1627920769541-daa658ed6b59?q=80&w=1933&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            image:"/topViewOfFarm.avif",
             subtitle: t("hero.slide3.subtitle"),
             title: t("hero.slide3.title"),
             description: t("hero.slide3.description"),
