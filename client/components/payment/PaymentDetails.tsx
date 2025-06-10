@@ -99,7 +99,7 @@ export default function PaymentDetails({
     const tax = 0;
     const originalTotal = subtotal  + tax;
     const discountedTotal = (couponApplied ? originalTotal * (1 - couponDiscount)  : originalTotal)+ shipping;
-
+        
     // Get selected address country_id
     const selectedAddress = addresses.find((addr) => addr.id === defaultAddressId);
     const countryId = selectedAddress?.country_id || null;
@@ -225,13 +225,15 @@ export default function PaymentDetails({
                     </h3>
                     <div className="mb-2">
                         <span className="text-sm" style={{ color: 'var(--text-gray)' }}>
-                            {t('couponCode')}:
+                            {t('couponCode')}: 
                         </span>
                         {coupons.map((coupon) => (
                             <span key={coupon.id} className="text-cyan-700 ml-2">
-                                {coupon.code}
+                                {coupon.code}  {t("couponMount")} : {coupon.amount} %
                             </span>
                         ))}
+                        
+
                     </div>
                     <div className="flex gap-2">
                         <input

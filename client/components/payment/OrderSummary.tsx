@@ -24,10 +24,10 @@ export default function OrderSummary({ couponApplied, couponDiscount }: OrderSum
         const price = parseFloat(item.price) || 0;
         return sum + price * item.quantity;
     }, 0);
-    const shipping = 2; // Set shipping to 2 JD
-    const tax = 0; // Set tax to 0
-    const originalTotal = subtotal + shipping + tax;
-    const discountedTotal = couponApplied ? originalTotal * (1 - couponDiscount) : originalTotal;
+    const shipping = 2;
+    const tax = 0;
+    const originalTotal = subtotal + tax ;
+    const discountedTotal = (couponApplied ? originalTotal * (1 - couponDiscount) : originalTotal) + shipping;
 
     if (isLoading) {
         return (
@@ -140,7 +140,7 @@ export default function OrderSummary({ couponApplied, couponDiscount }: OrderSum
                     ) : (
                         <div className="flex justify-between items-center">
                             <span className="text-xl font-semibold">{t('Cart.total')}</span>
-                            <span className="text-xl font-bold">{formatPrice(originalTotal.toFixed(2), currentLocale)}</span>
+                            <span className="text-xl font-bold">{formatPrice(discountedTotal.toFixed(2), currentLocale)}</span>
                         </div>
                     )}
                 </div>

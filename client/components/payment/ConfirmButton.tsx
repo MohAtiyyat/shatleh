@@ -103,7 +103,7 @@ export default function ConfirmButton({
             const coupon = couponData ? JSON.parse(couponData) : null;
 
             // Calculate total after discount
-            const finalTotal = couponApplied && couponDiscount > 0 ? total - couponDiscount : total;
+            const finalTotal = (couponApplied && couponDiscount > 0 ? total - couponDiscount : total) ;
 
             const checkoutData = {
                 customer_id: userId,
@@ -140,7 +140,7 @@ export default function ConfirmButton({
                         name_ar: item.name_ar,
                         name_en: item.name_en,
                         quantity: item.quantity,
-                        price: item.price.toString(),
+                        price: (item.price).toString(),
                     })),
                     total: finalTotal.toFixed(3),
                     orderDate: new Date().toISOString(),
