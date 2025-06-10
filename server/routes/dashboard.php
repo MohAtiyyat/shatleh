@@ -137,7 +137,8 @@ Route::name('dashboard.')->middleware('web')->prefix('dashboard')->group(functio
                 ->name('.assign')
                 ->whereNumber('order');
             Route::get('/{order}', [OrderController::class, 'show'])->name('.show');
-            Route::put('/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
+            Route::put('/status/{order}', [OrderController::class, 'updateStatus'])->name('.updateStatus');
+            Route::put('/refund/{order}', [OrderController::class, 'updateRefundStatus'])->name('.updateRefundStatus');
         });
         Route::resource('specialties', SpecialtiesController::class)->except('show');
 
