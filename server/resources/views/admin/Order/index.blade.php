@@ -7,7 +7,7 @@
     <x-management-table
         title="Order Management"
         :headers="[
-            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Assigned To', 'Status', 'Payment Method', 'Address', 'Actions'
+            '#', 'Customer Name', 'Managed By', 'Recipient Name', 'Recipient Phone', 'Assigned To', 'Status', 'Payment Method', 'Refund Status', 'Address', 'Actions'
         ]"
         :items="$order"
         :Route="'dashboard.order'"
@@ -53,6 +53,19 @@
                     </td>
                     <td>
                        {{ $record->payment_method ?? 'N/A' }}
+                    </td>
+                    <td>
+                        <form action="{{ route($Route . '.updateRefundStatus', $record->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <select name="refundStatus" class="form-select" onchange="this.form.submit()">
+                                @foreach(['none', 'refunded'] as $refundStatus)
+                                    <option value="{{ $refundStatus }}" {{ $record->refund_status === $refundStatus ? 'selected' : '' }}>
+                                        {{ ucfirst($refundStatus) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
                     </td>
                     <td>
                         @include('/components/address-popout', [

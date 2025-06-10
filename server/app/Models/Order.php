@@ -18,6 +18,7 @@ class Order extends Model
         'assigned_to',
         'coupon_id',
         'status',
+        'refund_status',
         'skipped_rating',
         'cart_id',
         'delivery_cost',

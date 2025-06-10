@@ -51,4 +51,17 @@ class OrderController extends Controller
         return redirect()->route('dashboard.service-request.index')
         ->with('success', 'Expert assigned successfully.');
     }
+
+    public function updateRefundStatus(Request $request, Order $order){
+        $validated = $request->validate([
+            'refundStatus' => 'required|string|in:none,refunded',
+        ]);
+
+        $order->refund_status = $validated['refundStatus'];
+        $order->employee_id = Auth::user()->id; // Marks the current user as the one managing it
+        $order->save();
+
+        $this->logAction(auth()->id(), 'update_order_refund_status', 'Order refund status updated: Order ID ' . $order->id . ' to ' . $validated['refundStatus'], LogsTypes::INFO->value);
+        return redirect()->back()->with('success', 'Order refund status updated successfully.');
+    }
 }
