@@ -282,7 +282,8 @@
     "hideDetails": "إخفاء التفاصيل",
     "details": "التفاصيل",
     "requestImage": "صورة الطلب",
-    "serviceAddress": "عنوان الخدمة"
+    "serviceAddress": "عنوان الخدمة",
+    "cancelRequest": "الغاء الطلب"
   },
   "Cart": {
     "title": "سلتك",

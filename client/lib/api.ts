@@ -965,3 +965,26 @@ export const fetchServiceRequests = async (locale: string): Promise<ServiceReque
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch service requests');
     }
 };
+export const cancelServiceRequest = async (requestId: string, locale: string): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    try {
+        const response = await fetch(`${API_URL}/api/service-requests/${requestId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+                'Accept-Language': locale,
+            },
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to cancel service request');
+        }
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to cancel service request');
+    }
+};

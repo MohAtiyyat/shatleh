@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -31,6 +32,45 @@ class ServiceController extends Controller
         ], 200);
     }
 
+    public function getServiceRequests()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Fetch service requests for the authenticated user
+        $serviceRequests = ServiceRequest::where('customer_id', $user->id)
+            ->with(['service', 'address'])
+            ->get()
+            ->sortByDesc('created_at')
+            ->map(function ($serviceRequest) {
+                return [
+                    'id' => $serviceRequest->id,
+                    'service' => $serviceRequest->service ? [
+                        'id' => $serviceRequest->service->id,
+                        'name_en' => $serviceRequest->service->name_en,
+                        'name_ar' => $serviceRequest->service->name_ar,
+                    ] : null,
+                    'address' => $serviceRequest->address ? [
+                        'id' => $serviceRequest->address->id,
+                        'title' => $serviceRequest->address->title,
+                        'city' => $serviceRequest->address->city,
+                        'address_line' => $serviceRequest->address->address_line,
+                    ] : null,
+                    'details' => $serviceRequest->details,
+                    'status' => $serviceRequest->status,
+                    'created_at' => $serviceRequest->created_at->toISOString(),
+                ];
+            })
+            ->values(); // Reset keys to ensure an array
+
+        return response()->json([
+            'data' => $serviceRequests,
+            'message' => $serviceRequests->isEmpty() ? 'No service requests found' : 'Service requests retrieved successfully',
+        ], 200);
+    }
+
     /**
      * Store a new service request.
      *
@@ -42,10 +82,10 @@ class ServiceController extends Controller
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
             'address_id' => 'required|exists:addresses,id',
-            'customer_id' => 'required|exists:users,id', // Validate customer_id
             'details' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors(),
@@ -65,7 +105,7 @@ class ServiceController extends Controller
         }
 
         $serviceRequest = ServiceRequest::create([
-            'customer_id' => $data['customer_id'], // Use customer_id
+            'customer_id' => $user->id, // Use authenticated user's ID
             'service_id' => $data['service_id'],
             'address_id' => $data['address_id'],
             'details' => $data['details'],
@@ -76,12 +116,27 @@ class ServiceController extends Controller
         $this->logAction(
             $user->id,
             'create_service_request',
-            'Service request created for service ID ' . $data['service_id'] . ' by customer ID ' . $data['customer_id'],
+            'Service request created for service ID ' . $data['service_id'] . ' by customer ID ' . $user->id,
             LogsTypes::INFO->value,
         );
+
         return response()->json([
             'data' => $serviceRequest,
             'message' => 'Service request created successfully',
         ], 201);
     }
+
+    public function cancelServiceRequest($id)
+{
+    $serviceRequest = ServiceRequest::findOrFail($id);
+    if ($serviceRequest->customer_id !== Auth::id()) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+    if ($serviceRequest->status !== 'pending') {
+        return response()->json(['error' => 'Cannot cancel request that is not pending'], 422);
+    }
+    $serviceRequest->status = 'cancelled';
+    $serviceRequest->save();
+    return response()->json(['message' => 'Service request cancelled successfully'], 200);
+}
 }

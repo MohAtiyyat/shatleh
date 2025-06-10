@@ -282,7 +282,8 @@
     "hideDetails": "Hide Details",
     "details": "Details",
     "requestImage": "Request Image",
-    "serviceAddress": "Service Address"
+    "serviceAddress": "Service Address",
+    "cancelRequest": "Cancel Request"
   },
   "Cart": {
     "title": "Your Cart",

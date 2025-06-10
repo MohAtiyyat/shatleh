@@ -59,6 +59,7 @@ Route::prefix('api')->group(function () {
         Route::post('/orders/{id}/skip-rating', [OrderController::class, 'skipRating'])->name('api.orders.skip-rating');
 
         // Service requests
-        Route::get('/service-requests', [ProfileController::class, 'getServiceRequests'])->name('api.service_requests.index');
+        Route::get('/service-requests', [ServiceController::class, 'getServiceRequests'])->name('api.service_requests.index');
+        Route::post('/service-requests/{id}/cancel', [ServiceController::class, 'cancelServiceRequest'])->name('api.service-requests.cancel');
     });
 });
