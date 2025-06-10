@@ -7,7 +7,7 @@
     <x-management-table
         title="Customer Management"
         :headers="[
-            '#', 'Full Name', 'Email', 'Phone', 'Balance', 'Banned', 'Actions'
+            '#', 'Full Name', 'Email', 'Phone', 'Banned', 'Actions'
         ]"
         :items="$customers"
         :Route="'dashboard.customer'"
@@ -17,16 +17,15 @@
             @foreach ($customers as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->user->first_name }} {{ $item->user->last_name }}</td>
-                    <td>{{ $item->user->email }}</td>
-                    <td>{{ $item->user->phone_number }}</td>
-                    <td>{{ number_format($item->balance, 2) }}</td>
+                    <td>{{ $item->first_name }} {{ $item->last_name }}</td>
+                    <td>{{ $item->email }}</td>
+                    <td>{{ $item->phone_number }}</td>
                     <td>
                         <form action="{{ route($Route . '.toggleBan', $item->id) }}" method="POST">
                             @csrf
                             @method('PATCH')
                             <label class="switch">
-                                <input type="checkbox" onchange="this.form.submit()" {{ $item->user->is_banned ? 'checked' : '' }} class="form-check-input">
+                                <input type="checkbox" onchange="this.form.submit()" {{ $item->is_banned ? 'checked' : '' }} class="form-check-input">
                                 <span class="slider round"></span>
                             </label>
                         </form>

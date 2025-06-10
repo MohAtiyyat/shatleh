@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Address;
-use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Service;
 use App\Models\ServiceRequest;
@@ -27,7 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CountrySeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
-        $this->call(CustomerSeeder::class);
         $this->call(AddressSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(ProductSeeder::class);
@@ -52,26 +50,6 @@ class DatabaseSeeder extends Seeder
             ]);
 
         };
-        DB::table('payment_info')->insert([
-            [
-                'card_type' => 'visa',
-                'card_number' => '1234567890123456',
-                'cvv' => '123',
-                'card_holder_name' => 'ahmed ali',
-                'customer_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'card_type' => 'mastercard',
-                'card_number' => '9876543210987654',
-                'cvv' => '321',
-                'card_holder_name' => 'ali ahmed',
-                'customer_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
 
     }
 }

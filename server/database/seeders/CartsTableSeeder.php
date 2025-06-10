@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +15,8 @@ class CartsTableSeeder extends Seeder
     public function run(): void
     {
         // Check if customers and products exist
-        $customers = Customer::pluck('id')->toArray();
+        $customers =  User::with('roles', 'addresses')->get()->filter(
+                fn ($user) => $user->roles->contains(fn ($role) =>$role->name === 'Customer'))->pluck('id')->toArray();
         $products = Product::pluck('id')->toArray();
 
 

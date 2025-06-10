@@ -67,10 +67,6 @@ class User extends Authenticatable
 
     protected $dates = ['deleted_at', 'email_verified_at'];
 
-    public function customer()
-    {
-        return $this->hasOne(Customer::class);
-    }
 
     /**
      * Get the addresses for the user.

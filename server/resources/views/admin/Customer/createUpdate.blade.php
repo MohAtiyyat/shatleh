@@ -8,7 +8,7 @@
             :title="isset($customer) ? 'Edit Customer' : 'Create New Customer'"
             :action="isset($customer) ? route('dashboard.customer.update', $customer->id) : route('dashboard.customer.store')"
             :method="isset($customer) ? 'PUT' : 'POST'"
-            :item="isset($customer) ? $customer->user : null"
+            :item="isset($customer) ? $customer : null"
             :fields="[
                 ['name' => 'first_name', 'label' => 'First Name', 'type' => 'text', 'placeholder' => 'Enter first name', 'required' => true, 'aria-required' => 'true', 'maxlength' => 255],
                 ['name' => 'last_name', 'label' => 'Last Name', 'type' => 'text', 'placeholder' => 'Enter last name', 'required' => true, 'aria-required' => 'true', 'maxlength' => 255],
