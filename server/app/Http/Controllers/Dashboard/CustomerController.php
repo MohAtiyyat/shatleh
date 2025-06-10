@@ -9,7 +9,6 @@ use App\Http\Requests\Dashboard\Customer\StoreCustomerRequest;
 use App\Http\Requests\Dashboard\Customer\UpdateCustomerRequest;
 use App\Mail\NewPassword;
 use App\Models\Cart;
-use App\Models\Customer;
 use App\Models\Product;
 use App\Models\User;
 use App\Traits\HelperTrait;
@@ -23,7 +22,11 @@ class CustomerController extends Controller
     use HelperTrait;
     public function index()
     {
-        $customers = Customer::with('user')->get();
+        $customers = 
+        User::with('roles', 'addresses')->get()->filter(
+                fn ($user) => $user->roles->contains(fn ($role) =>$role->name === 'Customer'));
+        User::with('roles', 'addresses')->get()->filter(
+                fn ($user) => $user->roles->contains(fn ($role) =>$role->name === 'Customer'));
         return view('admin.Customer.index', compact('customers'));
     }
 
@@ -41,73 +44,66 @@ class CustomerController extends Controller
             $data
         );
 
-        Customer::create([
-            'user_id' => $user->id,
-            'balance' => 0,
-        ]);
-
         $this->logAction(auth()->id(), 'create_customer', 'Customer created: ' . $user->name . ' (Id: ' . $user->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer created successfully.');
     }
 
-    public function show(Customer $customer)
+    public function show(User $customer)
     {
-        $customer->load('user');
         $ordersCount = $customer->orders->count();
         $cartItems = $customer->cart()->with('product')->paginate(5);
-        $defaultAddress = $customer->user->address;
-        $addresses = $customer->user->addresses;
+        $defaultAddress = $customer->address;
+        $addresses = $customer->addresses;
         return view('admin.Customer.show', compact('customer', 'ordersCount', 'cartItems', 'addresses' , 'defaultAddress'));
     }
 
-    public function edit(Customer $customer)
+    public function edit(User $customer)
     {
-        $customer->load('user');
         return view('admin.Customer.createUpdate', compact('customer'));
     }
 
-    public function update(UpdateCustomerRequest $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request, User $customer)
     {
         $data = $request->validated();
 
-        $customer->user->update(
+        $customer->update(
             $data
         );
 
-        $this->logAction(auth()->id(), 'update_customer', 'Customer updated: ' . $customer->user->name . ' (Id: ' . $customer->user->id . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'update_customer', 'Customer updated: ' . $customer->name . ' (Id: ' . $customer->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer updated successfully.');
     }
 
-    public function destroy(Customer $customer)
+    public function destroy(User $customer)
     {
-        $customer->user->addresses()->delete();
-        $customer->user->cart()->delete();
-        $customer->user->orders()->delete();
-        $customer->user->delete();
+        $customer->addresses()->delete();
+        $customer->cart()->delete();
+        $customer->orders()->delete();
+        $customer->delete();
         $customer->delete();
 
-        $this->logAction(auth()->id(), 'delete_customer', 'Customer deleted: ' . $customer->user->name . ' (Id: ' . $customer->user->id . ')', LogsTypes::WARNING->value);
+        $this->logAction(auth()->id(), 'delete_customer', 'Customer deleted: ' . $customer->name . ' (Id: ' . $customer->id . ')', LogsTypes::WARNING->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer deleted successfully.');
     }
 
-    public function toggleBan(Customer $customer)
+    public function toggleBan(User $customer)
     {
         
-        $customer->user->update(['is_banned' => !$customer->user->is_banned]);
+        $customer->update(['is_banned' => !$customer->is_banned]);
 
-        $this->logAction(auth()->id(), 'toggle_ban_customer', ($customer->user? 'Banned customer: ' : 'Unbanned customer: ') . $customer->user->first_name . ' ' . $customer->user->last_name . ' (Id: ' . $customer->user->id . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'toggle_ban_customer', ($customer? 'Banned customer: ' : 'Unbanned customer: ') . $customer->first_name . ' ' . $customer->last_name . ' (Id: ' . $customer->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer ban status updated.');
     }
 
-    public function resetPassword(Customer $customer)
+    public function resetPassword(User $customer)
     {
 
         $newPassword = Str::random(8); // You can generate a random password here if needed
-        $customer->user->update(['password' => bcrypt($newPassword)]);
-        Mail::to($customer->user->email)->send(new NewPassword(newPassword: $newPassword, lang: $customer->user->lang));
+        $customer->update(['password' => bcrypt($newPassword)]);
+        Mail::to($customer->email)->send(new NewPassword(newPassword: $newPassword, lang: $customer->lang));
 
 
-        $this->logAction(auth()->id(), 'reset_password_customer', 'Password reset for customer: ' . $customer->user->name . ' (Id: ' . $customer->user->id . ')', LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'reset_password_customer', 'Password reset for customer: ' . $customer->name . ' (Id: ' . $customer->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Password reset successfully.');
     }
 }

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Cart;
-use App\Models\Customer;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +15,8 @@ class CartSeeder extends Seeder
      */
     public function run(): void
     {
-        $customers = Customer::all();
+        $customers = User::with('roles', 'addresses')->get()->filter(
+                fn ($user) => $user->roles->contains(fn ($role) =>$role->name === 'Customer'));
         $products = Product::all();
 
         if ($customers->isEmpty() || $products->isEmpty()) {

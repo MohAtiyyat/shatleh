@@ -13,7 +13,7 @@
                         <div class="card-header bg-gradient-success text-white p-4">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h2 class="mb-0 font-weight-bold text-capitalize">
-                                    {{ $customer->user->first_name }} {{ $customer->user->last_name }}
+                                    {{ $customer->first_name }} {{ $customer->last_name }}
                                 </h2>
                                 <div>
                                     <a href="{{ route('dashboard.customer.index') }}"
@@ -36,16 +36,16 @@
                                 <div class="row">
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Full Name</h5>
-                                        <p class="text-dark">{{ $customer->user->first_name }}
-                                            {{ $customer->user->last_name }}</p>
+                                        <p class="text-dark">{{ $customer->first_name }}
+                                            {{ $customer->last_name }}</p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Email</h5>
-                                        <p class="text-dark">{{ $customer->user->email }}</p>
+                                        <p class="text-dark">{{ $customer->email }}</p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Phone Number</h5>
-                                        <p class="text-dark">{{ $customer->user->phone_number }}</p>
+                                        <p class="text-dark">{{ $customer->phone_number }}</p>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Balance</h5>
@@ -54,13 +54,13 @@
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Banned Status</h5>
                                         <span
-                                            class="badge badge-pill {{ $customer->user->is_banned ? 'badge-danger' : 'badge-success' }} px-3 py-2">
-                                            {{ $customer->user->is_banned ? 'Banned' : 'Active' }}
+                                            class="badge badge-pill {{ $customer->is_banned ? 'badge-danger' : 'badge-success' }} px-3 py-2">
+                                            {{ $customer->is_banned ? 'Banned' : 'Active' }}
                                         </span>
                                     </div>
                                     <div class="col-12 col-sm-6 mb-4">
                                         <h5 class="text-muted font-weight-semibold mb-2">Orders Count</h5>
-                                        <a href="{{ route('dashboard.order', ['search' => $customer->user->first_name . ' ' . $customer->user->last_name]) }}"
+                                        <a href="{{ route('dashboard.order', ['search' => $customer->first_name . ' ' . $customer->last_name]) }}"
                                             class="text-dark">{{ $ordersCount ?? '0' }} <input type="button" value="view orders" class="btn btn-sm btn-success ml-2 px-3"></a>
                                     </div>
                                     <div class="col-12 mb-4">
@@ -73,7 +73,7 @@
                                                     <li class="list-group-item">{{ $item->product->name_en ?? 'N/A' }}
                                                         (Qty: {{ $item->quantity }})</li>
                                                 @endforeach
-                                                <li class="list-group-item bg-success text-white text-center font-weight-bold"><a href="{{ route('dashboard.cart.index', ['search' => $customer->user->first_name . ' ' . $customer->user->last_name]) }}"
+                                                <li class="list-group-item bg-success text-white text-center font-weight-bold"><a href="{{ route('dashboard.cart.index', ['search' => $customer->first_name . ' ' . $customer->last_name]) }}"
                                             class="text-dark">view cart</a></li>
                                             </ul>
                                         @endif

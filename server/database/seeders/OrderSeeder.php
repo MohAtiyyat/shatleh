@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
@@ -17,7 +16,9 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         // Fetch customers (all users) and employees (users with Expert or Employee roles)
-        $customers = Customer::all();
+        
+        $customers =  User::with('roles', 'addresses')->get()->filter(
+                fn ($user) => $user->roles->contains(fn ($role) =>$role->name === 'Customer'));;
         $employees = User::whereHas('roles', function ($query) {
             $query->whereIn('name', ['Expert', 'Employee']);
         })->get();
@@ -45,7 +46,6 @@ class OrderSeeder extends Seeder
                 'employee_id' => $employee->id,
                 'address_id' => rand(1, 5), // Placeholder: Assumes addresses with IDs 1-5 exist
                 'coupon_id' => rand(1, 5), // Placeholder: Assumes coupons with IDs 1-5 exist
-                'payment_id' => rand(1, 5), // Placeholder: Assumes payments with IDs 1-5 exist
                 'status' => $isDelivered ? 'completed' : (rand(0, 1) ? 'pending' : 'shipped'),
                 'delivery_cost' => rand(500, 2000), // Random delivery cost between 5.00 and 20.00 (in cents)
                 'delivered_at' => $isDelivered ? Carbon::now()->subDays(rand(1, 10)) : null,
