@@ -264,7 +264,7 @@ export default function ServiceRequestsPage() {
                   <div className="flex flex-col md:flex-row justify-between mb-2">
                     <div>
                       <h2 className="text-lg font-medium">
-                        {t('request')} #{request.id}
+                        {t('request')}
                       </h2>
                       <p className="text-sm text-gray-600">
                         {new Date(request.created_at).toLocaleDateString(currentLocale, {
@@ -306,8 +306,11 @@ export default function ServiceRequestsPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                          <circle cx="12" cy="7" r="4"></circle>
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14,2 14,8 20,8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10,9 9,9 8,9"></polyline>
                         </svg>
                       </div>
                       <div>
