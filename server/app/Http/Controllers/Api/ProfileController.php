@@ -8,14 +8,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\ServiceRequest;
-use App\Models\User;
 use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-use function PHPSTORM_META\map;
 
 class ProfileController extends Controller
 {
@@ -292,35 +290,4 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Order cancelled successfully'], 200);
     }
 
-    public function getServiceRequests()
-    {
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-        $serviceRequests = ServiceRequest::where('customer_id', $user->id)->get()->sortByDesc('created_at')->map(function ($serviceRequest) {
-            return [
-                'id' => $serviceRequest->id,
-                'service' => $serviceRequest->service ? [
-                    'id' => $serviceRequest->service->id,
-                    'title_en' => $serviceRequest->service->name_en,
-                    'title_ar' => $serviceRequest->service->name_ar
-                ] : null,
-                'customer_id' => $serviceRequest->customer_id,
-                'details' => $serviceRequest->details,
-                'status' => $serviceRequest->status,
-                'created_at' => $serviceRequest->created_at->format('Y-m-d H:i:s'),
-                'address' => $serviceRequest->address ? [
-                    'id' => $serviceRequest->address->id,
-                    'title' => $serviceRequest->address->title,
-                    'city' => $serviceRequest->address->city,
-                    'address_line' => $serviceRequest->address->address_line,
-                ] : null,
-            ];
-        });
-        return response()->json([
-            'data' => $serviceRequests,
-            'message' => $serviceRequests->isEmpty() ? 'No service requests found' : 'Service requests retrieved successfully',
-        ], 200);
-    }
 }

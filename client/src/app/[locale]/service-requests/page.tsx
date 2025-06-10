@@ -4,26 +4,28 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 import Toast from '../../../../components/Toast';
+import CancelConfirmationPopout from '../../../../components/order/CancelConfirmationPopout'; // Reuse or adjust for service requests
 import Breadcrumb from '../../../../components/breadcrumb';
-import { fetchServiceRequests } from '../../../../lib/api';
+import { fetchServiceRequests, cancelServiceRequest } from '../../../../lib/api';
 import { ServiceRequest } from '../../../../lib/index';
 
-type ServiceRequestStatus = 'all' | 'pending' | 'inProgress' | 'completed' | 'cancelled';
+type RequestStatus = 'all' | 'pending' | 'inProgress' | 'completed' | 'cancelled';
 
 export default function ServiceRequestsPage() {
   const t = useTranslations('serviceRequests');
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale: 'en' | 'ar' = pathname.split('/')[1] === 'en' ? 'en' : 'ar';
-  const [activeTab, setActiveTab] = useState<ServiceRequestStatus>('all');
+  const [activeTab, setActiveTab] = useState<RequestStatus>('all');
   const [expandedRequest, setExpandedRequest] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCancelPopout, setShowCancelPopout] = useState(false);
+  const [requestToCancel, setRequestToCancel] = useState<string | null>(null);
 
   // Fetch service requests on mount
   useEffect(() => {
@@ -41,13 +43,46 @@ export default function ServiceRequestsPage() {
     loadServiceRequests();
   }, [currentLocale, t]);
 
-  // Filter service requests based on active tab
-  const filteredRequests = serviceRequests.filter(
-    (request) => activeTab === 'all' || request.status === activeTab
-  );
+// Filter service requests based on active tab
+  const filteredRequests = Array.isArray(serviceRequests)
+    ? serviceRequests.filter(
+        (request) => activeTab === 'all' || request.status === activeTab
+      )
+    : [];
 
   const toggleRequestDetails = (requestId: string) => {
     setExpandedRequest(expandedRequest === requestId ? null : requestId);
+  };
+
+  const initiateCancelRequest = (requestId: string) => {
+    setRequestToCancel(requestId);
+    setShowCancelPopout(true);
+  };
+
+  const handleCancelRequest = async () => {
+    if (!requestToCancel) return;
+
+    setShowCancelPopout(false);
+    setLoading(true);
+    try {
+      await cancelServiceRequest(requestToCancel, currentLocale);
+      setToastMessage(t('cancelSuccess'));
+      setShowToast(true);
+      setServiceRequests((prev) =>
+        prev.map((request) =>
+          request.id.toString() === requestToCancel ? { ...request, status: 'cancelled' } : request
+        )
+      );
+    } catch (err) {
+      setToastMessage(t('cancelError') || 'Failed to cancel service request');
+      setShowToast(true);
+      console.error('Cancel service request error:', err);
+    } finally {
+      setLoading(false);
+      const fetchedRequests = await fetchServiceRequests(currentLocale);
+      setServiceRequests(fetchedRequests);
+      setRequestToCancel(null);
+    }
   };
 
   // Loading state
@@ -67,7 +102,7 @@ export default function ServiceRequestsPage() {
             >
               {t('title')}
             </motion.h1>
-            <Breadcrumb pageName="serviceRequests" />
+            <Breadcrumb pageName="servicerequests" />
           </div>
           <div className="animate-pulse space-y-4">
             {[...Array(3)].map((_, i) => (
@@ -104,7 +139,7 @@ export default function ServiceRequestsPage() {
             >
               {t('title')}
             </motion.h1>
-            <Breadcrumb pageName="serviceRequests" />
+            <Breadcrumb pageName="servicerequests" />
           </div>
           <div className="text-center text-red-500">
             <p>{error}</p>
@@ -129,7 +164,7 @@ export default function ServiceRequestsPage() {
     >
       <div className="max-w-3xl mx-auto w-full px-4 md:px-8 py-[7vh]">
         <div className="flex mr-5 mb-4">
-          <Breadcrumb pageName="serviceRequests" />
+          <Breadcrumb pageName="servicerequests" />
         </div>
         <div className="w-full rounded-lg">
           <motion.h1
@@ -147,11 +182,11 @@ export default function ServiceRequestsPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
           >
-            {/* Dropdown for mobile (<640px) */}
+            {/* Dropdown for mobile */}
             <div className="sm:hidden">
               <motion.select
                 value={activeTab}
-                onChange={(e) => setActiveTab(e.target.value as ServiceRequestStatus)}
+                onChange={(e) => setActiveTab(e.target.value as RequestStatus)}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-green-200 rounded-full focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -166,7 +201,7 @@ export default function ServiceRequestsPage() {
               </motion.select>
             </div>
 
-            {/* Buttons for larger screens (>=640px) */}
+            {/* Buttons for larger screens */}
             <div className="hidden sm:flex flex-wrap gap-2 justify-center md:justify-start">
               {['all', 'pending', 'inProgress', 'completed', 'cancelled'].map((tab, index) => (
                 <motion.button
@@ -178,7 +213,7 @@ export default function ServiceRequestsPage() {
                       ? 'bg-white text-black border border-green-200 shadow-sm'
                       : 'bg-transparent text-gray-600 hover:text-black border border-transparent hover:bg-green-50'
                   }`}
-                  onClick={() => setActiveTab(tab as ServiceRequestStatus)}
+                  onClick={() => setActiveTab(tab as RequestStatus)}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1], delay: 0.1 + index * 0.03 }}
@@ -211,7 +246,7 @@ export default function ServiceRequestsPage() {
                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
                 onClick={() => router.push(`/${currentLocale}/services`)}
               >
-                {t('requestService')}
+                {t('requestNow')}
               </motion.button>
             </motion.div>
           ) : (
@@ -229,7 +264,7 @@ export default function ServiceRequestsPage() {
                   <div className="flex flex-col md:flex-row justify-between mb-2">
                     <div>
                       <h2 className="text-lg font-medium">
-                        {t('request')} #{request.id}
+                        {t('request')}
                       </h2>
                       <p className="text-sm text-gray-600">
                         {new Date(request.created_at).toLocaleDateString(currentLocale, {
@@ -271,36 +306,15 @@ export default function ServiceRequestsPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                          <polyline points="22 4 12 14.01 9 11.01" />
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14,2 14,8 20,8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10,9 9,9 8,9"></polyline>
                         </svg>
                       </div>
                       <div>
-                        <p className="font-medium">{t('serviceId')}</p>
-                        <p className="text-sm text-gray-600">{currentLocale === 'en' ? request.service?.name_en : request.service?.name_ar}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center">
-                      <div className="bg-white p-2 rounded-full mr-3">
-                        <svg
-                          className="h-5 w-5 text-gray-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="font-medium">{t('address')}</p>
-                        <p className="text-sm text-gray-600">
-                          {request.address?.title || t('noAddress')}
-                        </p>
+                        <p className="font-medium">{request.service?.name_en || 'Unknown Service'}</p>
                       </div>
                     </div>
 
@@ -330,13 +344,22 @@ export default function ServiceRequestsPage() {
                           <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                       </motion.button>
+                      {request.status === 'pending' && (
+                        <motion.button
+                          whileHover={{ scale: 1.05, y: -2, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } }}
+                          whileTap={{ scale: 0.95, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } }}
+                          className="text-red-500 hover:text-red-600 hover:bg-red-100 px-3 py-1 rounded-md flex flex-row items-center whitespace-nowrap"
+                          onClick={() => initiateCancelRequest(request.id.toString())}
+                        >
+                          <span className="inline-flex">{t('cancelRequest')}</span>
+                        </motion.button>
+                      )}
                     </div>
                   </div>
 
-                  <AnimatePresence mode="wait">
+                  <AnimatePresence>
                     {expandedRequest === request.id.toString() && (
                       <motion.div
-                        key={request.id}
                         className="mt-4 bg-white rounded-lg p-4 overflow-hidden"
                         initial={{ opacity: 0, maxHeight: 0 }}
                         animate={{ opacity: 1, maxHeight: 1000 }}
@@ -348,45 +371,14 @@ export default function ServiceRequestsPage() {
                         }}
                         id={`request-details-${request.id}`}
                       >
-                        <div className="flex justify-between items-center py-3 border-b">
-                          <div className="flex items-center">
-                            {request.image && (
-                              <div className="bg-green-50 p-2 rounded-md mr-3">
-                                <Image
-                                  src={
-                                    request.image
-                                      ? `${process.env.NEXT_PUBLIC_API_URL}${request.image}`
-                                      : '/placeholder.svg'
-                                  }
-                                  alt={t('requestImage')}
-                                  width={40}
-                                  height={40}
-                                  className="object-cover"
-                                  priority
-                                />
-                              </div>
-                            )}
-                            <div>
-                              <p className="text-sm">{t('details')}</p>
-                              <p className="text-sm text-gray-600">{request.details}</p>
-                            </div>
-                          </div>
-                        </div>
+                        <p className="text-sm">{request.details}</p>
                         {request.address && (
-                          <motion.div
-                            className="mt-4"
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              duration: 0.2,
-                              ease: [0.4, 0, 0.2, 1],
-                            }}
-                          >
-                            <p className="font-medium">{t('serviceAddress')}</p>
+                          <div className="mt-4">
+                            <p className="font-medium">{t('address')}</p>
                             <p className="text-sm text-gray-600">
                               {request.address.title}, {request.address.city}, {request.address.address_line}
                             </p>
-                          </motion.div>
+                          </div>
                         )}
                       </motion.div>
                     )}
@@ -402,6 +394,16 @@ export default function ServiceRequestsPage() {
         message={toastMessage}
         isVisible={showToast}
         onClose={() => setShowToast(false)}
+      />
+      <CancelConfirmationPopout
+        isOpen={showCancelPopout}
+        onClose={() => {
+          setShowCancelPopout(false);
+          setRequestToCancel(null);
+        }}
+        onConfirm={handleCancelRequest}
+        orderCode={requestToCancel || ''} // Using ID for simplicity
+        locale={currentLocale}
       />
     </div>
   );
