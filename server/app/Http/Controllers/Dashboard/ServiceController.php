@@ -38,15 +38,10 @@ class ServiceController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('images')) {
-            $imagePaths = [];
-            foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('service_images', 'public');
-                $imagePaths[] = Storage::url($imagePath);
-            }
-            $data['image'] = $imagePaths;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('service_images', 'public');
+            $data['image']= Storage::url($imagePath);
         }
-
 
        $service = Service::create($data);
 
@@ -65,19 +60,14 @@ class ServiceController extends Controller
         $data = $request->validated();
 
         try {
-            if ($request->hasFile('images')) {
+            if ($request->hasFile('image')) {
                 if ($service->image) {
-                    foreach ($service->image as $oldImage) {
-                        $oldImagePath = ltrim(parse_url($oldImage, PHP_URL_PATH), '/storage/');
-                        Storage::disk('public')->delete($oldImagePath);
-                    }
+                    $oldImagePath = ltrim(parse_url($service->image, PHP_URL_PATH), '/storage/');
+                    Storage::disk('public')->delete($oldImagePath);
                 }
-                $imagePaths = [];
-                foreach ($request->file('images') as $image) {
-                    $imagePath = $image->store('service_images', 'public');
-                    $imagePaths[] = Storage::url($imagePath);
-                }
-                $data['image'] = $imagePaths;
+                
+                $imagePath = $request->file('image')->store('service_images', 'public');
+                $data['image']= Storage::url($imagePath);
             }
 
             $service->update($data);
