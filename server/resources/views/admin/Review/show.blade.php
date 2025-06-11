@@ -75,6 +75,7 @@
                     <a href="{{ url()->previous() }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Back
                     </a>
+                    @if(auth()->user()->hasRole('Admin'))
                     <form action="{{ route('dashboard.review.delete', $review->id) }}" method="POST"
                         onsubmit="return confirm('Are you sure?');">
                         @csrf
@@ -82,7 +83,8 @@
                         <button type="submit" class="btn btn-danger ml-3">
                             <i class="fas fa-trash"></i> Delete
                         </button>
-                    </form>                    
+                    </form>  
+                    @endif                  
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@ use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Customer\StoreCustomerRequest;
 use App\Http\Requests\Dashboard\Customer\UpdateCustomerRequest;
+use App\Mail\NewCustomer;
 use App\Mail\NewPassword;
 use App\Models\Cart;
 use App\Models\Product;
@@ -37,13 +38,19 @@ class CustomerController extends Controller
 
     public function store(StoreCustomerRequest $request)
     {
+        // dd($request->all());
         $data = $request->validated();
 
-        $data['password'] = Hash::make("1234");
+        $password = Str::random(8); 
+        $data['password'] = bcrypt($password);
+
         $user = User::create(
             $data
         );
 
+        $user->assignRole('Customer');
+
+        Mail::to($user->email)->send(new NewCustomer(password: $password, lang: $user->lang?? 'ar'));
         $this->logAction(auth()->id(), 'create_customer', 'Customer created: ' . $user->name . ' (Id: ' . $user->id . ')', LogsTypes::INFO->value);
         return redirect()->route('dashboard.customer.index')->with('success', 'Customer created successfully.');
     }

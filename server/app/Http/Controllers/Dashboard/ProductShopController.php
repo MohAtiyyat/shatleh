@@ -55,7 +55,7 @@ class ProductShopController extends Controller
         ]);
 
 
-        $this->logAction(auth()->id(), 'create_product_shop', 'Product shop created: ' . $data->product_id . ' in shop: ' . $data->shop_id, LogsTypes::INFO->value);
+        $this->logAction(auth()->id(), 'create_product_shop', 'Product shop created: ' . $data['product_id'] . ' in shop: ' . $data['shop_id'], LogsTypes::INFO->value);
         return redirect()->route('dashboard.productShop')->with('success', 'Product shop record created successfully.');
     }
 
@@ -117,7 +117,7 @@ class ProductShopController extends Controller
         DB::table('product_shops')->where('id', $id)->update([
             'product_id' => $request->product_id,
             'shop_id' => $request->shop_id,
-            'employee_id' => $request->employee_id,
+            'employee_id' => auth()->user()->id,
             'cost' => $request->cost,
             'updated_at' => now(),
         ]);

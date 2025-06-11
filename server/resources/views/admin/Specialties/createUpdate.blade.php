@@ -102,7 +102,7 @@
 
             <!-- Submit Button -->
             <div class="footer">
-                <a href="{{ url()->previous() }}" class="btn btn-secondary">
+                <a href="{{ Route('dashboard.specialties.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
                 <button type="submit" class="btn btn-primary">
