@@ -1,7 +1,7 @@
 @extends('admin.layout.master')
 
 @section('title', 'Admin Dashboard')
-@section('Dashboard', 'active')
+@section('dashboard_show', 'active')
 
 @section('styles')
 <style>
