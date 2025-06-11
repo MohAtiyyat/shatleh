@@ -31,8 +31,7 @@ class StoreServiceRequest extends FormRequest
             'name_en' => 'required',
             'description_ar' => 'required',
             'description_en' => 'required',
-            'images' => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|integer',
         ];
     }
