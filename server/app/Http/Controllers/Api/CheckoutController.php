@@ -82,7 +82,7 @@ class CheckoutController extends Controller
                     'quantity' => $item['quantity'],
                 ]);
                 Product::where('id', $item['product_id'])
-                    ->increment('quantity_sold', $item['quantity']);
+                    ->increment('sold_quantity', $item['quantity']);
             }
 
             // Decrement coupon quantity if applied
