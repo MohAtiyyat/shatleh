@@ -12,7 +12,7 @@ class ShowShopRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->admin();
+        return $this->allDashboardUsers();
     }
 
     /**

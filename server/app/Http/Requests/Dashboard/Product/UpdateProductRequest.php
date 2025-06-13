@@ -14,7 +14,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->admin();
+        return $this->employee();
     }
 
     /**
