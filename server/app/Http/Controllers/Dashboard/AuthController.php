@@ -34,15 +34,12 @@ class AuthController extends Controller
         $user = User::where("email", $attributes["email"])->first();
 
         if(!isEmpty($user)&&$user->is_banned==1){
-            return response()->json([
-                'message' => 'Your account has been banned.',
-            ], 403);
+          return redirect()->route('dashboard.login')->with('error', 'Your account has been banned.');
         }
 
         if (! Auth::attempt($attributes)) {
-            return response()->json([
-                'email' => 'Sorry, those credentials do not match.',
-                ], 422);
+            return redirect('/dashboard/login')->with(
+                'error' , 'Sorry, those credentials do not match.',);
         }
 
         request()->session()->regenerate();
