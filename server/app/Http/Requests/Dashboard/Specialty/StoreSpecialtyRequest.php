@@ -15,7 +15,7 @@ class StoreSpecialtyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->admin() || true;
+        return $this->employee();
     }
 
     /**
