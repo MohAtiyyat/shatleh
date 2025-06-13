@@ -81,8 +81,8 @@ class CheckoutController extends Controller
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
                 ]);
-                // Product::where('id', $item['product_id'])
-                //     ->increment('sold', $item['quantity']);
+                Product::where('id', $item['product_id'])
+                    ->increment('quantity_sold', $item['quantity']);
             }
 
             // Decrement coupon quantity if applied
