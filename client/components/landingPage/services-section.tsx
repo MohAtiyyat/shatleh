@@ -33,7 +33,7 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
       name_ar: 'العناية بالأشجار والنباتات',
       description_en: 'Full care services for trees and plants to help them grow healthy and beautiful.',
       description_ar: 'خدمات متكاملة للعناية بالأشجار والنباتات لضمان نموها بشكل صحي وجميل.',
-      image: '/agri services.jpg',
+      image: '/storage/images/service/TreeandPlantCare.jpg',
     },
     {
       id: 2,
@@ -41,7 +41,7 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
       name_ar: 'الاستشارات الزراعية',
       description_en: 'Expert advice from agricultural engineers to improve plant care.',
       description_ar: 'توجيهات ونصائح مهنية من مهندسين زراعيين مختصين لتحسين العناية بالنباتات.',
-      image: '/educational content.webp',
+      image: '/storage/images/service/AgriculturalConsultations.jpg',
     },
     {
       id: 3,
@@ -49,7 +49,7 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
       name_ar: 'تنسيق الحدائق',
       description_en: 'Designing and organizing small gardens with high quality to improve their look and use space wisely.',
       description_ar: 'تصميم وتنظيم الحدائق الصغيرة بأعلى جودة لتحسين مظهرها واستخدام المساحات بشكل فعال.',
-      image: '/best plants.jpg',
+      image: '/storage/images/service/GardenLandscaping.jpg',
     },
   ];
 
