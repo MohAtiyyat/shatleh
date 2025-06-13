@@ -18,7 +18,7 @@ class ServiceSeeder extends Seeder
             [
                 'name_en' => 'Tree and Plant Care',
                 'name_ar' => 'العناية بالأشجار والنباتات',
-                'image' => '/storage/images/service/TreeandPlantCare.jpg',
+                'image' => '/storage/images/services/TreeandPlantCare.jpg',
                 'description_en' => 'Full care services for trees and plants to help them grow healthy and beautiful.',
                 'description_ar' => 'خدمات متكاملة للعناية بالأشجار والنباتات لضمان نموها بشكل صحي وجميل.',
                 'status' => 1,
@@ -29,7 +29,7 @@ class ServiceSeeder extends Seeder
             [
                 'name_en' => 'Agricultural Consultations',
                 'name_ar' => 'الاستشارات الزراعية',
-                'image' => '/storage/images/service/AgriculturalConsultations.jpg',
+                'image' => '/storage/images/services/AgriculturalConsultations.jpg',
                 'description_en' => 'Expert advice from agricultural engineers to improve plant care.',
                 'description_ar' => 'توجيهات ونصائح مهنية من مهندسين زراعيين مختصين لتحسين العناية بالنباتات.',
                 'status' => 1,
@@ -40,7 +40,7 @@ class ServiceSeeder extends Seeder
             [
                 'name_en' => 'Garden Landscaping',
                 'name_ar' => 'تنسيق الحدائق',
-                'image' => '/storage/images/service/GardenLandscaping.jpg',
+                'image' => '/storage/images/services/GardenLandscaping.jpg',
                 'description_en' => 'Designing and organizing small gardens with high quality to improve their look and use space wisely.',
                 'description_ar' => 'تصميم وتنظيم الحدائق الصغيرة بأعلى جودة لتحسين مظهرها واستخدام المساحات بشكل فعال.',
                 'status' => 1,
