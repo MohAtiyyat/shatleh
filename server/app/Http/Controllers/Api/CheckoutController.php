@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Coupon;
+use App\Models\Product;
 use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -80,6 +81,8 @@ class CheckoutController extends Controller
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
                 ]);
+                Product::where('id', $item['product_id'])
+                    ->increment('sold', $item['quantity']);
             }
 
             // Decrement coupon quantity if applied

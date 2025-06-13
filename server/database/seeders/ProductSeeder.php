@@ -86,7 +86,7 @@ class ProductSeeder extends Seeder
             Product::create([
                 'name_en' => $names_en[$index],
                 'name_ar' => $names_ar[$index],
-                'price' => $prices[$index]*100,
+                'price' => $prices[$index],
                 'image' => [$images[$index]],
                 'description_en' => $descriptions_en[$index],
                 'description_ar' => $descriptions_ar[$index],
