@@ -15,7 +15,7 @@ class UpdateShopRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->employee();
     }
 
     /**
