@@ -343,6 +343,7 @@ export default function ProfilePage() {
                                 <input
                                     type="email"
                                     name="email"
+                                    disabled
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     className={`w-full rounded-lg border px-4 py-3 pl-10 text-sm focus:outline-none focus:ring-2 transition-colors ${formErrors.email ? 'border-red-500' : 'border-[var(--secondary-bg)]'

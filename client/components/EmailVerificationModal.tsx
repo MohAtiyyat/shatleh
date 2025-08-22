@@ -27,7 +27,7 @@ export default function EmailVerificationModal({ isOpen, onClose, onEmailVerifie
             // Check if email exists for password reset
             await checkUniqeContact({ email, type: 'reset_password' });
             // Send OTP
-            await sendOtp({ email, lang: language });
+            await sendOtp({ email, lang: language ,  otp_type: 'reset_password' });
             onEmailVerified({ email });
         } catch (error) {
             const err = error instanceof Error ? error.message : t('emailVerificationFailed');

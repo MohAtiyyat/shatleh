@@ -59,7 +59,7 @@ export default function Login() {
             setError(
                 err.message.includes('Network Error')
                     ? t('corsError')
-                    : err.message || t('loginFailed')
+                    :  t('loginFailed')
             );
         } finally {
             setLoading(false);

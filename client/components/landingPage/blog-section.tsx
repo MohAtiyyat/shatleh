@@ -104,7 +104,7 @@ export default function BlogSection({ currentLocale }: BlogSectionProps) {
               >
                 <motion.div
                   id={`blog-post-${post.id}`}
-                  className="bg-white rounded-xl overflow-hidden shadow-sm h-[400px]"
+                  className="bg-white rounded-xl overflow-hidden shadow-sm"
                   whileHover={{ scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}
                   transition={{ duration: 0.3 }}
                 >

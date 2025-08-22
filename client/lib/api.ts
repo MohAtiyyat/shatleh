@@ -242,6 +242,7 @@ interface SendOtpRequest {
     phone_number?: string;
     email?: string;
     lang: string;
+    otp_type:string;
 }
 
 interface SendOtpResponse {
@@ -672,7 +673,7 @@ export const fetchServices = async (): Promise<Service[]> => {
         });
         const data = await handleResponse<ServicesResponse>(response);
         return data.data;
-    } catch (error) {
+    } catch (error) {   
         throw new Error(error instanceof Error ? error.message : 'Failed to fetch services');
     }
 };

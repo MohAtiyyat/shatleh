@@ -42,6 +42,13 @@ export default function OtpModal({ isOpen, onClose, onVerify, contact, otpType }
         setError('');
         setLoading(true);
 
+        // Check for empty OTP
+        if (!otp.trim()) {
+            setError(t('emptyOtpError'));
+            setLoading(false);
+            return;
+        }
+
         try {
             const verifyData: { phone_number?: string; email?: string; otp: string; otp_type?: string } = {
                 otp,
@@ -61,7 +68,7 @@ export default function OtpModal({ isOpen, onClose, onVerify, contact, otpType }
 
     return (
         <motion.div
-            className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
             style={{ backdropFilter: 'blur(0.8px)' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -99,7 +106,7 @@ export default function OtpModal({ isOpen, onClose, onVerify, contact, otpType }
                     <button
                         onClick={handleVerify}
                         className="bg-[#94f198] hover:bg-[#7ad97e] text-black py-2 px-4 rounded-md"
-                        disabled={loading || !otp}
+                        disabled={loading}
                     >
                         {loading ? t('verifying') : t('verify')}
                     </button>

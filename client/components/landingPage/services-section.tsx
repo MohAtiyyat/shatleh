@@ -80,7 +80,6 @@ export default function ServicesSection({ currentLocale }: ServicesSectionProps)
     const maxLength = 150;
     return description.length > maxLength ? `${description.slice(0, maxLength - 3)}...` : description;
   };
-
   return (
     <motion.section
       ref={servicesRef}

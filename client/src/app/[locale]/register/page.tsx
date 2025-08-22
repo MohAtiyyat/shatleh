@@ -75,6 +75,7 @@ export default function SignUp() {
             const otpResponse = await sendOtp({
                 email: formData.email,
                 lang: currentLocale,
+                otp_type: 'register',
             });
 
             setContact({  phone_number: otpResponse.phone_number , email: otpResponse.email });

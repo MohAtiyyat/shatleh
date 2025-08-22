@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['localhost', 'images.pexels.com', '127.0.0.1'], // Add '127.0.0.1' here
+    domains: ['localhost', 'images.pexels.com', '127.0.0.1' , "api.shatleh.shop"], // Add '127.0.0.1' here
   },
 };
 

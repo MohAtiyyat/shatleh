@@ -87,7 +87,7 @@ export default function ServiceDetailPage() {
     const token = localStorage.getItem('token');
     const storedUserId = localStorage.getItem('userId');
     if (!token || !storedUserId) {
-      router.push(`/${currentLocale}/login?redirect=/service/${id}`);
+      router.push(`/${currentLocale}/login?redirect=/services/${id}`);
       return;
     }
 
