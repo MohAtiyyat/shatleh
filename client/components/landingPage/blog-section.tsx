@@ -74,7 +74,7 @@ export default function BlogSection({ currentLocale }: BlogSectionProps) {
     >
       <div
         className="absolute inset-0 opacity-10 pointer-events-none bg-no-repeat bg-cover"
-        style={{ backgroundImage: "url('/bg4.svg')" }}
+        style={{ backgroundImage: "url('/bg4.webp')" }}
       ></div>
 
       <h2 className="text-center text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--accent-color)] mb-8 relative">

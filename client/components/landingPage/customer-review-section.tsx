@@ -86,7 +86,7 @@ export default function CustomerReviewSection({ currentLocale }: CustomerReviewS
 
       <div
         className="absolute inset-0 opacity-10 pointer-events-none bg-no-repeat bg-cover"
-        style={{ backgroundImage: "url('/bg5.svg')" }}
+        style={{ backgroundImage: "url('/bg5.webp')" }}
       ></div>
 
       <motion.h2

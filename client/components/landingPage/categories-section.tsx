@@ -26,7 +26,7 @@ export default function CategoriesSection({ currentLocale }: CategoriesSectionPr
       id: Math.random(),
       name: { en: 'Seeds', ar: 'بذور' },
       subcategories: [],
-      image: '/4.svg',
+      image: '/4.webp',
     },
     {
       id: Math.random(),
@@ -63,7 +63,7 @@ export default function CategoriesSection({ currentLocale }: CategoriesSectionPr
       dir={currentLocale === 'ar' ? 'rtl' : 'ltr'}
     >
     <div className="absolute inset-0 opacity-10 pointer-events-none bg-no-repeat bg-cover"
-        style={{ backgroundImage: "url('/bg1.svg')" }}>
+        style={{ backgroundImage: "url('/bg1.webp')" }}>
     </div>
 
       <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--accent-color)] mb-8 relative">

@@ -50,7 +50,7 @@ export default function TopSellersSection({ currentLocale }: TopSellersSectionPr
       dir={currentLocale === 'ar' ? 'rtl' : 'ltr'}
     >
     <div className="absolute inset-0 opacity-10 pointer-events-none bg-no-repeat bg-cover"
-        style={{ backgroundImage: "url('/bg2.svg')" }}>
+        style={{ backgroundImage: "url('/bg2.webp')" }}>
     </div>
 
 
