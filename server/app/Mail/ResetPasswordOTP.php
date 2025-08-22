@@ -41,7 +41,7 @@ class ResetPasswordOTP extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'Mail.reset-password-otp',
+            view: 'mail.reset-password-otp',
             with: [
                 'otp' => $this->otp,
                 'lang' => $this->lang,

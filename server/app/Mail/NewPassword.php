@@ -42,7 +42,7 @@ class NewPassword extends Mailable
     public function content(): Content
     {
        return new Content(
-            view: 'Mail.new-password',
+            view: 'mail.new-password',
             with: [
                 'newPassword' => $this->newPassword,
                 'lang'=> $this->lang
