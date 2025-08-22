@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\LogsTypes;
 use App\Http\Controllers\Controller;
+use App\Mail\OrderPlacedMail;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\User;
 use App\Traits\HelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -101,6 +104,14 @@ class CheckoutController extends Controller
                 'Order placed successfully: Order ID ' . $order->id,
                 LogsTypes::INFO->value
             );
+
+            $employees = User::whereHas('roles', function ($query) {
+                $query->where('name', 'employee');
+            });
+
+            foreach ( $employees as $employee) {
+                Mail::to($employee->email)->send(new OrderPlacedMail($order, $employee->lang ?? 'en'));
+            }
 
             return response()->json([
                 'data' => [
