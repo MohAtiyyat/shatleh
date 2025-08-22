@@ -25,7 +25,7 @@ class PostController extends Controller
                 'product_id' => $post->product_id,
                 'product_en' => $post->product ? $post->product->name_en : null,
                 'product_ar' => $post->product ? $post->product->name_ar : null,
-                'image' => $post->image ? asset('storage/' . $post->image) : null,
+                'image' => $post->image ? asset( $post->image) : null,
             ];
         });
 
@@ -55,7 +55,7 @@ class PostController extends Controller
             'product_id' => $post->product_id,
             'product_en' => $post->product ? $post->product->name_en : null,
             'product_ar' => $post->product ? $post->product->name_ar : null,
-            'image' => $post->image ? asset('storage/' . $post->image) : null,
+            'image' => $post->image ? asset($post->image) : null,
             'bookmarked' => $bookmarked,
         ]);
     }
@@ -100,7 +100,7 @@ class PostController extends Controller
                 'product_id' => $post->product_id,
                 'product_en' => $post->product ? $post->product->name_en : null,
                 'product_ar' => $post->product ? $post->product->name_ar : null,
-                'image' => $post->image ? asset('storage/' . $post->image) : null,
+                'image' => $post->image ? asset( $post->image) : null,
             ];
         });
         return response()->json($bookmarks);

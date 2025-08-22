@@ -45,7 +45,7 @@
                                     @if($post->image)
                                         <div class="col-12 mb-4">
                                             <h5 class="text-muted font-weight-semibold mb-2">Image</h5>
-                                            <img src="{{ asset('storage/' . $post->image) }}" alt="Post Image" class="img-fluid rounded" style="max-width: 300px;">
+                                            <img src="{{ asset( $post->image) }}" alt="Post Image" class="img-fluid rounded" style="max-width: 300px;">
                                         </div>
                                     @endif
                                     <div class="col-12 col-sm-6 mb-4">

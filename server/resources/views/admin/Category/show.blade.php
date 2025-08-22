@@ -59,7 +59,7 @@
             @if ($category->image)
             <div class="mb-3">
                 <label><strong>Image:</strong></label><br>
-                <img src="{{ asset('storage/' . $category->image) }}" class="img-thumbnail" style="max-width: 300px;" alt="Category Image">
+                <img src="{{ asset( $category->image) }}" class="img-thumbnail" style="max-width: 300px;" alt="Category Image">
             </div>
             @endif
 

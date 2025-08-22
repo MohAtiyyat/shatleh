@@ -29,7 +29,7 @@
                             <!-- Image Section -->
                             <div class="image-wrapper float-left mr-4 mb-4">
                                 @if($serviceRequest->image)
-                                    <img src="{{ asset('storage/' . $serviceRequest->image) }}"
+                                    <img src="{{ asset( $serviceRequest->image) }}"
                                          alt="Service Request #{{ $serviceRequest->id }}"
                                          class="rounded-lg shadow-sm"
                                          style="max-height: 350px; object-fit: cover; width: 100%; max-width: 350px;">

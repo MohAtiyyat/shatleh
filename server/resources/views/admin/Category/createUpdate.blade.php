@@ -193,7 +193,7 @@
 
                 @if(isset($category) && $category->image)
                     <div class="current-image">
-                        <img src="{{ asset('storage/' . $category->image) }}" alt="Category Image">
+                        <img src="{{ asset($category->image) }}" alt="Category Image">
                     </div>
                 @endif
 

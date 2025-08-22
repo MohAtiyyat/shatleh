@@ -123,7 +123,7 @@
 
                 @if(isset($post) && $post->image)
                     <div class="current-image">
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="Post Image">
+                        <img src="{{ asset( $post->image) }}" alt="Post Image">
                     </div>
                 @endif
 
