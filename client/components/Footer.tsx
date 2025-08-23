@@ -60,7 +60,7 @@ const Footer = () => {
         { label: t('footer.products'), href: `/${currentLocale}/products` },
         { label: t('footer.blog'), href: `/${currentLocale}/blog` },
         { label: t('footer.services'), href: `/${currentLocale}/services` },
-        { label: t('footer.about'), href: `/${currentLocale}/about` },
+        { label: t('footer.about'), href: `/${currentLocale}/about-us` },
     ]
 
     return (
