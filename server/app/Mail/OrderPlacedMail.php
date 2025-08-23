@@ -13,15 +13,15 @@ class OrderPlacedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $otp;
+    private $order;
     private $lang;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($otp, $lang)
+    public function __construct($order, $lang)
     {
-        $this->otp = $otp;
+        $this->order = $order;
         $this->lang = $lang;
     }
 

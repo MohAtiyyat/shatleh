@@ -98,12 +98,12 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            // $this->logAction(
-            //     $request->customer_id,
-            //     'checkout',
-            //     'Order placed successfully: Order ID ' . $order->id,
-            //     LogsTypes::INFO->value
-            // );
+            $this->logAction(
+                $request->customer_id,
+                'checkout',
+                'Order placed successfully: Order ID ' . $order->id,
+                LogsTypes::INFO->value
+            );
 
             $employees = User::whereHas('roles', function ($query) {
                 $query->where('name', 'employee');
