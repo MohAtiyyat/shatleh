@@ -75,7 +75,7 @@
             </div>
 
             <p>Please check the admin dashboard for full details and processing.</p>
-            <a href="{{ url('/admin/orders/'.$order->id) }}" class="button">View Order</a>
+            <a href="{{ url('/dashboard/order/'.$order->id) }}" class="button">View Order</a>
         </div>
         <div class="footer">
             <p>© {{ date('Y') }} Shatleh. All rights reserved.</p>
@@ -162,7 +162,7 @@
             </div>
 
             <p>يرجى مراجعة لوحة التحكم لمزيد من التفاصيل ومعالجة الطلب.</p>
-            <a href="{{ url('/admin/orders/'.$order->id) }}" class="button">عرض الطلب</a>
+            <a href="{{ url('/dashboard/order/'.$order->id) }}" class="button">عرض الطلب</a>
         </div>
         <div class="footer">
             <p>© {{ date('Y') }} شتلة. جميع الحقوق محفوظة.</p>
