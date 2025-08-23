@@ -98,12 +98,12 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            // $this->logAction(
-            //     $request->customer_id,
-            //     'checkout',
-            //     'Order placed successfully: Order ID ' . $order->id,
-            //     LogsTypes::INFO->value
-            // );
+            $this->logAction(
+                $request->customer_id,
+                'checkout',
+                'Order placed successfully: Order ID ' . $order->id,
+                LogsTypes::INFO->value
+            );
 
             $employees = User::whereHas('roles', function ($query) {
                 $query->where('name', 'employee');
@@ -124,12 +124,12 @@ class CheckoutController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->logAction(
-                $request->customer_id,
-                'checkout_error',
-                'Failed to place order: ' . $e,
-                LogsTypes::ERROR->value
-            );
+            // $this->logAction(
+            //     $request->customer_id,
+            //     'checkout_error',
+            //     'Failed to place order: ' . $e,
+            //     LogsTypes::ERROR->value
+            // );
             return response()->json([
                 'error' => 'Failed to process checkout',
                 'message' => $e->getMessage(),
