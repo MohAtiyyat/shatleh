@@ -110,7 +110,7 @@ class CheckoutController extends Controller
             });
 
             foreach ( $employees as $employee) {
-                Mail::to($employee->email)->send(new OrderPlacedMail($order, $employee->lang ?? 'en'));
+                Mail::to($employee['email'])->send(new OrderPlacedMail($order, $employee->lang ?? 'en'));
             }
 
             return response()->json([
