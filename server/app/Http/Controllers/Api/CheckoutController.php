@@ -114,7 +114,7 @@ class CheckoutController extends Controller
                 'checkout',
                 $employees,
                 LogsTypes::INFO->value
-            )
+            );
 
             foreach ( $employees as $employee) {
                 Mail::to($employee['email'])->send(new OrderPlacedMail($order, $employee->lang ?? 'en'));
