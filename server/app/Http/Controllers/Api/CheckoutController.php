@@ -109,8 +109,16 @@ class CheckoutController extends Controller
                 $query->where('name', 'Employee');
             });
 
+            $this->logAction(
+                $request->customer_id,
+                'checkout',
+                $employees,
+                LogsTypes::INFO->value
+            )
+
             foreach ( $employees as $employee) {
                 Mail::to($employee['email'])->send(new OrderPlacedMail($order, $employee->lang ?? 'en'));
+
             }
 
             return response()->json([
