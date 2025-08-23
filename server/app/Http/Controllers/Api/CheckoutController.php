@@ -106,7 +106,7 @@ class CheckoutController extends Controller
             );
 
             $employees = User::whereHas('roles', function ($query) {
-                $query->where('name', 'employee');
+                $query->where('name', 'Employee');
             });
 
             foreach ( $employees as $employee) {
